@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+*::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: #00000000;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #ffffff3f;
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -118,4 +133,5 @@
     @apply bg-background text-foreground;
   }
 }
+
 
