@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  username    String   @unique
+  phone       String   @unique
+  displayName String
+  avatar      String?
+  isOnline    Boolean  @default(false)
+  lastSeen    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sentMessages Message[]
+  chatMembers  ChatMember[]
+
+  adminChats      Chat[]            @relation("ChatAdmin")
+  MessageReaction MessageReaction[]
+  MessageRead     MessageRead[]
+
+  @@map("users")
+}
+
+model Chat {
+  id          String   @id @default(cuid())
+  name        String? // null для приватних чатів
+  description String?
+  avatar      String?
+  type        ChatType @default(PRIVATE)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  adminId String
+  admin   User   @relation("ChatAdmin", fields: [adminId], references: [id])
+
+  members ChatMember[]
+
+  messages Message[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  id       String     @id @default(cuid())
+  userId   String
+  chatId   String
+  role     MemberRole @default(MEMBER)
+  joinedAt DateTime   @default(now())
+
+  // Коли користувач востаннє читав повідомлення в цьому чаті
+  lastReadAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chatId])
+  @@map("chat_members")
+}
+
+model Message {
+  id      String      @id @default(cuid())
+  content String
+  type    MessageType @default(TEXT)
+
+  fileUrl  String?
+  fileName String?
+  fileSize Int?
+
+  // Для системних повідомлень
+  systemData Json?
+
+  // Відповідь на повідомлення
+  replyToId String?
+  replyTo   Message?  @relation("MessageReply", fields: [replyToId], references: [id])
+  replies   Message[] @relation("MessageReply")
+
+  editedAt  DateTime?
+  isDeleted Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Автор повідомлення
+  senderId String
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  // Чат в якому відправлене повідомлення
+  chatId String
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  // Реакції на повідомлення
+  reactions   MessageReaction[]
+  MessageRead MessageRead[]
+
+  @@map("messages")
+}
+
+model MessageReaction {
+  id        String   @id @default(cuid())
+  emoji     String
+  createdAt DateTime @default(now())
+
+  userId    String
+  messageId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId, emoji])
+  @@map("message_reactions")
+}
+
+// Модель для зберігання інформації про прочитані повідомлення
+model MessageRead {
+  id        String   @id @default(cuid())
+  userId    String
+  messageId String
+  readAt    DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, messageId])
+  @@map("message_reads")
+}
+
+enum ChatType {
+  PRIVATE // 1-на-1 чат
+  GROUP // Груповий чат
+  CHANNEL // Канал (тільки адміни можуть писати)
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  VOICE
+  VIDEO
+  SYSTEM // системні повідомлення (користувач приєднався, тощо)
+}
