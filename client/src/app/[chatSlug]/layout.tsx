@@ -1,4 +1,4 @@
-import { BurgerMenuIcon, SearchIcon } from "@/shared/icons";
+import { OptionsIcon, SearchIcon } from "@/shared/icons";
 import { PhoneIcon } from "lucide-react";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
@@ -23,9 +23,8 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                     <button>
                         <SearchIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
                     </button>
-
                     <button>
-                        <BurgerMenuIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
+                        <OptionsIcon className="w-[21px] fill-neutral-300" />
                     </button>
                 </div>
             </div>

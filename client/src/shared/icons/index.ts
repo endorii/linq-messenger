@@ -17,3 +17,5 @@ export { default as LinqIcon } from "./LinqIcon";
 export { default as SpinnerIcon } from "./SpinnerIcon";
 export { default as ClipIcon } from "./ClipIcon";
 export { default as SendIcon } from "./SendIcon";
+export { default as OptionsIcon } from "./OptionsIcon";
+export { default as ThemeIcon } from "./ThemeIcon";
