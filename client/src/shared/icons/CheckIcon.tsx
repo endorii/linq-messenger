@@ -1,16 +1,15 @@
-const BackIcon = ({ className }: { className: string }) => {
+function CheckIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
-            <g id="Arrow / Chevron_Left">
+            <g id="Interface / Check">
                 <path
-                    id="Vector"
-                    d="M15 19L8 12L15 5"
+                    d="M6 12L10.2426 16.2426L18.727 7.75732"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                 />
             </g>
         </svg>
     );
-};
+}
 
-export default BackIcon;
+export default CheckIcon;

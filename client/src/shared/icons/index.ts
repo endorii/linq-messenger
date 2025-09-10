@@ -19,3 +19,7 @@ export { default as ClipIcon } from "./ClipIcon";
 export { default as SendIcon } from "./SendIcon";
 export { default as OptionsIcon } from "./OptionsIcon";
 export { default as ThemeIcon } from "./ThemeIcon";
+export { default as NotifcationIcon } from "./NotifcationIcon";
+export { default as LinkIcon } from "./LinkIcon";
+export { default as CheckBothIcon } from "./CheckBothIcon";
+export { default as CheckIcon } from "./CheckIcon";
