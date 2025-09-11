@@ -6,7 +6,7 @@ export default function messengerLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="flex w-screen h-screen">
+        <div className="flex w-screen h-screen px-[5%] bg-neutral-950">
             <Sidebar />
             {children}
         </div>

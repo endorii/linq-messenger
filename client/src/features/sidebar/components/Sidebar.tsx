@@ -102,7 +102,7 @@ function Sidebar() {
                     defaultValue="allChats"
                     className="flex-1 flex flex-col overflow-hidden"
                 >
-                    <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[15px]">
+                    <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[5px]">
                         <TabsTrigger value="allChats">All chats</TabsTrigger>
                         <TabsTrigger value="university">University</TabsTrigger>
                         <TabsTrigger value="chats">Chats</TabsTrigger>
