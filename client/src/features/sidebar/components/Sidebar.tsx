@@ -24,9 +24,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ChatItem from "./ChatItem";
+import CreateNewChannel from "../modals/CreateNewChannel";
 
 function Sidebar() {
     const [searchValue, setSearchValue] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
@@ -153,11 +155,20 @@ function Sidebar() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuItem>New channel</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsModalOpen(true)}>
+                        New channel
+                    </DropdownMenuItem>
                     <DropdownMenuItem>New group</DropdownMenuItem>
                     <DropdownMenuItem>Add contact</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+
+            {isModalOpen && (
+                <CreateNewChannel
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                />
+            )}
         </div>
     );
 }
