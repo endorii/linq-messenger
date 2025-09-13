@@ -9,31 +9,31 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
-interface CreateNewChannelProps {
+interface AddContactProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
 interface FormData {
-    channelName: string;
-    channelDescription?: string;
+    constactName: string;
+    contactSurname?: string;
+    contactPhone: string;
 }
 
-export default function CreateNewChannel({
-    isOpen,
-    onClose,
-}: CreateNewChannelProps) {
+export default function AddContact({ isOpen, onClose }: AddContactProps) {
     const {
+        control,
         register,
         handleSubmit,
         reset,
         formState: { errors },
     } = useForm<FormData>({
         defaultValues: {
-            channelName: "",
-            channelDescription: "",
+            constactName: "",
+            contactSurname: "",
+            contactPhone: "",
         },
     });
 
@@ -55,7 +55,7 @@ export default function CreateNewChannel({
             // });
             handleClose();
         } catch (error: any) {
-            setModalMessage(error?.message || "Помилка при створенні каналу");
+            setModalMessage(error?.message || "Помилка додавання контакту");
         }
     };
 
@@ -66,47 +66,44 @@ export default function CreateNewChannel({
     const modalContent = (
         <ModalWrapper onClose={onClose}>
             <form
-                className="flex flex-col gap-[15px]"
+                className="flex flex-col gap-[30px]"
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <div className="flex items-center gap-[20px]">
-                    <label
-                        htmlFor="picture"
-                        className="relative bg-neutral-950 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
-                    >
-                        <CameraIcon className="w-[40px] h-[40px] fill-none stroke-2 stroke-neutral-200" />
-                        <Input
-                            id="picture"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                            }}
-                        />
-                    </label>
-
+                <div className="flex flex-col gap-[20px]">
                     <Input
                         type="text"
-                        placeholder="Channel name"
-                        {...register("channelName", {
-                            required: "Enter channel name",
+                        placeholder="Name"
+                        {...register("constactName", {
+                            required: "Name required",
                             minLength: {
-                                value: 3,
-                                message: "Minimum 3 symbols",
+                                value: 1,
+                                message: "Minimum 1 symbol",
                             },
                         })}
-                        errorMessage={errors.channelName?.message}
+                        errorMessage={errors.constactName?.message}
+                        className="h-[45px] border-white/5"
+                    />
+                    <Input
+                        type="text"
+                        placeholder="Surname"
+                        {...register("contactSurname")}
+                        errorMessage={errors.contactSurname?.message}
+                        className="h-[45px] border-white/5"
+                    />
+                    <Input
+                        type="text"
+                        placeholder="Phone number"
+                        {...register("contactPhone", {
+                            required: "Phone number required",
+                            pattern: {
+                                value: /^\+?[0-9]{10,15}$/,
+                                message: "Enter a valid phone number",
+                            },
+                        })}
+                        errorMessage={errors.contactPhone?.message}
                         className="h-[45px] border-white/5"
                     />
                 </div>
-
-                <Textarea
-                    placeholder="Description (optional)"
-                    {...register("channelDescription")}
-                    errorMessage={errors.channelDescription?.message}
-                    className="h-[45px] max-w-[500px] border-neutral-800"
-                />
 
                 <div className="flex justify-end gap-[5px]">
                     <Button

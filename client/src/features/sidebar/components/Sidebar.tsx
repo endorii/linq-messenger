@@ -25,10 +25,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ChatItem from "./ChatItem";
 import CreateNewChannel from "../modals/CreateNewChannel";
+import { ModalType } from "@/shared/types/types";
+import CreateNewGroup from "../modals/CreateNewGroup";
+import AddContact from "../modals/AddContact";
 
 function Sidebar() {
     const [searchValue, setSearchValue] = useState<string>("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
@@ -155,20 +158,36 @@ function Sidebar() {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuItem onClick={() => setIsModalOpen(true)}>
+                    <DropdownMenuItem
+                        onClick={() => setActiveModal("addNewChannel")}
+                    >
                         New channel
                     </DropdownMenuItem>
-                    <DropdownMenuItem>New group</DropdownMenuItem>
-                    <DropdownMenuItem>Add contact</DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setActiveModal("addNewGroup")}
+                    >
+                        New group
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => setActiveModal("addContact")}
+                    >
+                        Add contact
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            {isModalOpen && (
-                <CreateNewChannel
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                />
-            )}
+            <CreateNewChannel
+                isOpen={activeModal === "addNewChannel"}
+                onClose={() => setActiveModal(null)}
+            />
+            <CreateNewGroup
+                isOpen={activeModal === "addNewGroup"}
+                onClose={() => setActiveModal(null)}
+            />
+            <AddContact
+                isOpen={activeModal === "addContact"}
+                onClose={() => setActiveModal(null)}
+            />
         </div>
     );
 }

@@ -11,20 +11,19 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 
-interface CreateNewChannelProps {
+interface CreateNewGroupProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
 interface FormData {
-    channelName: string;
-    channelDescription?: string;
+    groupName: string;
 }
 
-export default function CreateNewChannel({
+export default function CreateNewGroup({
     isOpen,
     onClose,
-}: CreateNewChannelProps) {
+}: CreateNewGroupProps) {
     const {
         register,
         handleSubmit,
@@ -32,8 +31,7 @@ export default function CreateNewChannel({
         formState: { errors },
     } = useForm<FormData>({
         defaultValues: {
-            channelName: "",
-            channelDescription: "",
+            groupName: "",
         },
     });
 
@@ -55,7 +53,7 @@ export default function CreateNewChannel({
             // });
             handleClose();
         } catch (error: any) {
-            setModalMessage(error?.message || "Помилка при створенні каналу");
+            setModalMessage(error?.message || "Помилка при створенні групи");
         }
     };
 
@@ -88,25 +86,18 @@ export default function CreateNewChannel({
 
                     <Input
                         type="text"
-                        placeholder="Channel name"
-                        {...register("channelName", {
-                            required: "Enter channel name",
+                        placeholder="Group name"
+                        {...register("groupName", {
+                            required: "Enter group name",
                             minLength: {
                                 value: 3,
                                 message: "Minimum 3 symbols",
                             },
                         })}
-                        errorMessage={errors.channelName?.message}
+                        errorMessage={errors.groupName?.message}
                         className="h-[45px] border-white/5"
                     />
                 </div>
-
-                <Textarea
-                    placeholder="Description (optional)"
-                    {...register("channelDescription")}
-                    errorMessage={errors.channelDescription?.message}
-                    className="h-[45px] max-w-[500px] border-neutral-800"
-                />
 
                 <div className="flex justify-end gap-[5px]">
                     <Button
