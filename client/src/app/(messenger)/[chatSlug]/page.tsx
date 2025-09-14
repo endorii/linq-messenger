@@ -6,7 +6,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/components/ui/dropdown-menu";
 import { useState } from "react";
 import EmojiIcon from "@/shared/icons/EmojiIcon";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";

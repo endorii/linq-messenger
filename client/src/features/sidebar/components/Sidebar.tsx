@@ -11,7 +11,12 @@ import {
     ThemeIcon,
 } from "@/shared/icons";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/shared/components/ui/tabs";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -22,7 +27,7 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/components/ui/dropdown-menu";
 import ChatItem from "./ChatItem";
 import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType } from "@/shared/types/types";

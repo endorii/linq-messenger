@@ -10,8 +10,13 @@ import {
     SearchIcon,
 } from "@/shared/icons";
 import { PhoneIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/shared/components/ui/tabs";
+import { Switch } from "@/shared/components/ui/switch";
 import Image from "next/image";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {

@@ -2,8 +2,8 @@
 
 import { LinqIcon } from "@/shared/icons";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 
 function SignIn() {

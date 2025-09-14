@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import CameraIcon from "@/shared/icons/CameraIcon";
-import ModalWrapper from "@/shared/ui/wrappers/ModalWrapper";
-import { Textarea } from "@/components/ui/textarea";
+import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { Textarea } from "@/shared/components/ui/textarea";
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
