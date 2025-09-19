@@ -1,0 +1,46 @@
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { CreateUserDto } from "../interfaces/auth.interfaces";
+import { registerUser, resendVerifyUser, verifyUser } from "../api/auth.api";
+
+export function useRegisterUser() {
+    const router = useRouter();
+    return useMutation({
+        mutationFn: (userData: CreateUserDto) => registerUser(userData),
+        onSuccess: (data) => {
+            toast.success(data.message);
+            router.push("signin");
+        },
+        onError: (error: any) => {
+            toast.error(error?.message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useVerifyUser() {
+    const router = useRouter();
+    return useMutation({
+        mutationFn: (token: string) => verifyUser(token),
+        onSuccess: (data) => {
+            setTimeout(() => router.push("signin"), 2500);
+            toast.success(data.message);
+            return data.message;
+        },
+        onError: (error: any) => {
+            toast.error(error?.message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useResendVerification() {
+    return useMutation({
+        mutationFn: (email: string) => resendVerifyUser(email),
+        onSuccess: (data) => {
+            toast.success(data.message);
+        },
+        onError: (error: any) => {
+            toast.error(error?.message || "An unknown error occurred");
+        },
+    });
+}

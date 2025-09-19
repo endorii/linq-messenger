@@ -5,15 +5,39 @@ import { useState } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
+import { Label } from "@/shared/components/ui/label";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+interface LoginFormData {
+    email: string;
+    password: string;
+}
 
 function SignIn() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    // const [showPassword, setShowPassword] = useState(false);
+    const [formErrorMessage, setFormErrorMessage] = useState("");
 
-    const handleSignIn = () => {
-        console.log("Sign in with:", email, password);
-        // Тут додати логіку авторизації
+    const router = useRouter();
+
+    const {
+        handleSubmit,
+        register,
+        reset,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
+
+    const onSubmit = (data: LoginFormData) => {
+        setFormErrorMessage("");
+        router.push("/");
+        console.log("Sending data to server:", data);
+        toast.success("Login successfull");
+        reset();
     };
 
     return (
@@ -31,39 +55,75 @@ function SignIn() {
                     to your chats
                 </div>
 
-                <div className="flex flex-col gap-4 w-full p-[20px] text-white">
-                    <Input
-                        type="email"
-                        id="email"
-                        placeholder="Email"
-                        className="h-[45px] border-neutral-800"
-                    />
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col gap-4 w-full p-[20px] text-white"
+                >
+                    <div className="flex flex-col gap-[7px] ">
+                        <Label>Email *</Label>
+                        <Input
+                            type="email"
+                            id="email"
+                            placeholder="Email"
+                            {...register("email", {
+                                required: "Email required",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Invalid email address",
+                                },
+                            })}
+                            errorMessage={errors.email?.message}
+                            className="h-[45px] border-neutral-800"
+                        />
+                    </div>
 
-                    <Input
-                        type="password"
-                        id="password"
-                        placeholder="Password"
-                        className="h-[45px] border-neutral-800"
-                    />
+                    <div className="flex flex-col gap-[7px] ">
+                        <Label>Password *</Label>
+                        <Input
+                            type="password"
+                            id="password"
+                            placeholder="Password"
+                            {...register("password", {
+                                required: "Password required",
+                                minLength: {
+                                    value: 7,
+                                    message:
+                                        "Password length should be at least 7 symbols",
+                                },
+                            })}
+                            errorMessage={errors.password?.message}
+                            className="h-[45px] border-neutral-800"
+                        />
+                    </div>
+
+                    {formErrorMessage && (
+                        <div className="text-red-500 bg-red-500/5 p-[10px] border border-white/5 rounded-xl">
+                            {formErrorMessage}
+                        </div>
+                    )}
 
                     <Button
-                        onClick={handleSignIn}
+                        type="submit"
                         className="w-full bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-800 h-[45px] cursor-pointer"
                     >
                         Sign In
                     </Button>
+                </form>
+
+                <div className="relative flex items-center w-full p-[10px]">
+                    <hr className="border-t border-neutral-800 w-full" />
+
+                    <div className="absolute top-0 left-[50%] translate-x-[-50%] text-center bg-neutral-900 px-[10px] text-neutral-400">
+                        OR
+                    </div>
                 </div>
 
-                <div className="text-center text-neutral-400 my-4">
-                    or sign in with
-                </div>
-
-                <div className="flex justify-center gap-4">
-                    <button className="p-3 rounded-xl bg-neutral-700 hover:bg-neutral-600 transition text-white w-1/2">
-                        Google
+                <div className="flex flex-col justify-center gap-4 p-[20px] w-full">
+                    <button className="p-3 rounded-xl bg-neutral-800 hover:bg-neutral-600 transition text-white border border-white/5">
+                        Continue with Google
                     </button>
-                    <button className="p-3 rounded-xl bg-neutral-700 hover:bg-neutral-600 transition text-white w-1/2">
-                        Facebook
+                    <button className="p-3 rounded-xl bg-neutral-800 hover:bg-neutral-600 transition text-white border border-white/5">
+                        Continue with Facebook
                     </button>
                 </div>
 
