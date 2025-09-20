@@ -1,61 +1,28 @@
-import {
-    BadRequestException,
-    ConflictException,
-    HttpException,
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import * as bcrypt from "bcryptjs";
+import { BadRequestException, HttpException, Injectable, NotFoundException } from "@nestjs/common";
+import { RegisterUserDto } from "./dto/register-user.dto";
 import * as crypto from "crypto";
 import { EmailService } from "src/email/email.service";
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly prisma: PrismaService,
+        private readonly userService: UserService,
         private readonly emailService: EmailService
     ) {}
-    async registerUser(userData: CreateUserDto) {
+
+    async registerUser(userData: RegisterUserDto) {
         try {
-            const existingUsername = await this.prisma.user.findUnique({
-                where: { username: userData.username },
-            });
-
-            if (existingUsername) {
-                throw new ConflictException(
-                    `Username "${existingUsername.username}" already taken`
-                );
-            }
-
-            const existingEmail = await this.prisma.user.findUnique({
-                where: { email: userData.email },
-            });
-
-            if (existingEmail) {
-                throw new ConflictException("This email already exist");
-            }
-
-            const hashedPassword = await bcrypt.hash(userData.password, 10);
-
             const verificationToken = crypto.randomBytes(32).toString("hex");
             const tokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-            const newUser = await this.prisma.user.create({
-                data: {
-                    email: userData.email,
-                    username: userData.username,
-                    phone: userData.phone,
-                    firstName: userData.firstName,
-                    lastName: userData.lastName,
-                    hashedPassword,
+            const newUser = await this.userService.createUser(userData);
 
-                    isVerified: false,
-                    verificationToken,
-                    verificationTokenExpires: tokenExpiry,
-                },
-            });
+            await this.userService.updateVerificationData(
+                newUser.id,
+                verificationToken,
+                tokenExpiry
+            );
 
             await this.emailService.sendVerificationEmail(newUser.email, verificationToken);
 
@@ -72,9 +39,7 @@ export class AuthService {
     }
 
     async verifyEmail(token: string) {
-        const user = await this.prisma.user.findFirst({
-            where: { verificationToken: token },
-        });
+        const user = await this.userService.findByVerificationToken(token);
 
         if (
             !user ||
@@ -84,19 +49,13 @@ export class AuthService {
             throw new BadRequestException("Invalid/outdated token or user not found");
         }
 
-        await this.prisma.user.update({
-            where: { id: user.id },
-            data: {
-                isVerified: true,
-                verificationToken: null,
-            },
-        });
+        await this.userService.verifyUser(user.id);
 
         return { message: "Mail successfully verified!" };
     }
 
     async resendVerificationEmail(email: string) {
-        const user = await this.prisma.user.findUnique({ where: { email } });
+        const user = await this.userService.findByEmail(email);
 
         if (!user) {
             throw new NotFoundException("User not found");
@@ -109,10 +68,11 @@ export class AuthService {
         const verificationToken = crypto.randomBytes(32).toString("hex");
         const verificationTokenExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-        await this.prisma.user.update({
-            where: { id: user.id },
-            data: { verificationToken, verificationTokenExpires },
-        });
+        await this.userService.updateVerificationData(
+            user.id,
+            verificationToken,
+            verificationTokenExpires
+        );
 
         await this.emailService.sendVerificationEmail(user.email, verificationToken);
 
