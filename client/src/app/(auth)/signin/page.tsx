@@ -6,19 +6,18 @@ import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 import { Label } from "@/shared/components/ui/label";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useLoginUser } from "@/features/auth/hooks/useAuth";
 
 interface LoginFormData {
-    email: string;
+    username: string;
     password: string;
 }
 
 function SignIn() {
     const [formErrorMessage, setFormErrorMessage] = useState("");
 
-    const router = useRouter();
+    const useLoginUserMutation = useLoginUser();
 
     const {
         handleSubmit,
@@ -27,17 +26,25 @@ function SignIn() {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            email: "",
+            username: "",
             password: "",
         },
     });
 
     const onSubmit = (data: LoginFormData) => {
-        setFormErrorMessage("");
-        router.push("/");
-        console.log("Sending data to server:", data);
-        toast.success("Login successfull");
-        reset();
+        try {
+            useLoginUserMutation.mutate({
+                username: data.username,
+                password: data.password,
+            });
+            setFormErrorMessage("");
+            reset();
+        } catch (error: any) {
+            setFormErrorMessage(
+                error?.message || "An error occurred during login"
+            );
+            console.log(error);
+        }
     };
 
     return (
@@ -60,19 +67,15 @@ function SignIn() {
                     className="flex flex-col gap-4 w-full p-[20px] text-white"
                 >
                     <div className="flex flex-col gap-[7px] ">
-                        <Label>Email *</Label>
+                        <Label>Username *</Label>
                         <Input
-                            type="email"
-                            id="email"
-                            placeholder="Email"
-                            {...register("email", {
-                                required: "Email required",
-                                pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Invalid email address",
-                                },
+                            type="text"
+                            id="username"
+                            placeholder="Username"
+                            {...register("username", {
+                                required: "Username required",
                             })}
-                            errorMessage={errors.email?.message}
+                            errorMessage={errors.username?.message}
                             className="h-[45px] border-neutral-800"
                         />
                     </div>
@@ -85,11 +88,6 @@ function SignIn() {
                             placeholder="Password"
                             {...register("password", {
                                 required: "Password required",
-                                minLength: {
-                                    value: 7,
-                                    message:
-                                        "Password length should be at least 7 symbols",
-                                },
                             })}
                             errorMessage={errors.password?.message}
                             className="h-[45px] border-neutral-800"

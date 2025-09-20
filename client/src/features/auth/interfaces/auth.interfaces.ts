@@ -1,10 +1,13 @@
-export interface CreateUserDto {
+export interface LoginUserDto {
     username: string;
+    password: string;
+}
+
+export interface RegisterUserDto extends LoginUserDto {
     email: string;
     firstName: string;
     lastName?: string;
     phone?: string;
-    password: string;
 }
 
 export interface ServerResponseWithMessage<T = unknown> {

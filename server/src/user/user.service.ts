@@ -45,7 +45,7 @@ export class UserService {
                 phone: userData.phone,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
-                hashedPassword,
+                password: hashedPassword,
                 isVerified: false,
             },
         });

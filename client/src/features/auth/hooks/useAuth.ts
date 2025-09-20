@@ -1,16 +1,30 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CreateUserDto } from "../interfaces/auth.interfaces";
-import { registerUser, resendVerifyUser, verifyUser } from "../api/auth.api";
+import { LoginUserDto, RegisterUserDto } from "../interfaces/auth.interfaces";
+import { loginUser, registerUser, resendVerifyUser, verifyUser } from "../api/auth.api";
 
 export function useRegisterUser() {
     const router = useRouter();
     return useMutation({
-        mutationFn: (userData: CreateUserDto) => registerUser(userData),
+        mutationFn: (userData: RegisterUserDto) => registerUser(userData),
         onSuccess: (data) => {
             toast.success(data.message);
             router.push("signin");
+        },
+        onError: (error: any) => {
+            toast.error(error?.message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useLoginUser() {
+    const router = useRouter();
+    return useMutation({
+        mutationFn: (userData: LoginUserDto) => loginUser(userData),
+        onSuccess: (data) => {
+            toast.success(data.message);
+            router.push("/");
         },
         onError: (error: any) => {
             toast.error(error?.message || "An unknown error occurred");

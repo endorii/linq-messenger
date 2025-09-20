@@ -1,8 +1,16 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    ConflictException,
+    HttpException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
+import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
 import { EmailService } from "src/email/email.service";
 import { UserService } from "src/user/user.service";
+import { LoginUserDto } from "./dto/login-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -77,5 +85,32 @@ export class AuthService {
         await this.emailService.sendVerificationEmail(user.email, verificationToken);
 
         return { message: "Confirmation email resent" };
+    }
+
+    async loginUser(userData: LoginUserDto) {
+        try {
+            const existingUser = await this.userService.findByUsername(userData.username);
+
+            if (!existingUser) {
+                throw new ConflictException(`Wrong login or password`);
+            }
+
+            const isPasswordMatch = await bcrypt.compare(userData.password, existingUser.password);
+
+            if (!isPasswordMatch) {
+                throw new ConflictException(`Wrong login or password`);
+            }
+
+            return {
+                message: "Login successfully",
+                data: existingUser,
+            };
+        } catch (error) {
+            console.error("Error:", error);
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException("Failed to login user", 500);
+        }
     }
 }

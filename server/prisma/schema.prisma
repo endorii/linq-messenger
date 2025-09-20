@@ -9,17 +9,17 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  username       String    @unique
-  email          String    @unique
-  hashedPassword String    @map("hashed_password")
-  phone          String?   @unique
-  firstName      String    @map("first_name")
-  lastName       String?   @map("last_name")
-  avatarUrl      String?   @map("avatar_url")
-  lastSeenAt     DateTime? @map("last_seen_at")
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
+  id         String    @id @default(cuid())
+  username   String    @unique
+  email      String    @unique
+  password   String
+  phone      String?   @unique
+  firstName  String    @map("first_name")
+  lastName   String?   @map("last_name")
+  avatarUrl  String?   @map("avatar_url")
+  lastSeenAt DateTime? @map("last_seen_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
 
   isVerified               Boolean   @default(false) @map("is_verified")
   verificationToken        String?   @map("verification_token")
