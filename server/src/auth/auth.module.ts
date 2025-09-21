@@ -4,9 +4,12 @@ import { AuthController } from "./auth.controller";
 import { EmailService } from "src/email/email.service";
 import { PrismaModule } from "src/prisma/prisma.module";
 import { UserService } from "src/user/user.service";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { jwtModuleAsyncOptions } from "@config/jwt-module.config";
 
 @Module({
-    imports: [PrismaModule],
+    imports: [PrismaModule, JwtModule.registerAsync(jwtModuleAsyncOptions()), PassportModule],
     controllers: [AuthController],
     providers: [AuthService, EmailService, UserService],
 })

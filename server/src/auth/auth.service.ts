@@ -11,12 +11,18 @@ import * as crypto from "crypto";
 import { EmailService } from "src/email/email.service";
 import { UserService } from "src/user/user.service";
 import { LoginUserDto } from "./dto/login-user.dto";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "src/prisma/prisma.service";
+import { v4 } from "uuid";
+import * as dayjs from "dayjs";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UserService,
-        private readonly emailService: EmailService
+        private readonly emailService: EmailService,
+        private readonly jwtService: JwtService,
+        private readonly prisma: PrismaService
     ) {}
 
     async registerUser(userData: RegisterUserDto) {
@@ -101,9 +107,20 @@ export class AuthService {
                 throw new ConflictException(`Wrong login or password`);
             }
 
+            const accessToken = this.jwtService.sign({
+                id: existingUser.id,
+                username: existingUser.username,
+                email: existingUser.email,
+            });
+
+            const refreshToken = await this.getRefreshToken(existingUser.id);
+
             return {
                 message: "Login successfully",
-                data: existingUser,
+                tokens: {
+                    accessToken,
+                    refreshToken: refreshToken.token,
+                },
             };
         } catch (error) {
             console.error("Error:", error);
@@ -112,5 +129,17 @@ export class AuthService {
             }
             throw new HttpException("Failed to login user", 500);
         }
+    }
+
+    private async getRefreshToken(userId: string) {
+        const currentDate = dayjs();
+        const expiresDate = currentDate.add(1, "month").toDate();
+        return await this.prisma.token.create({
+            data: {
+                token: v4(),
+                expiresAt: expiresDate,
+                userId,
+            },
+        });
     }
 }

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcryptjs";
@@ -26,29 +26,34 @@ export class UserService {
     }
 
     async createUser(userData: CreateUserDto) {
-        const existingUsername = await this.findByUsername(userData.username);
-        if (existingUsername) {
-            throw new ConflictException(`Username "${userData.username}" already taken`);
+        try {
+            const existingUsername = await this.findByUsername(userData.username);
+            if (existingUsername) {
+                throw new ConflictException(`Username "${userData.username}" already taken`);
+            }
+
+            const existingEmail = await this.findByEmail(userData.email);
+            if (existingEmail) {
+                throw new ConflictException("This email already exist");
+            }
+
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+            return this.prisma.user.create({
+                data: {
+                    email: userData.email,
+                    username: userData.username,
+                    phone: userData.phone,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    password: hashedPassword,
+                    isVerified: false,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            throw new BadRequestException("Error with creating new user");
         }
-
-        const existingEmail = await this.findByEmail(userData.email);
-        if (existingEmail) {
-            throw new ConflictException("This email already exist");
-        }
-
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-        return this.prisma.user.create({
-            data: {
-                email: userData.email,
-                username: userData.username,
-                phone: userData.phone,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                password: hashedPassword,
-                isVerified: false,
-            },
-        });
     }
 
     // async updateUser(id: string, updateData: UpdateUserDto) {

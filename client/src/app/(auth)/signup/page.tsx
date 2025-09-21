@@ -58,7 +58,7 @@ function SignUp() {
                 password: data.password,
             });
             setFormErrorMessage("");
-            // reset();
+            reset();
         } catch (error: any) {
             setStep(1);
             setFormErrorMessage(
