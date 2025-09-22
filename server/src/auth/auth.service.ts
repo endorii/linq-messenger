@@ -13,8 +13,8 @@ import { UserService } from "src/user/user.service";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
-import { v4 } from "uuid";
 import * as dayjs from "dayjs";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -22,7 +22,8 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly emailService: EmailService,
         private readonly jwtService: JwtService,
-        private readonly prisma: PrismaService
+        private readonly prisma: PrismaService,
+        private readonly configService: ConfigService
     ) {}
 
     async registerUser(userData: RegisterUserDto) {
@@ -94,50 +95,79 @@ export class AuthService {
     }
 
     async loginUser(userData: LoginUserDto) {
-        try {
-            const existingUser = await this.userService.findByUsername(userData.username);
+        const existingUser = await this.userService.findByUsername(userData.username);
+        if (!existingUser) throw new ConflictException("Wrong login or password");
 
-            if (!existingUser) {
-                throw new ConflictException(`Wrong login or password`);
-            }
+        const isPasswordMatch = await bcrypt.compare(userData.password, existingUser.password);
+        if (!isPasswordMatch) throw new ConflictException("Wrong login or password");
 
-            const isPasswordMatch = await bcrypt.compare(userData.password, existingUser.password);
+        const accessToken = this.jwtService.sign({
+            id: existingUser.id,
+            username: existingUser.username,
+            email: existingUser.email,
+        });
 
-            if (!isPasswordMatch) {
-                throw new ConflictException(`Wrong login or password`);
-            }
+        const { refreshToken } = await this.getRefreshToken(existingUser.id);
 
-            const accessToken = this.jwtService.sign({
-                id: existingUser.id,
-                username: existingUser.username,
-                email: existingUser.email,
-            });
+        return {
+            accessToken,
+            refreshToken,
+        };
+    }
 
-            const refreshToken = await this.getRefreshToken(existingUser.id);
+    async refreshTokens(refreshToken: string) {
+        const tokenInDb = await this.prisma.token.findUnique({
+            where: { refreshToken },
+            include: { user: true },
+        });
 
-            return {
-                message: "Login successfully",
-                tokens: {
-                    accessToken,
-                    refreshToken: refreshToken.token,
-                },
-            };
-        } catch (error) {
-            console.error("Error:", error);
-            if (error instanceof HttpException) {
-                throw error;
-            }
-            throw new HttpException("Failed to login user", 500);
+        if (!tokenInDb) {
+            throw new BadRequestException("Invalid refresh token");
         }
+
+        if (tokenInDb.expiresIn.getTime() < Date.now()) {
+            await this.prisma.token.delete({ where: { id: tokenInDb.id } });
+            throw new BadRequestException("Refresh token expired");
+        }
+
+        const accessToken = this.jwtService.sign({
+            id: tokenInDb.user.id,
+            username: tokenInDb.user.username,
+            email: tokenInDb.user.email,
+        });
+
+        const newRefreshToken = await this.getRefreshToken(tokenInDb.userId);
+
+        await this.prisma.token.delete({ where: { id: tokenInDb.id } });
+
+        return {
+            accessToken,
+            refreshToken: newRefreshToken.refreshToken,
+        };
+    }
+
+    async logout(refreshToken: string) {
+        await this.prisma.token.deleteMany({
+            where: { refreshToken },
+        });
+        return { message: "Logged out successfully" };
+    }
+
+    async logoutAll(userId: string) {
+        await this.prisma.token.deleteMany({
+            where: { userId },
+        });
+        return { message: "Logged out from all devices" };
     }
 
     private async getRefreshToken(userId: string) {
         const currentDate = dayjs();
         const expiresDate = currentDate.add(1, "month").toDate();
+
         return await this.prisma.token.create({
             data: {
-                token: v4(),
-                expiresAt: expiresDate,
+                refreshToken: crypto.randomBytes(64).toString("hex"),
+                expiresIn: expiresDate,
                 userId,
             },
         });

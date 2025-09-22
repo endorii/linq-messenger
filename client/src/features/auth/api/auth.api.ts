@@ -34,6 +34,7 @@ export async function loginUser(userData: LoginUserDto): Promise<ServerResponseW
     try {
         const response = await fetch(`${API_BASE_URL}/auth/signin`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },

@@ -25,75 +25,17 @@ model User {
   verificationToken        String?   @map("verification_token")
   verificationTokenExpires DateTime?
 
-  sentMessages Message[]
-  chatMembers  ChatMember[]
-  token        Token[]
+  token Token[]
 
   @@map("users")
 }
 
 model Token {
-  token     String   @unique
-  expiresAt DateTime
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  refreshToken String   @unique
+  expiresIn    DateTime
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
-}
-
-model Chat {
-  id        String   @id @default(cuid())
-  type      ChatType
-  title     String? // null for private chats
-  avatarUrl String?  @map("avatar_url")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  members  ChatMember[]
-  messages Message[]
-
-  @@map("chats")
-}
-
-model ChatMember {
-  id       String   @id @default(cuid())
-  chatId   String   @map("chat_id")
-  userId   String   @map("user_id")
-  joinedAt DateTime @default(now()) @map("joined_at")
-
-  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([chatId, userId])
-  @@map("chat_members")
-}
-
-model Message {
-  id        String      @id @default(cuid())
-  chatId    String      @map("chat_id")
-  userId    String      @map("user_id")
-  content   String
-  type      MessageType @default(TEXT)
-  replyToId String?     @map("reply_to_id")
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-
-  chat    Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  replyTo Message?  @relation("MessageReply", fields: [replyToId], references: [id])
-  replies Message[] @relation("MessageReply")
-
-  @@map("messages")
-}
-
-enum ChatType {
-  PRIVATE
-  GROUP
-  CHANNEL
-}
-
-enum MessageType {
-  TEXT
-  IMAGE
-  FILE
 }
