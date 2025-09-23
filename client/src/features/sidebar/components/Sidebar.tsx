@@ -33,10 +33,12 @@ import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType } from "@/shared/types/types";
 import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
+import { useAuthStore } from "@/store/auth.store";
 
 function Sidebar() {
     const [searchValue, setSearchValue] = useState<string>("");
     const [activeModal, setActiveModal] = useState<ModalType>(null);
+    const { user } = useAuthStore();
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
@@ -51,7 +53,7 @@ function Sidebar() {
                     <DropdownMenuContent className="w-56 font-semibold">
                         <DropdownMenuItem>
                             <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full"></div>
-                            <div>account name</div>
+                            <div>{user?.username}</div>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-neutral-800" />
                         <DropdownMenuItem className="group">

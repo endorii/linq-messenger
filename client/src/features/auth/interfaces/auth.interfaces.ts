@@ -1,3 +1,7 @@
+export interface LoginResponse {
+    accessToken: string;
+}
+
 export interface LoginUserDto {
     username: string;
     password: string;

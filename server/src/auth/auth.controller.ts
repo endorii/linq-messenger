@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post, Query, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { Request, Response } from "express";
 import { RefreshTokenRequest } from "./interfaces/refresh-token-request.interface";
 import { ConfigService } from "@nestjs/config";
+import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+import { AuthenticatedRequest } from "./interfaces/authenticated-request.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -43,7 +45,7 @@ export class AuthController {
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         });
 
-        return { accessToken };
+        return { message: "Login succesfully!", data: { accessToken } };
     }
 
     @Post("refresh")
@@ -60,7 +62,7 @@ export class AuthController {
         res.cookie("refreshToken", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: "lax",
             maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
@@ -81,5 +83,11 @@ export class AuthController {
         await this.authService.logoutAll(userId);
         res.clearCookie("refreshToken");
         return { message: "Logged out from all devices" };
+    }
+
+    @Get("me")
+    @UseGuards(JwtAuthGuard)
+    getProfile(@Req() req: AuthenticatedRequest) {
+        return this.authService.getProfile(req.user.id);
     }
 }

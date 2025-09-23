@@ -28,11 +28,10 @@ export class AuthService {
 
     async registerUser(userData: RegisterUserDto) {
         try {
-            const verificationToken = crypto.randomBytes(32).toString("hex");
-            const tokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
-
             const newUser = await this.userService.createUser(userData);
 
+            const verificationToken = crypto.randomBytes(32).toString("hex");
+            const tokenExpiry = new Date(Date.now() + 10 * 60 * 1000);
             await this.userService.updateVerificationData(
                 newUser.id,
                 verificationToken,
@@ -158,6 +157,18 @@ export class AuthService {
             where: { userId },
         });
         return { message: "Logged out from all devices" };
+    }
+
+    async getProfile(userId: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) throw new NotFoundException("User not found");
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...userWithoutPassword } = user;
+
+        return userWithoutPassword;
     }
 
     private async getRefreshToken(userId: string) {

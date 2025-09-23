@@ -23,6 +23,10 @@ export function useLoginUser() {
     return useMutation({
         mutationFn: (userData: LoginUserDto) => loginUser(userData),
         onSuccess: (data) => {
+            const accessToken = data.data?.accessToken;
+            if (accessToken) {
+                localStorage.setItem("accessToken", accessToken);
+            }
             toast.success(data.message);
             router.push("/");
         },

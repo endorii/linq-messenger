@@ -7,7 +7,8 @@ import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 import { Label } from "@/shared/components/ui/label";
 import { useForm } from "react-hook-form";
-import { useLoginUser } from "@/features/auth/hooks/useAuth";
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
 
 interface LoginFormData {
     username: string;
@@ -17,26 +18,27 @@ interface LoginFormData {
 function SignIn() {
     const [formErrorMessage, setFormErrorMessage] = useState("");
 
-    const useLoginUserMutation = useLoginUser();
+    const login = useAuthStore((state) => state.login);
+    const isLoading = useAuthStore((state) => state.isLoading);
+
+    const router = useRouter();
 
     const {
         handleSubmit,
         register,
         reset,
         formState: { errors },
-    } = useForm({
+    } = useForm<LoginFormData>({
         defaultValues: {
             username: "",
             password: "",
         },
     });
 
-    const onSubmit = (data: LoginFormData) => {
+    const onSubmit = async (data: LoginFormData) => {
         try {
-            useLoginUserMutation.mutate({
-                username: data.username,
-                password: data.password,
-            });
+            await login(data.username, data.password);
+            router.push("/");
             setFormErrorMessage("");
             reset();
         } catch (error: any) {
@@ -103,8 +105,9 @@ function SignIn() {
                     <Button
                         type="submit"
                         className="w-full bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-800 h-[45px] cursor-pointer"
+                        disabled={isLoading}
                     >
-                        Sign In
+                        {isLoading ? "Loading..." : "Sign In"}
                     </Button>
                 </form>
 
