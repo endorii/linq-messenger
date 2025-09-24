@@ -1,10 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoginUserDto, RegisterUserDto } from "../interfaces/auth.interfaces";
 import {
     fetchProfile,
     loginUser,
+    logout,
     registerUser,
     resendVerifyUser,
     verifyUser,
@@ -18,7 +19,7 @@ export function useRegisterUser() {
         mutationFn: (userData: RegisterUserDto) => registerUser(userData),
         onSuccess: (data) => {
             toast.success(data.message);
-            router.push("signin");
+            router.push("/signin");
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;
@@ -28,14 +29,14 @@ export function useRegisterUser() {
 }
 
 export function useLoginUser() {
+    const queryClient = useQueryClient();
     const router = useRouter();
     return useMutation({
         mutationFn: (userData: LoginUserDto) => loginUser(userData),
         onSuccess: (data) => {
             const accessToken = data.data?.accessToken;
-            if (accessToken) {
-                localStorage.setItem("accessToken", accessToken);
-            }
+            if (accessToken) localStorage.setItem("accessToken", accessToken);
+            queryClient.invalidateQueries({ queryKey: ["me"] });
             toast.success(data.message);
             router.push("/");
         },
@@ -67,6 +68,27 @@ export function useResendVerification() {
         mutationFn: (email: string) => resendVerifyUser(email),
         onSuccess: (data) => {
             toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useLogoutUser() {
+    const queryClient = useQueryClient();
+    const router = useRouter();
+    return useMutation({
+        mutationFn: () => logout(),
+        onSuccess: (data) => {
+            localStorage.removeItem("accessToken");
+
+            queryClient.setQueryData(["me"], null);
+
+            toast.success(data.message);
+
+            router.push("/signin");
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;

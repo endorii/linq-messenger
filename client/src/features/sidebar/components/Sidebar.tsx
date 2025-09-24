@@ -4,13 +4,14 @@ import {
     AccountIcon,
     BurgerMenuIcon,
     CloseIcon,
+    LogoutIcon,
     OptionsIcon,
     PlusIcon,
     SearchIcon,
     SettingsIcon,
     ThemeIcon,
 } from "@/shared/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Tabs,
     TabsContent,
@@ -33,25 +34,14 @@ import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType } from "@/shared/types/types";
 import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
-import { useRouter } from "next/navigation";
-import { useProfile } from "@/features/auth/hooks/useAuth";
+import { IUser } from "@/shared/interfaces/IUser";
+import { useLogoutUser } from "@/features/auth/hooks/useAuth";
 
-function Sidebar() {
+function Sidebar({ user }: { user: IUser | undefined }) {
     const [searchValue, setSearchValue] = useState<string>("");
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
-    const router = useRouter();
-    const { data: user, isLoading } = useProfile();
-
-    useEffect(() => {
-        if (!isLoading && !user) {
-            router.replace("/signin");
-        }
-    }, [isLoading, user, router]);
-
-    if (!user) {
-        return null;
-    }
+    const useLogoutUserMutation = useLogoutUser();
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
@@ -66,7 +56,7 @@ function Sidebar() {
                     <DropdownMenuContent className="w-56 font-semibold">
                         <DropdownMenuItem>
                             <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full"></div>
-                            <div>{isLoading ? "Loading " : user?.username}</div>
+                            <div>{user?.username}</div>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-neutral-800" />
                         <DropdownMenuItem className="group">
@@ -93,6 +83,15 @@ function Sidebar() {
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
+                        <DropdownMenuItem
+                            className="group"
+                            onClick={() => {
+                                useLogoutUserMutation.mutate();
+                            }}
+                        >
+                            <LogoutIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
+                            <div>Logout</div>
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 

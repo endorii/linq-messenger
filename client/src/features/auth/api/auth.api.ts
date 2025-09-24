@@ -36,6 +36,11 @@ export async function fetchProfile(): Promise<IUser> {
     return data;
 }
 
+export async function logout(): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.post("/auth/logout");
+    return data;
+}
+
 export async function refreshToken(): Promise<{ accessToken: string }> {
     try {
         const { data } = await httpService.post("/auth/refresh");
