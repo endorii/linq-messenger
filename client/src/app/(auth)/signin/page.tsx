@@ -7,8 +7,8 @@ import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 import { Label } from "@/shared/components/ui/label";
 import { useForm } from "react-hook-form";
-import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
+import { useLoginUser } from "@/features/auth/hooks/useAuth";
 
 interface LoginFormData {
     username: string;
@@ -18,10 +18,7 @@ interface LoginFormData {
 function SignIn() {
     const [formErrorMessage, setFormErrorMessage] = useState("");
 
-    const login = useAuthStore((state) => state.login);
-    const isLoading = useAuthStore((state) => state.isLoading);
-
-    const router = useRouter();
+    const useLoginUserMutation = useLoginUser();
 
     const {
         handleSubmit,
@@ -37,10 +34,12 @@ function SignIn() {
 
     const onSubmit = async (data: LoginFormData) => {
         try {
-            await login(data.username, data.password);
-            router.push("/");
+            useLoginUserMutation.mutate({
+                username: data.username,
+                password: data.password,
+            });
             setFormErrorMessage("");
-            reset();
+            reset({ password: "" });
         } catch (error: any) {
             setFormErrorMessage(
                 error?.message || "An error occurred during login"
@@ -105,9 +104,11 @@ function SignIn() {
                     <Button
                         type="submit"
                         className="w-full bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-800 h-[45px] cursor-pointer"
-                        disabled={isLoading}
+                        disabled={useLoginUserMutation.isPending}
                     >
-                        {isLoading ? "Loading..." : "Sign In"}
+                        {useLoginUserMutation.isPending
+                            ? "Loading..."
+                            : "Sign In"}
                     </Button>
                 </form>
 

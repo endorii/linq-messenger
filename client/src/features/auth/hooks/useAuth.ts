@@ -1,8 +1,16 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoginUserDto, RegisterUserDto } from "../interfaces/auth.interfaces";
-import { loginUser, registerUser, resendVerifyUser, verifyUser } from "../api/auth.api";
+import {
+    fetchProfile,
+    loginUser,
+    registerUser,
+    resendVerifyUser,
+    verifyUser,
+} from "../api/auth.api";
+import { AxiosError } from "axios";
+import { IUser } from "@/shared/interfaces/IUser";
 
 export function useRegisterUser() {
     const router = useRouter();
@@ -12,8 +20,9 @@ export function useRegisterUser() {
             toast.success(data.message);
             router.push("signin");
         },
-        onError: (error: any) => {
-            toast.error(error?.message || "An unknown error occurred");
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
     });
 }
@@ -30,8 +39,9 @@ export function useLoginUser() {
             toast.success(data.message);
             router.push("/");
         },
-        onError: (error: any) => {
-            toast.error(error?.message || "An unknown error occurred");
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
     });
 }
@@ -45,8 +55,9 @@ export function useVerifyUser() {
             toast.success(data.message);
             return data.message;
         },
-        onError: (error: any) => {
-            toast.error(error?.message || "An unknown error occurred");
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
     });
 }
@@ -57,8 +68,17 @@ export function useResendVerification() {
         onSuccess: (data) => {
             toast.success(data.message);
         },
-        onError: (error: any) => {
-            toast.error(error?.message || "An unknown error occurred");
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
+    });
+}
+
+export function useProfile() {
+    return useQuery<IUser, Error>({
+        queryKey: ["me"],
+        queryFn: () => fetchProfile(),
+        retry: false,
     });
 }

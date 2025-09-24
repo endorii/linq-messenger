@@ -14,7 +14,6 @@ import { LoginUserDto } from "./dto/login-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as dayjs from "dayjs";
-import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -22,8 +21,7 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly emailService: EmailService,
         private readonly jwtService: JwtService,
-        private readonly prisma: PrismaService,
-        private readonly configService: ConfigService
+        private readonly prisma: PrismaService
     ) {}
 
     async registerUser(userData: RegisterUserDto) {

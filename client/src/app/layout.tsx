@@ -3,7 +3,6 @@ import { Roboto } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/shared/components/providers/QueryProvider";
 import { Toaster } from "sonner";
-import { AuthWrapper } from "@/features/auth/components/AuthWrapper";
 
 const roboto = Roboto({});
 
@@ -20,12 +19,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${roboto.className} bg-neutral-800`}>
-                <AuthWrapper>
-                    <QueryProvider>
-                        <Toaster theme="dark" />
-                        {children}
-                    </QueryProvider>
-                </AuthWrapper>
+                <QueryProvider>
+                    <Toaster theme="dark" />
+                    {children}
+                </QueryProvider>
             </body>
         </html>
     );

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    Post,
+    Query,
+    Req,
+    Res,
+    UnauthorizedException,
+    UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -37,7 +48,6 @@ export class AuthController {
     ) {
         const { accessToken, refreshToken } = await this.authService.loginUser(loginUserData);
 
-        // Set refreshToken into httpOnly cookie
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: this.configService.get("NODE_ENV") === "production",
@@ -54,7 +64,7 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         const refreshToken = req.cookies.refreshToken;
-        if (!refreshToken) throw new Error("No refresh token");
+        if (!refreshToken) throw new UnauthorizedException("No refresh token, please login");
 
         const { accessToken, refreshToken: newRefreshToken } =
             await this.authService.refreshTokens(refreshToken);
@@ -72,7 +82,11 @@ export class AuthController {
     @Post("logout")
     async logout(@Req() req: RefreshTokenRequest, @Res({ passthrough: true }) res: Response) {
         const refreshToken = req.cookies.refreshToken;
-        if (refreshToken) await this.authService.logout(refreshToken);
+        if (refreshToken) {
+            await this.authService.logout(refreshToken);
+        } else {
+            throw new BadRequestException("No refresh token to logout");
+        }
 
         res.clearCookie("refreshToken");
         return { message: "Logged out successfully" };

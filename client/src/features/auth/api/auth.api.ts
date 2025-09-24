@@ -5,129 +5,53 @@ import {
     RegisterUserDto,
     ServerResponseWithMessage,
 } from "../interfaces/auth.interfaces";
-import { useAuthStore } from "@/store/auth.store";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { httpService } from "@/shared/api/httpService";
+import axios, { AxiosError } from "axios";
 
 export async function registerUser(userData: RegisterUserDto): Promise<ServerResponseWithMessage> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/signup`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const error: any = new Error(data.message || `Error ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-
-        return data;
-    } catch (error: any) {
-        throw error;
-    }
+    const { data } = await axios.post("/auth/signup", userData);
+    return data;
 }
 
 export async function loginUser(
     userData: LoginUserDto
 ): Promise<ServerResponseWithMessage<LoginResponse>> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/signin`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const error: any = new Error(data.message || `Error ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-
-        return data;
-    } catch (error: any) {
-        throw error;
-    }
+    const { data } = await httpService.post(`/auth/signin`, userData);
+    localStorage.setItem("accessToken", data.accessToken);
+    return data;
 }
 
 export async function verifyUser(token: string): Promise<ServerResponseWithMessage> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/verify?token=${token}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const error: any = new Error(data.message || `Error ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-
-        return data;
-    } catch (error: any) {
-        throw error;
-    }
+    const { data } = await axios.get(`/auth/verify?token=${token}`);
+    return data;
 }
 
 export async function resendVerifyUser(email: string): Promise<ServerResponseWithMessage> {
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            const error: any = new Error(data.message || `Error ${response.status}`);
-            error.status = response.status;
-            throw error;
-        }
-
-        return data;
-    } catch (error: any) {
-        throw error;
-    }
+    const { data } = await axios.post("/auth/resend-verification", { email });
+    return data;
 }
 
-export async function fetchProfile(accessToken: string): Promise<IUser> {
+export async function fetchProfile(): Promise<IUser> {
+    const { data } = await httpService.get("/auth/me");
+    return data;
+}
+
+export async function refreshToken(): Promise<{ accessToken: string }> {
     try {
-        const response = await fetch(`${API_BASE_URL}/auth/me`, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+        const { data } = await httpService.post("/auth/refresh");
+        const accessToken: string = data.accessToken;
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            const error: any = new Error(data.message || `Error ${response.status}`);
-            error.status = response.status;
-            throw error;
+        if (!accessToken) {
+            throw new Error("No access token returned from server");
         }
 
+        localStorage.setItem("accessToken", accessToken);
         return data;
-    } catch (error: any) {
-        throw error;
+    } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+            const message = err.response?.data?.message || err.message;
+            throw new Error(message);
+        }
+        throw err;
     }
 }
