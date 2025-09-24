@@ -10,15 +10,14 @@ export default function MessengerLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const accessToken = localStorage.getItem("accessToken");
     const router = useRouter();
     const { data: user, isLoading } = useProfile();
 
     useEffect(() => {
-        if (!isLoading && !user && !accessToken) {
+        if (!isLoading && !user) {
             router.replace("/signin");
         }
-    }, [isLoading, user, accessToken, router]);
+    }, [isLoading, user, router]);
 
     if (isLoading) {
         return (
@@ -29,7 +28,7 @@ export default function MessengerLayout({
     }
 
     if (!user) {
-        return null; // поки редірект триває
+        return null;
     }
 
     return (

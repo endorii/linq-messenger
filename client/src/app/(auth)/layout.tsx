@@ -1,18 +1,24 @@
 "use client";
 
-import { useAuthStore } from "@/store/auth.store";
+import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 
-function authLayout({ children }: { children: ReactNode }) {
-    const { accessToken } = useAuthStore();
+function AuthLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
+    const { data: user, isLoading } = useProfile();
+
     useEffect(() => {
-        if (accessToken) {
-            router.push("/");
+        if (!isLoading && user) {
+            router.replace("/");
         }
-    }, [accessToken, router]);
-    return <div>{children}</div>;
+    }, [isLoading, user, router]);
+
+    if (isLoading || user) {
+        return null;
+    }
+
+    return <>{children}</>;
 }
 
-export default authLayout;
+export default AuthLayout;
