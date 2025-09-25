@@ -36,12 +36,18 @@ import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
 import { IUser } from "@/shared/interfaces/IUser";
 import { useLogoutUser } from "@/features/auth/hooks/useAuth";
+import { useAllChats } from "../hooks/useChats";
+import { IChat } from "@/shared/interfaces/IChat";
+import AddFolder from "../modals/AddFolder";
+import { useAllFolders } from "../hooks/useFolders";
 
 function Sidebar({ user }: { user: IUser | undefined }) {
     const [searchValue, setSearchValue] = useState<string>("");
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     const useLogoutUserMutation = useLogoutUser();
+    const { data: chats, isLoading: isChatsLoading } = useAllChats();
+    const { data: folders, isLoading: isFoldersLoading } = useAllFolders();
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
@@ -121,53 +127,53 @@ function Sidebar({ user }: { user: IUser | undefined }) {
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col px-[10px] py-[5px] overflow-hidden">
-                <Tabs
-                    defaultValue="allChats"
-                    className="flex-1 flex flex-col overflow-hidden"
-                >
-                    <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[5px]">
-                        <TabsTrigger value="allChats">All chats</TabsTrigger>
-                        <TabsTrigger value="university">University</TabsTrigger>
-                        <TabsTrigger value="chats">Chats</TabsTrigger>
-                        <TabsTrigger value="groups">Groups</TabsTrigger>
-                    </TabsList>
+            {chats && chats.length > 0 ? (
+                <div className="flex-1 flex flex-col px-[10px] py-[5px] overflow-hidden">
+                    <Tabs
+                        defaultValue="allChats"
+                        className="flex-1 flex flex-col overflow-hidden"
+                    >
+                        <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[5px]">
+                            <TabsTrigger value="allChats">
+                                All chats
+                            </TabsTrigger>
+                            {folders && folders.length > 0
+                                ? folders.map((folder, i) => (
+                                      <TabsTrigger value={folder.name} key={i}>
+                                          {folder.name}
+                                      </TabsTrigger>
+                                  ))
+                                : null}
+                        </TabsList>
 
-                    <div className="flex-1 overflow-y-auto">
-                        <TabsContent value="allChats" className="h-full">
-                            <div className="flex flex-col gap-[2px] w-full">
-                                {Array.from({ length: 30 }).map((_, i) => (
-                                    <ChatItem key={i} />
-                                ))}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="university" className="h-full">
-                            <div className="flex flex-col gap-[2px] w-full">
-                                {Array.from({ length: 20 }).map((_, i) => (
-                                    <ChatItem key={i} />
-                                ))}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="chats" className="h-full">
-                            <div className="flex flex-col gap-[2px] w-full">
-                                {Array.from({ length: 10 }).map((_, i) => (
-                                    <ChatItem key={i} />
-                                ))}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="groups" className="h-full">
-                            <div className="flex flex-col gap-[2px] w-full">
-                                {Array.from({ length: 50 }).map((_, i) => (
-                                    <ChatItem key={i} />
-                                ))}
-                            </div>
-                        </TabsContent>
-                    </div>
-                </Tabs>
-            </div>
+                        <div className="flex-1 overflow-y-auto">
+                            <TabsContent value="allChats" className="h-full">
+                                <div className="flex flex-col gap-[2px] w-full">
+                                    {chats.map((chat: IChat, i: number) => (
+                                        <ChatItem chat={chat} key={i} />
+                                    ))}
+                                </div>
+                            </TabsContent>
+                            {folders && folders.length > 0
+                                ? folders.map((folder, i) => (
+                                      <TabsContent value={folder.name}>
+                                          <div className="flex flex-col gap-[2px] w-full">
+                                              {folder.chats.map(
+                                                  (chat, i: number) => (
+                                                      <ChatItem
+                                                          chat={chat}
+                                                          key={i}
+                                                      />
+                                                  )
+                                              )}
+                                          </div>
+                                      </TabsContent>
+                                  ))
+                                : null}
+                        </div>
+                    </Tabs>
+                </div>
+            ) : null}
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -177,6 +183,12 @@ function Sidebar({ user }: { user: IUser | undefined }) {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-56">
+                    <DropdownMenuItem
+                        onClick={() => setActiveModal("addFolder")}
+                    >
+                        New folder
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-neutral-800" />
                     <DropdownMenuItem
                         onClick={() => setActiveModal("addNewChannel")}
                     >
@@ -195,6 +207,10 @@ function Sidebar({ user }: { user: IUser | undefined }) {
                 </DropdownMenuContent>
             </DropdownMenu>
 
+            <AddFolder
+                isOpen={activeModal === "addFolder"}
+                onClose={() => setActiveModal(null)}
+            />
             <CreateNewChannel
                 isOpen={activeModal === "addNewChannel"}
                 onClose={() => setActiveModal(null)}

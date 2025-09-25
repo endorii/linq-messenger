@@ -1,41 +1,203 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String    @id @default(cuid())
-  username   String    @unique
-  email      String    @unique
-  password   String
-  phone      String?   @unique
-  firstName  String    @map("first_name")
-  lastName   String?   @map("last_name")
-  avatarUrl  String?   @map("avatar_url")
-  lastSeenAt DateTime? @map("last_seen_at")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
+    id         String    @id @default(cuid())
+    username   String    @unique
+    email      String    @unique
+    password   String
+    phone      String?   @unique
+    firstName  String    @map("first_name")
+    lastName   String?   @map("last_name")
+    avatarUrl  String?   @map("avatar_url")
+    isOnline   Boolean   @default(false) @map("is_online")
+    lastSeenAt DateTime? @map("last_seen_at")
+    createdAt  DateTime  @default(now()) @map("created_at")
+    updatedAt  DateTime  @updatedAt @map("updated_at")
 
-  isVerified               Boolean   @default(false) @map("is_verified")
-  verificationToken        String?   @map("verification_token")
-  verificationTokenExpires DateTime?
+    isVerified               Boolean   @default(false) @map("is_verified")
+    verificationToken        String?   @map("verification_token")
+    verificationTokenExpires DateTime?
 
-  token Token[]
+    tokens            Token[]
+    chatMembers       ChatMember[]
+    messages          Message[]
+    messageReactions  MessageReaction[]
+    messagesRead      MessageRead[]
+    chatsWhereIsAdmin Chat[]            @relation("ChatWhereIsAdmin")
+    ChatFolder        ChatFolder[]
 
-  @@map("users")
+    @@map("users")
 }
 
 model Token {
-  id           String   @id @default(cuid())
-  refreshToken String   @unique
-  expiresIn    DateTime
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id           String   @id @default(cuid())
+    refreshToken String   @unique
+    expiresIn    DateTime
+    userId       String
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("tokens")
+    @@map("tokens")
+}
+
+model Chat {
+    id          String       @id @default(cuid())
+    name        String?
+    description String?
+    avatar      String?
+    type        ChatType     @default(PRIVATE)
+    isActive    Boolean      @default(true)
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    adminId     String?
+    admin       User?        @relation("ChatWhereIsAdmin", fields: [adminId], references: [id])
+    members     ChatMember[]
+    messages    Message[]
+
+    lastMessageId String?          @unique
+    lastMessage   Message?         @relation("LastMessage", fields: [lastMessageId], references: [id])
+    chatFolders   ChatFolderChat[]
+
+    @@map("chats")
+}
+
+model ChatFolder {
+    id        String   @id @default(cuid())
+    name      String
+    icon      String?
+    order     Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    chats ChatFolderChat[]
+
+    @@map("chat_folders")
+}
+
+model ChatFolderChat {
+    id       String   @id @default(cuid())
+    chatId   String
+    folderId String
+    addedAt  DateTime @default(now())
+
+    chat   Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    folder ChatFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+    @@unique([chatId, folderId])
+    @@map("chat_folder_chats")
+}
+
+model ChatMember {
+    id         String     @id @default(cuid())
+    userId     String
+    chatId     String
+    role       MemberRole @default(MEMBER)
+    joinedAt   DateTime   @default(now())
+    lastReadAt DateTime   @default(now())
+    user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    chat       Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, chatId])
+    @@map("chat_members")
+}
+
+model Message {
+    id         String      @id @default(cuid())
+    content    String
+    type       MessageType @default(TEXT)
+    systemData Json?
+    replyToId  String?
+    replyTo    Message?    @relation("MessageReply", fields: [replyToId], references: [id])
+    replies    Message[]   @relation("MessageReply")
+    editedAt   DateTime?
+    isDeleted  Boolean     @default(false)
+    createdAt  DateTime    @default(now())
+    updatedAt  DateTime    @updatedAt
+
+    senderId String
+    sender   User   @relation(fields: [senderId], references: [id])
+
+    chatId String
+    chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+    attachments   Attachment[]
+    reactions     MessageReaction[]
+    messagesRead  MessageRead[]
+    lastMessageOf Chat?             @relation("LastMessage")
+
+    @@index([chatId])
+    @@index([senderId])
+    @@map("messages")
+}
+
+model Attachment {
+    id        String  @id @default(cuid())
+    url       String
+    fileName  String?
+    fileSize  Int?
+    mimetype  String?
+    messageId String
+    message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+    @@index([messageId])
+    @@map("attachments")
+}
+
+model MessageReaction {
+    id        String   @id @default(cuid())
+    emoji     String
+    createdAt DateTime @default(now())
+    userId    String
+    messageId String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, messageId, emoji])
+    @@index([messageId])
+    @@map("message_reactions")
+}
+
+model MessageRead {
+    id        String   @id @default(cuid())
+    userId    String
+    messageId String
+    readAt    DateTime @default(now())
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, messageId])
+    @@index([messageId])
+    @@map("message_reads")
+}
+
+enum ChatType {
+    PRIVATE
+    GROUP
+    CHANNEL
+}
+
+enum MemberRole {
+    OWNER
+    ADMIN
+    MODERATOR
+    MEMBER
+}
+
+enum MessageType {
+    TEXT
+    IMAGE
+    FILE
+    VOICE
+    VIDEO
+    SYSTEM
 }

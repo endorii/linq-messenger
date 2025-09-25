@@ -15,11 +15,11 @@ export class CreateUserDto {
     @MinLength(3, { message: "Username must be at least 3 characters long" })
     username: string;
 
-    @ValidateIf((o: CreateUserDto) => o.phone !== "")
+    @ValidateIf((o: CreateUserDto) => o.phone != null && o.phone !== "")
     @Matches(/^\+?[0-9]{7,15}$/, {
         message: "Phone number must be valid",
     })
-    phone?: string;
+    phone?: string | null;
 
     @IsString()
     @MinLength(7, { message: "Password must be at least 7 characters long" })
@@ -29,7 +29,7 @@ export class CreateUserDto {
     @MinLength(2, { message: "First name must be at least 2 characters long" })
     firstName: string;
 
-    @ValidateIf((o: CreateUserDto) => o.lastName !== "")
+    @ValidateIf((o: CreateUserDto) => o.lastName != null && o.lastName !== "")
     @MinLength(2, { message: "Last name must be at least 2 characters long" })
-    lastName?: string;
+    lastName?: string | null;
 }

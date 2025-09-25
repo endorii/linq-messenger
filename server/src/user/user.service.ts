@@ -34,7 +34,7 @@ export class UserService {
 
             const existingEmail = await this.findByEmail(userData.email);
             if (existingEmail) {
-                throw new ConflictException("This email already exist");
+                throw new ConflictException("This email already exists");
             }
 
             const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -43,9 +43,9 @@ export class UserService {
                 data: {
                     email: userData.email,
                     username: userData.username,
-                    phone: userData.phone,
+                    phone: userData.phone?.trim() === "" ? null : userData.phone?.trim(),
                     firstName: userData.firstName,
-                    lastName: userData.lastName,
+                    lastName: userData.lastName?.trim() === "" ? null : userData.lastName?.trim(),
                     password: hashedPassword,
                     isVerified: false,
                 },

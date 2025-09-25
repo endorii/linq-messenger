@@ -1,1 +1,1 @@
-export type ModalType = "addNewChannel" | "addNewGroup" | "addContact" | null;
+export type ModalType = "addNewChannel" | "addNewGroup" | "addContact" | "addFolder" | null;

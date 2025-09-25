@@ -6,10 +6,10 @@ import {
     ServerResponseWithMessage,
 } from "../interfaces/auth.interfaces";
 import { httpService } from "@/shared/api/httpService";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 export async function registerUser(userData: RegisterUserDto): Promise<ServerResponseWithMessage> {
-    const { data } = await axios.post("/auth/signup", userData);
+    const { data } = await httpService.post("/auth/signup", userData);
     return data;
 }
 
@@ -22,12 +22,12 @@ export async function loginUser(
 }
 
 export async function verifyUser(token: string): Promise<ServerResponseWithMessage> {
-    const { data } = await axios.get(`/auth/verify?token=${token}`);
+    const { data } = await httpService.get(`/auth/verify?token=${token}`);
     return data;
 }
 
 export async function resendVerifyUser(email: string): Promise<ServerResponseWithMessage> {
-    const { data } = await axios.post("/auth/resend-verification", { email });
+    const { data } = await httpService.post("/auth/resend-verification", { email });
     return data;
 }
 
