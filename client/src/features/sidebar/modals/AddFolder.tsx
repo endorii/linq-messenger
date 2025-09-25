@@ -3,13 +3,12 @@
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import CameraIcon from "@/shared/icons/CameraIcon";
+// import CameraIcon from "@/shared/icons/CameraIcon";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { Textarea } from "@/shared/components/ui/textarea";
-
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
+import { usePostFolder } from "../hooks/useFolders";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -34,7 +33,7 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
 
     const [modalMessage, setModalMessage] = useState("");
 
-    // const addTodoItemMutation = useCreateTodoItem();
+    const usePostFolderMutation = usePostFolder();
 
     const handleClose = () => {
         reset();
@@ -44,10 +43,9 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
 
     const onSubmit = async (data: FormData) => {
         try {
-            // await addTodoItemMutation.mutateAsync({
-            //     title: data.groupName,
-            //     description: data.description || "",
-            // });
+            await usePostFolderMutation.mutateAsync({
+                name: data.folderName,
+            });
             handleClose();
         } catch (error: any) {
             setModalMessage(error?.message || "Помилка при створенні каналу");

@@ -8,3 +8,8 @@ export interface IFolder {
     updatedAt: Date;
     chats: IChat[];
 }
+
+export interface FolderPayload {
+    name: string;
+    icon?: string | null;
+}

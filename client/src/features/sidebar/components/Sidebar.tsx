@@ -156,7 +156,7 @@ function Sidebar({ user }: { user: IUser | undefined }) {
                             </TabsContent>
                             {folders && folders.length > 0
                                 ? folders.map((folder, i) => (
-                                      <TabsContent value={folder.name}>
+                                      <TabsContent value={folder.name} key={i}>
                                           <div className="flex flex-col gap-[2px] w-full">
                                               {folder.chats.map(
                                                   (chat, i: number) => (
