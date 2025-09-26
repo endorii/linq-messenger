@@ -1,16 +1,49 @@
+import { MessageType } from "../types/types";
 import { IUser } from "./IUser";
+
+export interface IAttachment {
+    id: string;
+    url: string;
+    fileName?: string;
+    fileSize?: number;
+    mimetype?: string;
+}
+
+export interface IMessageReaction {
+    id: string;
+    emoji: string;
+    createdAt: string;
+    userId: string;
+    user: IUser;
+}
+
+export interface IMessageRead {
+    id: string;
+    userId: string;
+    readAt: string;
+    user: IUser;
+}
 
 export interface IMessage {
     id: string;
     content: string;
-    type: "TEXT" | "IMAGE" | "FILE" | "VOICE" | "VIDEO" | "SYSTEM";
-    systemData: any | null;
-    replyToId: string | null;
-    editedAt: Date | null;
+    type: MessageType;
+    systemData?: Record<string, unknown>;
+    replyToId?: string;
+    replyTo?: IMessage;
+    editedAt?: string;
     isDeleted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    sender: IUser;
+    createdAt: string;
+    updatedAt: string;
+
     senderId: string;
+    sender: IUser;
+
     chatId: string;
+
+    attachments: IAttachment[];
+    reactions: IMessageReaction[];
+    messagesRead: IMessageRead[];
+
+    isMine: boolean;
 }

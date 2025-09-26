@@ -1,3 +1,4 @@
+import { MemberRole } from "../types/types";
 import { IChat } from "./IChat";
 import { IUser } from "./IUser";
 
@@ -10,10 +11,4 @@ export interface IChatMember {
     lastReadAt: Date;
     user: IUser;
     chat: IChat;
-}
-
-enum MemberRole {
-    MEMBER = "MEMBER",
-    ADMIN = "ADMIN",
-    OWNER = "OWNER",
 }

@@ -1,6 +1,7 @@
+import { IChat } from "@/shared/interfaces/IChat";
 import Link from "next/link";
 
-function ChatItem({ chat }: { chat?: any }) {
+function SidebarChat({ chat }: { chat?: IChat }) {
     return (
         <Link href={`/${chat?.id}`}>
             <div className="flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer">
@@ -9,15 +10,15 @@ function ChatItem({ chat }: { chat?: any }) {
                 <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div className="flex justify-between gap-[2px]">
                         <div className="font-semibold truncate">
-                            {chat.name ?? "Chat name"}
+                            {chat?.name ?? "Chat name"}
                         </div>
                         <div className="text-xs text-neutral-400">
-                            {chat.lastMessage?.createdAt}
+                            {chat?.lastMessage?.createdAt}
                         </div>
                     </div>
 
                     <div className="text-neutral-400 font-light truncate">
-                        {chat.lastMessage?.content}
+                        {chat?.lastMessage?.content}
                     </div>
                     <div></div>
                 </div>
@@ -26,4 +27,4 @@ function ChatItem({ chat }: { chat?: any }) {
     );
 }
 
-export default ChatItem;
+export default SidebarChat;

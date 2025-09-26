@@ -1,15 +1,15 @@
 import { ServerResponseWithMessage } from "@/features/auth/interfaces/auth.interfaces";
 import { httpService } from "@/shared/api/httpService";
-import { FolderPayload, IFolder } from "@/shared/interfaces/IFolder";
+import { FolderPayload, IChatFolder } from "@/shared/interfaces/IFolder";
 
-export async function fetchAllUserFolders(): Promise<IFolder[]> {
+export async function fetchAllUserFolders(): Promise<IChatFolder[]> {
     const { data } = await httpService.get("/folders");
     return data;
 }
 
 export async function fetchAddChatFolder(
     folderPayload: FolderPayload
-): Promise<ServerResponseWithMessage<IFolder>> {
+): Promise<ServerResponseWithMessage<IChatFolder>> {
     const { data } = await httpService.post("/folders", folderPayload);
     return data;
 }

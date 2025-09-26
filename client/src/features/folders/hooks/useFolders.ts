@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FolderPayload, IFolder } from "@/shared/interfaces/IFolder";
+import { FolderPayload, IChatFolder } from "@/shared/interfaces/IFolder";
 import { fetchAddChatFolder, fetchAllUserFolders } from "../api/folders.api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
 export function useFolders() {
-    return useQuery<IFolder[], Error>({
+    return useQuery<IChatFolder[], Error>({
         queryKey: ["folders"],
         queryFn: () => fetchAllUserFolders(),
         retry: 3,

@@ -1,11 +1,14 @@
 import { IChat } from "./IChat";
 
-export interface IFolder {
+export interface IChatFolder {
     id: string;
     name: string;
-    icon?: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    icon?: string;
+    order: number;
+    createdAt: string;
+    updatedAt: string;
+
+    userId: string;
     chats: IChat[];
 }
 
