@@ -29,25 +29,25 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import ChatItem from "./ChatItem";
+import ChatItem from "../../chats/components/ChatItem";
 import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType } from "@/shared/types/types";
 import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
 import { IUser } from "@/shared/interfaces/IUser";
 import { useLogoutUser } from "@/features/auth/hooks/useAuth";
-import { useAllChats } from "../hooks/useChats";
+import { useChats } from "../../chats/hooks/useChats";
 import { IChat } from "@/shared/interfaces/IChat";
 import AddFolder from "../modals/AddFolder";
-import { useAllFolders } from "../hooks/useFolders";
+import { useFolders } from "../../folders/hooks/useFolders";
 
 function Sidebar({ user }: { user: IUser | undefined }) {
     const [searchValue, setSearchValue] = useState<string>("");
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     const useLogoutUserMutation = useLogoutUser();
-    const { data: chats, isLoading: isChatsLoading } = useAllChats();
-    const { data: folders, isLoading: isFoldersLoading } = useAllFolders();
+    const { data: chats, isLoading: isChatsLoading } = useChats();
+    const { data: folders, isLoading: isFoldersLoading } = useFolders();
 
     return (
         <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">

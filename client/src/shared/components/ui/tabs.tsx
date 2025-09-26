@@ -40,7 +40,7 @@ function TabsTrigger({
     return (
         <TabsPrimitive.Trigger
             className={cn(
-                "data-[state=active]:bg-neutral-800 dark:data-[state=active]:text-white focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring text-white dark:text-muted-white inline-flex flex-shrink-0 w-max h-[calc(100%-1px)] items-center justify-center gap-1.5 rounded-md border border-transparent px-[20px] py-[10px] text-base font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-neutral-800/50 cursor-pointer",
+                "data-[state=active]:bg-neutral-700 dark:data-[state=active]:text-white focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring text-white dark:text-muted-white inline-flex flex-shrink-0 w-max h-[calc(100%-1px)] items-center justify-center gap-1.5 rounded-md border border-transparent px-[20px] py-[10px] text-base font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-neutral-800/50 cursor-pointer",
                 className
             )}
             {...props}

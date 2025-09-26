@@ -1,3 +1,5 @@
+import { IUser } from "./IUser";
+
 export interface IMessage {
     id: string;
     content: string;
@@ -8,6 +10,7 @@ export interface IMessage {
     isDeleted: boolean;
     createdAt: Date;
     updatedAt: Date;
+    sender: IUser;
     senderId: string;
     chatId: string;
 }

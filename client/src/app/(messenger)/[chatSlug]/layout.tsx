@@ -18,9 +18,16 @@ import {
 } from "@/shared/components/ui/tabs";
 import { Switch } from "@/shared/components/ui/switch";
 import Image from "next/image";
+import { useChat } from "@/features/chats/hooks/useChats";
+import { useParams } from "next/navigation";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
+
+    const { data: chat, isLoading: isChatLoading } = useChat(chatId);
+
+    if (!chat) return <div>Чат не знайдено</div>;
 
     return (
         <div className="flex w-full h-[100vh]">
@@ -29,18 +36,20 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex gap-[20px]">
                         <div className="w-[45px] h-[45px] rounded-full bg-neutral-600"></div>
                         <div onClick={() => setSidebarOpen((prev) => !prev)}>
-                            <div className="font-semibold">
-                                New channel with the very long name
-                            </div>
+                            <div className="font-semibold">{chat.name}</div>
                             <div className="text-sm text-neutral-400">
-                                30 454 subscribers
+                                {chat.type === "PRIVATE"
+                                    ? "last seen recently"
+                                    : `${chat.members?.length || 0} members`}
                             </div>
                         </div>
                     </div>
                     <div className="flex gap-[25px]">
-                        <button>
-                            <PhoneIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
-                        </button>
+                        {chat.type === "PRIVATE" ? (
+                            <button>
+                                <PhoneIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
+                            </button>
+                        ) : null}
                         <button>
                             <SearchIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
                         </button>
@@ -64,39 +73,46 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                                 <BackIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
                             </button>
                             <div className="text-xl font-semibold text-nowrap">
-                                Channel information
+                                {chat.type === "PRIVATE"
+                                    ? "User information"
+                                    : chat.type === "GROUP"
+                                    ? "Group information"
+                                    : chat.type === "CHANNEL"
+                                    ? "Channel information"
+                                    : "Chat information"}
                             </div>
                         </div>
                         <div className="flex flex-col gap-[20px] items-center p-[20px]">
                             <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full"></div>
-                            <div className="flex flex-col gap-[10px] items-center text-center">
+                            <div className="flex flex-col gap-[5px] items-center text-center">
                                 <div className="text-xl font-semibold">
-                                    New channel with the very long name
+                                    {chat.name}
                                 </div>
                                 <div className="text-sm text-neutral-400">
-                                    30 454 subscribers
+                                    {chat.type === "PRIVATE"
+                                        ? "last seen recently"
+                                        : `${
+                                              chat.members?.length || 0
+                                          } members`}
                                 </div>
                             </div>
                         </div>
                         <div className="flex flex-col gap-[5px] px-[20px] py-[10px]">
-                            <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
-                                <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
-                                <div className="flex-1 flex flex-col gap-[3px]">
-                                    <div>
-                                        Here should be some text or description
-                                        about this channel. A lot of information
-                                        or just a simple text for filling.
-                                        Bla-bla-bla.
-                                    </div>
-                                    <div className="text-sm text-neutral-400">
-                                        Info
+                            {chat.description && (
+                                <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                                    <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                                    <div className="flex-1 flex flex-col gap-[3px]">
+                                        <div>{chat.description}</div>
+                                        <div className="text-sm text-neutral-400">
+                                            Info
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                             <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
                                 <LinkIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
                                 <div className="flex-1 flex flex-col gap-[3px]">
-                                    <div>linq.com/channelid</div>
+                                    <div>linq.com/{chat.id}</div>
                                     <div className="text-sm text-neutral-400">
                                         Link
                                     </div>
@@ -112,13 +128,19 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                         </div>
                         <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                             <Tabs
-                                defaultValue="members"
+                                defaultValue={
+                                    chat.type === "PRIVATE"
+                                        ? "media"
+                                        : "members"
+                                }
                                 className="flex-1 flex flex-col"
                             >
                                 <TabsList className="flex w-full mb-[5px]">
-                                    <TabsTrigger value="members">
-                                        Members
-                                    </TabsTrigger>
+                                    {chat.type !== "PRIVATE" && (
+                                        <TabsTrigger value="members">
+                                            Members
+                                        </TabsTrigger>
+                                    )}
                                     <TabsTrigger value="media">
                                         Media
                                     </TabsTrigger>
@@ -145,25 +167,25 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                                         className="h-full"
                                     >
                                         <div className="flex flex-col gap-[2px] w-full">
-                                            {Array.from({ length: 20 }).map(
-                                                (_, i) => (
-                                                    <div
-                                                        key={i}
-                                                        className="flex gap-[10px] p-[10px] items-center hover:bg-white/5 cursor-pointer rounded-xl"
-                                                    >
-                                                        <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full"></div>
-                                                        <div className="flex flex-col">
-                                                            <div className="font-semibold">
-                                                                User Name
-                                                            </div>
-                                                            <div className="text-neutral-400 text-sm">
-                                                                last seen
-                                                                recently
-                                                            </div>
+                                            {chat.members.map((member, i) => (
+                                                <div
+                                                    key={i}
+                                                    className="flex gap-[10px] p-[10px] items-center hover:bg-white/5 cursor-pointer rounded-xl"
+                                                >
+                                                    <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full"></div>
+                                                    <div className="flex flex-col">
+                                                        <div className="font-semibold">
+                                                            {
+                                                                member.user
+                                                                    .username
+                                                            }
+                                                        </div>
+                                                        <div className="text-neutral-400 text-sm">
+                                                            last seen recently
                                                         </div>
                                                     </div>
-                                                )
-                                            )}
+                                                </div>
+                                            ))}
                                         </div>
                                     </TabsContent>
 

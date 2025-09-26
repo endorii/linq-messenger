@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { UserModule } from "./user/user.module";
 import { ChatsModule } from './chats/chats.module';
 import { FoldersModule } from './folders/folders.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { FoldersModule } from './folders/folders.module';
         UserModule,
         ChatsModule,
         FoldersModule,
+        MessagesModule,
     ],
 })
 export class AppModule {}
