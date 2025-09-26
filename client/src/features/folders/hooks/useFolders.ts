@@ -4,7 +4,7 @@ import { fetchAddChatFolder, fetchAllUserFolders } from "../api/folders.api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-export function useAllFolders() {
+export function useFolders() {
     return useQuery<IFolder[], Error>({
         queryKey: ["folders"],
         queryFn: () => fetchAllUserFolders(),
@@ -12,10 +12,9 @@ export function useAllFolders() {
     });
 }
 
-export function usePostFolder() {
+export function useCreateFolder() {
     const queryClient = useQueryClient();
     return useMutation({
-        // mutationKey: ["post-folder"],
         mutationFn: (folderPayload: FolderPayload) => fetchAddChatFolder(folderPayload),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["folders"] });

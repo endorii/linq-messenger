@@ -8,7 +8,7 @@ import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { usePostFolder } from "../hooks/useFolders";
+import { useCreateFolder } from "../../folders/hooks/useFolders";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -33,7 +33,7 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
 
     const [modalMessage, setModalMessage] = useState("");
 
-    const usePostFolderMutation = usePostFolder();
+    const useCreateFolderMutation = useCreateFolder();
 
     const handleClose = () => {
         reset();
@@ -43,7 +43,7 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
 
     const onSubmit = async (data: FormData) => {
         try {
-            await usePostFolderMutation.mutateAsync({
+            await useCreateFolderMutation.mutateAsync({
                 name: data.folderName,
             });
             handleClose();
