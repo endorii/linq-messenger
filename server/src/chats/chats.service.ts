@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreatePrivateChatDto } from "./dto/create-chat.dto";
 // import { UpdateChatDto } from './dto/update-chat.dto';
@@ -32,8 +32,8 @@ export class ChatsService {
         return { message: "Chat created successfully", data: privateChat };
     }
 
-    async getUserChats(userId: string) {
-        return this.prisma.chat.findMany({
+    async getChats(userId: string) {
+        const chats = await this.prisma.chat.findMany({
             where: {
                 members: { some: { userId } },
             },
@@ -45,5 +45,63 @@ export class ChatsService {
             },
             orderBy: { updatedAt: "desc" },
         });
+
+        return chats.map((chat) => {
+            if (chat.type === "PRIVATE") {
+                // Знаходимо іншого учасника
+                const otherMember = chat.members.find((m) => m.userId !== userId);
+                if (otherMember) {
+                    chat.name =
+                        `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
+                }
+            }
+            return chat;
+        });
+    }
+
+    async getChat(userId: string, chatId: string) {
+        const chat = await this.prisma.chat.findUnique({
+            where: { id: chatId },
+            include: {
+                members: {
+                    include: { user: true },
+                },
+            },
+        });
+
+        if (!chat) {
+            throw new NotFoundException("Chat not found");
+        }
+
+        const isPrivate = chat.type === "PRIVATE";
+        const isMember = chat.members.some((member) => member.userId === userId);
+
+        if (isPrivate && !isMember) {
+            throw new ForbiddenException("Access denied to this private chat");
+        }
+
+        // Для приватного чату підставляємо ім'я співрозмовника
+        if (isPrivate) {
+            const otherMember = chat.members.find((m) => m.userId !== userId);
+            if (otherMember) {
+                chat.name =
+                    `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
+            }
+        }
+
+        return chat;
+    }
+
+    async findChat(chatId: string) {
+        const chat = await this.prisma.chat.findFirst({
+            where: {
+                id: chatId,
+            },
+        });
+
+        if (!chat) {
+            throw new NotFoundException("Chat not found");
+        }
+        return chat;
     }
 }

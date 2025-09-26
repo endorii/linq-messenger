@@ -2,12 +2,12 @@ import { ServerResponseWithMessage } from "@/features/auth/interfaces/auth.inter
 import { httpService } from "@/shared/api/httpService";
 import { IChat } from "@/shared/interfaces/IChat";
 
-export async function fetchAllUserChats(): Promise<IChat[]> {
+export async function fetchChats(): Promise<IChat[]> {
     const { data } = await httpService.get("/chats");
     return data;
 }
 
-// export async function resendVerifyUser(email: string): Promise<ServerResponseWithMessage> {
-//     const { data } = await httpService.post("/auth/resend-verification", { email });
-//     return data;
-// }
+export async function fetchChat(chatId: string): Promise<IChat> {
+    const { data } = await httpService.get(`/chats/${chatId}`);
+    return data;
+}
