@@ -17,9 +17,6 @@ export class CreateMessageDto {
     type?: MessageType = MessageType.TEXT;
 
     @IsOptional()
-    systemData?: Record<string, any>;
-
-    @IsOptional()
     @IsString()
     replyToId?: string;
 }

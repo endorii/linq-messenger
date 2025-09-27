@@ -41,6 +41,7 @@ export class ChatsService {
                 members: {
                     include: { user: true },
                 },
+                lastMessage: true,
                 messages: { take: 1, orderBy: { createdAt: "desc" } },
             },
             orderBy: { updatedAt: "desc" },
@@ -66,6 +67,7 @@ export class ChatsService {
                 members: {
                     include: { user: true },
                 },
+                // lastMessage: true,
             },
         });
 

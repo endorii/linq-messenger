@@ -47,3 +47,9 @@ export interface IMessage {
 
     isMine: boolean;
 }
+
+export interface MessagePayload {
+    content: string;
+    type?: MessageType;
+    replyToId?: string;
+}

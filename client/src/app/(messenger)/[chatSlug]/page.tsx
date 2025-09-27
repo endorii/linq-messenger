@@ -11,7 +11,10 @@ import { useState } from "react";
 import EmojiIcon from "@/shared/icons/EmojiIcon";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import ChatMessages from "@/features/chats/components/ChatMessages";
-import { useMessages } from "@/features/messages/hooks/useMessages";
+import {
+    useCreateMessage,
+    useMessages,
+} from "@/features/messages/hooks/useMessages";
 import { useParams } from "next/navigation";
 
 function ChatSlug() {
@@ -19,9 +22,16 @@ function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
     const { data: messages, isLoading } = useMessages(chatId);
 
+    const useCreateMessageMutation = useCreateMessage();
+
     const handleSend = () => {
         if (!inputValue.trim()) return;
-        console.log("Відправлено:", inputValue);
+        useCreateMessageMutation.mutateAsync({
+            chatId,
+            messagePayload: {
+                content: inputValue,
+            },
+        });
         setInputValue("");
     };
 

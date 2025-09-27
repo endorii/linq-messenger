@@ -30,14 +30,14 @@ export class ChatsController {
     }
 
     @Get(":chatId/messages")
-    getChatMessages(@Param("chatId") chatId: string) {
-        return this.messagesService.getChatMessages(chatId);
+    getChatMessages(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
+        return this.messagesService.getChatMessages(req.user.id, chatId);
     }
 
     @Post(":chatId/messages")
     postMessage(
         @Req() req: AuthenticatedRequest,
-        @Param() chatId: string,
+        @Param("chatId") chatId: string,
         @Body() createMessageDto: CreateMessageDto
     ) {
         return this.messagesService.postMessage(req.user.id, chatId, createMessageDto);
