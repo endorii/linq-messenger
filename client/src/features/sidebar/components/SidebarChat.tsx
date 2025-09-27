@@ -1,9 +1,10 @@
 import { IChat } from "@/shared/interfaces/IChat";
-import Link from "next/link";
+import SafeLink from "@/shared/ui/links/SafeLink";
+import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
 
-function SidebarChat({ chat }: { chat?: IChat }) {
+function SidebarChat({ chat }: { chat: IChat }) {
     return (
-        <Link href={`/${chat?.id}`}>
+        <SafeLink href={`/${chat?.id}`}>
             <div className="flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer">
                 <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0"></div>
 
@@ -13,17 +14,19 @@ function SidebarChat({ chat }: { chat?: IChat }) {
                             {chat?.name ?? "Chat name"}
                         </div>
                         <div className="text-xs text-neutral-400">
-                            {chat?.lastMessage?.createdAt}
+                            {formatSidebarLastMessageDateInChat(
+                                chat.lastMessage?.createdAt ?? ""
+                            )}
                         </div>
                     </div>
 
                     <div className="text-neutral-400 font-light truncate">
-                        {chat?.lastMessage?.content}
+                        {chat.lastMessage?.content ?? ""}
                     </div>
                     <div></div>
                 </div>
             </div>
-        </Link>
+        </SafeLink>
     );
 }
 
