@@ -18,7 +18,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${roboto.className} bg-neutral-800`}>
+            <body
+                className={`${roboto.className} bg-neutral-800 selection:bg-purple-900 selection:text-white`}
+            >
                 <QueryProvider>
                     <Toaster theme="dark" />
                     {children}

@@ -50,11 +50,13 @@ export class ChatsService {
         return chats.map((chat) => {
             if (chat.type === "PRIVATE") {
                 // Знаходимо іншого учасника
+
                 const otherMember = chat.members.find((m) => m.userId !== userId);
                 if (otherMember) {
                     chat.name =
                         `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
                 }
+                chat.avatar = otherMember?.user.avatarUrl ?? null;
             }
             return chat;
         });
@@ -89,6 +91,7 @@ export class ChatsService {
                 chat.name =
                     `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
             }
+            chat.avatar = otherMember?.user.avatarUrl ?? null;
         }
 
         return chat;

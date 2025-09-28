@@ -1,12 +1,26 @@
 import { IChat } from "@/shared/interfaces/IChat";
 import SafeLink from "@/shared/ui/links/SafeLink";
 import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
+import { useParams } from "next/navigation";
 
 function SidebarChat({ chat }: { chat: IChat }) {
+    const params = useParams();
+    const chatId = params?.chatSlug;
+
     return (
         <SafeLink href={`/${chat?.id}`}>
-            <div className="flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer">
-                <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0"></div>
+            <div
+                className={`flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
+                    chatId === chat.id ? "bg-purple-gradient" : "bg-transparent"
+                }`}
+            >
+                <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0">
+                    <img
+                        src={chat.avatar}
+                        alt="avatar"
+                        className="rounded-full"
+                    />
+                </div>
 
                 <div className="flex flex-col justify-between flex-1 min-w-0">
                     <div className="flex justify-between gap-[2px]">
@@ -20,7 +34,13 @@ function SidebarChat({ chat }: { chat: IChat }) {
                         </div>
                     </div>
 
-                    <div className="text-neutral-400 font-light truncate">
+                    <div
+                        className={` font-base truncate ${
+                            chatId === chat.id
+                                ? "text-white"
+                                : "text-neutral-400"
+                        }`}
+                    >
                         {chat.lastMessage?.content ?? ""}
                     </div>
                     <div></div>

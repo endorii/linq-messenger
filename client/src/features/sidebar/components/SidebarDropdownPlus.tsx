@@ -18,7 +18,7 @@ function SidebarDropdownPlus({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="absolute bottom-4 right-4 bg-neutral-950 rounded-xl border border-neutral-800 hover:bg-neutral-600 p-[10px] cursor-pointer">
+                <button className="absolute bottom-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer">
                     <PlusIcon className="w-[30px] stroke-white stroke-2 fill-none" />
                 </button>
             </DropdownMenuTrigger>
@@ -27,7 +27,7 @@ function SidebarDropdownPlus({
                 <DropdownMenuItem onClick={() => setActiveModal("addFolder")}>
                     New folder
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-neutral-800" />
+                <DropdownMenuSeparator className="bg-neutral-700" />
                 <DropdownMenuItem
                     onClick={() => setActiveModal("addNewChannel")}
                 >

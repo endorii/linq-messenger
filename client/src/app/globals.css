@@ -12,13 +12,22 @@
 
 *::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #ffffff20;
+  background-color: #ffffff15;
 }
 
 /* Hover */
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #ffffff50;
+  background-color: #ffffff30;
 }
+
+.bg-purple-gradient {
+  @apply bg-gradient-to-br from-violet-600 to-indigo-600;
+}
+.bg-purple-gradient:hover {
+  @apply bg-gradient-to-br from-violet-700 to-indigo-700;
+}
+
+
 
 
 @custom-variant dark (&:is(.dark *));

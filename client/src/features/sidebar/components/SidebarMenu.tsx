@@ -12,6 +12,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import { Input } from "@/shared/components/ui/input";
 import {
     BurgerMenuIcon,
     AccountIcon,
@@ -48,7 +49,7 @@ function SidebarMenu({
                         <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full"></div>
                         <div>{user?.username}</div>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-neutral-800" />
+                    <DropdownMenuSeparator className="bg-neutral-700" />
                     <DropdownMenuItem className="group">
                         <AccountIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
                         <div>Contacts</div>
@@ -85,10 +86,9 @@ function SidebarMenu({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="w-full relative border border-neutral-700 rounded-xl group focus-within:border-neutral-400 transition-all duration-300">
-                <input
-                    type="text"
-                    className="outline-0 p-[10px] px-[43px] rounded-xl w-full bg-transparent"
+            <div className="w-full relative rounded-xl group bg-transparent focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
+                <Input
+                    className="py-[10px] px-[43px] rounded-xl w-full bg-neutral-900 focus:bg-neutral-950 focus:border-white border-none h-auto"
                     placeholder="Search"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}

@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 
 export default function formatSidebarLastMessageDateInChat(date: string | Date) {
+    if (typeof date === "string" && date.trim() === "") {
+        return "";
+    }
+
     const msgDate = dayjs(date);
     const now = dayjs();
 

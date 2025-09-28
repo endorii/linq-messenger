@@ -32,9 +32,9 @@ export default function MessengerLayout({
     }
 
     return (
-        <div className="flex w-screen h-screen px-[5%] bg-neutral-950 text-white">
+        <div className="flex w-screen h-screen bg-neutral-900 text-white">
             <Sidebar user={user} />
-            {children}
+            <div className="flex-1">{children}</div>
         </div>
     );
 }

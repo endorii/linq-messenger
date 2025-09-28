@@ -3,13 +3,15 @@
 import { useState } from "react";
 import {
     BackIcon,
+    ClipIcon,
     InfoIcon,
     LinkIcon,
     NotifcationIcon,
     OptionsIcon,
+    PhoneIcon,
     SearchIcon,
+    SendIcon,
 } from "@/shared/icons";
-import { PhoneIcon } from "lucide-react";
 import {
     Tabs,
     TabsContent,
@@ -20,21 +22,60 @@ import { Switch } from "@/shared/components/ui/switch";
 import Image from "next/image";
 import { useChat } from "@/features/chats/hooks/useChats";
 import { useParams } from "next/navigation";
+import { useCreateMessage } from "@/features/messages/hooks/useMessages";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu";
+import EmojiIcon from "@/shared/icons/EmojiIcon";
+import { Input } from "@/shared/components/ui/input";
+import MicrophoneIcon from "@/shared/icons/MicrophoneIcon";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
+    const [inputValue, setInputValue] = useState<string>("");
 
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
+    const useCreateMessageMutation = useCreateMessage();
+
+    const handleSend = (inputValue: string) => {
+        if (inputValue.length > 0) {
+            if (!inputValue.trim()) return;
+            useCreateMessageMutation.mutateAsync({
+                chatId,
+                messagePayload: {
+                    content: inputValue,
+                },
+            });
+            setInputValue("");
+        } else {
+            //Recording voice
+            console.log("Voice recording");
+        }
+    };
+
+    const handleEmojiClick = (emojiData: EmojiClickData) => {
+        setInputValue((prev: string) => `${prev + emojiData.emoji}`);
+    };
 
     if (!chat) return <div>Чат не знайдено</div>;
 
     return (
         <div className="flex w-full h-[100vh]">
             <div className="flex-1 relative">
-                <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between text-white bg-neutral-900 px-[20px] py-[10px] pr-[50px] cursor-pointer">
+                <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
                     <div className="flex gap-[20px]">
-                        <div className="w-[45px] h-[45px] rounded-full bg-neutral-600"></div>
+                        <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
+                            <img
+                                src={chat.avatar}
+                                alt="avatar"
+                                className="rounded-full"
+                            />
+                        </div>
                         <div onClick={() => setSidebarOpen((prev) => !prev)}>
                             <div className="font-semibold">{chat.name}</div>
                             <div className="text-sm text-neutral-400">
@@ -58,11 +99,70 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                         </button>
                     </div>
                 </div>
-                <div className="h-full pt-[65px] w-full">{children}</div>
+                <div className="h-full pt-[65px] pb-[70px] w-full">
+                    {children}
+                </div>
+                <div className="absolute bottom-0 w-full px-[15%] flex gap-[10px] justify-between items-center py-[15px] bg-transparent">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="bg-purple-gradient rounded-xl p-[11px] cursor-pointer">
+                                <ClipIcon className="w-[24px] h-[24px] fill-white" />
+                            </button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuItem>Photo or Video</DropdownMenuItem>
+                            <DropdownMenuItem>Document</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="w-full relative rounded-xl group bg-transparent focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
+                        <Input
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder="Write your message..."
+                            className="py-[10px] px-[20px] rounded-xl w-full bg-neutral-950 focus:bg-neutral-950 focus:border-white border-none h-auto pr-[60px]"
+                        />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="absolute top-[12px] right-[15px] transition-all duration-300 cursor-pointer">
+                                    <EmojiIcon className="w-[20px] h-[20px] fill-neutral-400 group-focus-within:fill-white" />
+                                </button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="p-0 border-none shadow-lg">
+                                <EmojiPicker
+                                    onEmojiClick={handleEmojiClick}
+                                    autoFocusSearch={false}
+                                    theme={Theme.DARK}
+                                />
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                    <button
+                        onClick={() => handleSend(inputValue)}
+                        className="bg-purple-gradient rounded-xl p-[23px] cursor-pointer flex items-center justify-center"
+                    >
+                        <SendIcon
+                            className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-white transition-all duration-200 ${
+                                inputValue.length > 0
+                                    ? "opacity-100 scale-100"
+                                    : "opacity-0 scale-75"
+                            }`}
+                        />
+
+                        <MicrophoneIcon
+                            className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-white transition-all duration-200 ${
+                                inputValue.length === 0
+                                    ? "opacity-100 scale-100"
+                                    : "opacity-0 scale-75"
+                            }`}
+                        />
+                    </button>
+                </div>
             </div>
 
             <div
-                className={` overflow-y-auto bg-neutral-900 border-l border-neutral-800 text-white transition-all duration-400 ease-in-out ${
+                className={`overflow-y-auto bg-neutral-950 border-l border-neutral-800 text-white transition-all duration-400 ease-in-out ${
                     sidebarOpen ? "w-[450px]" : "w-0"
                 }`}
             >
@@ -83,7 +183,13 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                             </div>
                         </div>
                         <div className="flex flex-col gap-[20px] items-center p-[20px]">
-                            <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full"></div>
+                            <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full">
+                                <img
+                                    src={chat.avatar}
+                                    alt="avatar"
+                                    className="rounded-full"
+                                />
+                            </div>
                             <div className="flex flex-col gap-[5px] items-center text-center">
                                 <div className="text-xl font-semibold">
                                     {chat.name}

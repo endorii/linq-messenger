@@ -17,7 +17,7 @@ function SidebarChatsList({
     return (
         <div className="flex-1 overflow-y-auto">
             <TabsContent value="allChats" className="h-full">
-                <div className="flex flex-col gap-[2px] w-full">
+                <div className="flex flex-col gap-[3px] w-full">
                     {chats.map((chat: IChat, i: number) => (
                         <SidebarChat chat={chat} key={i} />
                     ))}
@@ -26,7 +26,7 @@ function SidebarChatsList({
             {folders && folders.length > 0
                 ? folders.map((folder, i) => (
                       <TabsContent value={folder.name} key={i}>
-                          <div className="flex flex-col gap-[2px] w-full">
+                          <div className="flex flex-col gap-[3px] w-full">
                               {folder.chats.map((chat, i: number) => (
                                   <SidebarChat chat={chat} key={i} />
                               ))}

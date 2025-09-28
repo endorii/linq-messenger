@@ -1,14 +1,6 @@
 "use client";
 
-import { PlusIcon } from "@/shared/icons";
 import { useState } from "react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
 import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType } from "@/shared/types/types";
 import CreateNewGroup from "../modals/CreateNewGroup";
@@ -24,7 +16,9 @@ function Sidebar({ user }: { user: IUser }) {
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     return (
-        <div className="relative bg-neutral-900 w-full max-w-[370px] h-full flex flex-col border-r border-neutral-800">
+        <div
+            className={`relative bg-neutral-950 w-[370px] h-full flex flex-col border-r border-neutral-800`}
+        >
             <SidebarMenu
                 user={user}
                 searchValue={searchValue}
