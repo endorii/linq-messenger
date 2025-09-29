@@ -23,3 +23,5 @@ export { default as NotifcationIcon } from "./NotifcationIcon";
 export { default as LinkIcon } from "./LinkIcon";
 export { default as CheckBothIcon } from "./CheckBothIcon";
 export { default as CheckIcon } from "./CheckIcon";
+export { default as MicrophoneIcon } from "./MicrophoneIcon";
+export { default as EmojiIcon } from "./EmojiIcon";

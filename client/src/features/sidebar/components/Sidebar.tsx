@@ -16,9 +16,7 @@ function Sidebar({ user }: { user: IUser }) {
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     return (
-        <div
-            className={`relative bg-neutral-950 w-[370px] h-full flex flex-col border-r border-neutral-800`}
-        >
+        <div className={`relative bg-neutral-950 h-full flex flex-col`}>
             <SidebarMenu
                 user={user}
                 searchValue={searchValue}
