@@ -24,15 +24,19 @@ import {
     SearchIcon,
 } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces/IUser";
+import { SidebarTabType } from "@/shared/types/types";
 
 function SidebarMenu({
     user,
     searchValue,
     setSearchValue,
+    setActiveTab,
 }: {
     user: IUser;
     searchValue: string;
     setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+    activeTab: SidebarTabType;
+    setActiveTab: React.Dispatch<React.SetStateAction<SidebarTabType>>;
 }) {
     const useLogoutUserMutation = useLogoutUser();
     return (
@@ -50,7 +54,10 @@ function SidebarMenu({
                         <div>{user?.username}</div>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-neutral-700" />
-                    <DropdownMenuItem className="group">
+                    <DropdownMenuItem
+                        className="group"
+                        onClick={() => setActiveTab("contacts")}
+                    >
                         <AccountIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
                         <div>Contacts</div>
                     </DropdownMenuItem>

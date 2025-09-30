@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
 import { useChat } from "@/features/chats/hooks/useChats";
 
@@ -10,12 +10,21 @@ import ChatSentData from "@/features/chats/components/ChatSentData";
 import ChatSidebar from "@/features/chats/components/ChatSidebar";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
+    const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
 
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
 
-    if (!chat) return <div>Чат не знайдено</div>;
+    useEffect(() => {
+        if (!isChatLoading && !chat) {
+            router.push("/");
+        }
+    }, [isChatLoading, chat, router]);
+
+    if (!chat) {
+        return null;
+    }
 
     return (
         <div className="flex w-full h-[100vh]">

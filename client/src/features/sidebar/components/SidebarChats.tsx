@@ -14,7 +14,7 @@ function SidebarChats() {
     if (!chats || chats.length === 0) return null;
 
     return (
-        <div className="flex-1 flex flex-col px-[10px] py-[5px] overflow-hidden">
+        <div className="flex flex-col px-[10px] py-[5px] overflow-hidden">
             <Tabs
                 defaultValue="allChats"
                 className="flex-1 flex flex-col overflow-hidden"

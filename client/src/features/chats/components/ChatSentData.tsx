@@ -7,11 +7,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { Input } from "@/shared/components/ui/input";
 import { ClipIcon, MicrophoneIcon, SendIcon, EmojiIcon } from "@/shared/icons";
 
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { useState } from "react";
+import ChatTextarea from "./ChatTextarea";
 
 function ChatSentData({ chatId }: { chatId: string }) {
     const [inputValue, setInputValue] = useState<string>("");
@@ -39,7 +39,7 @@ function ChatSentData({ chatId }: { chatId: string }) {
     };
 
     return (
-        <div className="absolute bottom-0 w-full px-[15%] flex gap-[10px] justify-between items-center py-[15px] bg-transparent">
+        <div className="absolute bottom-0 w-full px-[15%] flex items-end gap-[10px] justify-between items-center py-[15px] bg-transparent">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <button className="bg-purple-gradient rounded-xl p-[11px] cursor-pointer">
@@ -53,12 +53,12 @@ function ChatSentData({ chatId }: { chatId: string }) {
                 </DropdownMenuContent>
             </DropdownMenu>
             <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
-                <Input
+                <ChatTextarea
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Write your message..."
-                    className="py-[10px] px-[20px] rounded-xl w-full bg-neutral-950 focus:bg-neutral-950 border-none h-auto pr-[60px]"
+                    onChange={setInputValue}
+                    onEnter={() => handleSend(inputValue)}
                 />
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button className="absolute top-[12px] right-[15px] transition-all duration-300 cursor-pointer">
