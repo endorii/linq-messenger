@@ -19,7 +19,10 @@ interface FormData {
     folderName: string;
 }
 
-export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
+export default function CreateFolder({
+    isOpen,
+    onClose,
+}: CreateNewChannelProps) {
     const {
         register,
         handleSubmit,
@@ -48,7 +51,10 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
             });
             handleClose();
         } catch (error: any) {
-            setModalMessage(error?.message || "Помилка при створенні каналу");
+            // Зробити так у всіх компонентах (обробка помилок)
+            setModalMessage(
+                error.response.data.message || "Error during creating folder"
+            );
         }
     };
 
@@ -57,7 +63,7 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
     if (!isOpen) return null;
 
     const modalContent = (
-        <ModalWrapper onClose={onClose}>
+        <ModalWrapper onClose={onClose} modalTitle="Create folder">
             <form
                 className="flex flex-col gap-[15px]"
                 onSubmit={handleSubmit(onSubmit)}
@@ -77,7 +83,9 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
                         className="h-[45px] border-white/5"
                     />
                 </div>
-
+                {modalMessage && (
+                    <p className="text-red-500 text-sm">{modalMessage}</p>
+                )}
                 <div className="flex justify-end gap-[5px]">
                     <Button
                         type="button"
@@ -91,15 +99,11 @@ export default function AddFolder({ isOpen, onClose }: CreateNewChannelProps) {
                     </Button>
                     <Button
                         type="submit"
-                        className="bg-neutral-950 border border-white/5 cursor-pointer"
+                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
                     >
                         Create
                     </Button>
                 </div>
-
-                {modalMessage && (
-                    <p className="text-red-500 text-sm">{modalMessage}</p>
-                )}
             </form>
         </ModalWrapper>
     );

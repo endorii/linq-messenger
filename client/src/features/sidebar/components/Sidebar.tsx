@@ -6,7 +6,7 @@ import { ModalType } from "@/shared/types/types";
 import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
 import { IUser } from "@/shared/interfaces/IUser";
-import AddFolder from "../modals/AddFolder";
+import CreateFolder from "../modals/CreateFolder";
 import SidebarMenu from "./SidebarMenu";
 import SidebarChats from "./SidebarChats";
 import SidebarDropdownPlus from "./SidebarDropdownPlus";
@@ -27,7 +27,7 @@ function Sidebar({ user }: { user: IUser }) {
 
             <SidebarDropdownPlus setActiveModal={setActiveModal} />
 
-            <AddFolder
+            <CreateFolder
                 isOpen={activeModal === "addFolder"}
                 onClose={() => setActiveModal(null)}
             />

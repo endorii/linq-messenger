@@ -8,7 +8,7 @@ export function useFolders() {
     return useQuery<IChatFolder[], Error>({
         queryKey: ["folders"],
         queryFn: () => fetchAllUserFolders(),
-        retry: 3,
+        retry: 1,
     });
 }
 

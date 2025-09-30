@@ -53,7 +53,10 @@ export default function CreateNewGroup({
             // });
             handleClose();
         } catch (error: any) {
-            setModalMessage(error?.message || "Помилка при створенні групи");
+            // Зробити так у всіх компонентах (обробка помилок)
+            setModalMessage(
+                error.response.data.message || "Error during creating group"
+            );
         }
     };
 
@@ -62,12 +65,12 @@ export default function CreateNewGroup({
     if (!isOpen) return null;
 
     const modalContent = (
-        <ModalWrapper onClose={onClose}>
+        <ModalWrapper onClose={onClose} modalTitle="Create group">
             <form
                 className="flex flex-col gap-[15px]"
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <div className="flex items-center gap-[20px]">
+                <div className="flex items-center gap-[15px]">
                     <label
                         htmlFor="picture"
                         className="relative bg-neutral-950 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
@@ -98,6 +101,9 @@ export default function CreateNewGroup({
                         className="h-[45px] border-white/5"
                     />
                 </div>
+                {modalMessage && (
+                    <p className="text-red-500 text-sm">{modalMessage}</p>
+                )}
 
                 <div className="flex justify-end gap-[5px]">
                     <Button
@@ -112,15 +118,11 @@ export default function CreateNewGroup({
                     </Button>
                     <Button
                         type="submit"
-                        className="bg-neutral-950 border border-white/5 cursor-pointer"
+                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
                     >
                         Create
                     </Button>
                 </div>
-
-                {modalMessage && (
-                    <p className="text-red-500 text-sm">{modalMessage}</p>
-                )}
             </form>
         </ModalWrapper>
     );

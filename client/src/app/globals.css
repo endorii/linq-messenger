@@ -23,10 +23,13 @@
 .bg-purple-gradient {
   @apply bg-gradient-to-br from-violet-600 to-indigo-600;
 }
-.bg-purple-gradient:hover {
+button.bg-purple-gradient:hover {
   @apply bg-gradient-to-br from-violet-700 to-indigo-700;
 }
 
+button{
+  cursor: pointer;
+}
 
 
 
