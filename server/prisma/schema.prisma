@@ -26,13 +26,19 @@ model User {
     verificationToken        String?   @map("verification_token")
     verificationTokenExpires DateTime?
 
-    tokens            Token[]
-    chatMembers       ChatMember[]
-    messages          Message[]
-    messageReactions  MessageReaction[]
-    messagesRead      MessageRead[]
-    chatsWhereIsAdmin Chat[]            @relation("ChatWhereIsAdmin")
-    ChatFolder        ChatFolder[]
+    tokens Token[]
+
+    messages         Message[]
+    messageReactions MessageReaction[]
+    messagesRead     MessageRead[]
+
+    chatMembers ChatMember[]
+
+    chatsWhereIsAdmin Chat[]       @relation("ChatWhereIsAdmin")
+    chatFolder        ChatFolder[]
+
+    contacts  Contact[] @relation("UserContacts")
+    contactOf Contact[] @relation("ContactUser")
 
     @@map("users")
 }
@@ -45,6 +51,23 @@ model Token {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("tokens")
+}
+
+model Contact {
+    id        String   @id @default(cuid())
+    userId    String
+    contactId String
+    nickname  String?
+    isBlocked Boolean  @default(false) @map("is_blocked")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    user    User @relation("UserContacts", fields: [userId], references: [id], onDelete: Cascade)
+    contact User @relation("ContactUser", fields: [contactId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, contactId])
+    @@index([userId])
+    @@index([contactId])
+    @@map("contacts")
 }
 
 model Chat {

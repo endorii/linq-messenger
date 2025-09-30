@@ -6,6 +6,7 @@ import { UserModule } from "./user/user.module";
 import { ChatsModule } from './chats/chats.module';
 import { FoldersModule } from './folders/folders.module';
 import { MessagesModule } from './messages/messages.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { MessagesModule } from './messages/messages.module';
         ChatsModule,
         FoldersModule,
         MessagesModule,
+        ContactsModule,
     ],
 })
 export class AppModule {}

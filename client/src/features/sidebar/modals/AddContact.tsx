@@ -3,13 +3,11 @@
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import CameraIcon from "@/shared/icons/CameraIcon";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { Textarea } from "@/shared/components/ui/textarea";
-
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { useCreateContact } from "@/features/contacts/hooks/useContacts";
 
 interface AddContactProps {
     isOpen: boolean;
@@ -17,29 +15,26 @@ interface AddContactProps {
 }
 
 interface FormData {
-    constactName: string;
-    contactSurname?: string;
-    contactPhone: string;
+    contactUsername: string;
+    contactCustomName?: string;
 }
 
 export default function AddContact({ isOpen, onClose }: AddContactProps) {
     const {
-        control,
         register,
         handleSubmit,
         reset,
         formState: { errors },
     } = useForm<FormData>({
         defaultValues: {
-            constactName: "",
-            contactSurname: "",
-            contactPhone: "",
+            contactUsername: "",
+            contactCustomName: "",
         },
     });
 
     const [modalMessage, setModalMessage] = useState("");
 
-    // const addTodoItemMutation = useCreateTodoItem();
+    const createContactMutation = useCreateContact();
 
     const handleClose = () => {
         reset();
@@ -49,13 +44,17 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
 
     const onSubmit = async (data: FormData) => {
         try {
-            // await addTodoItemMutation.mutateAsync({
-            //     title: data.groupName,
-            //     description: data.description || "",
-            // });
+            await createContactMutation.mutateAsync({
+                username: data.contactUsername,
+                nickname: data.contactCustomName,
+            });
+            reset();
             handleClose();
         } catch (error: any) {
-            setModalMessage(error?.message || "Помилка додавання контакту");
+            // Зробити так у всіх компонентах (обробка помилок)
+            setModalMessage(
+                error.response.data.message || "Error during adding contact"
+            );
         }
     };
 
@@ -64,47 +63,32 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
     if (!isOpen) return null;
 
     const modalContent = (
-        <ModalWrapper onClose={onClose}>
+        <ModalWrapper onClose={onClose} modalTitle="Add contact">
             <form
-                className="flex flex-col gap-[30px]"
+                className="flex flex-col gap-[15px]"
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <div className="flex flex-col gap-[20px]">
+                <div className="flex flex-col gap-[15px]">
                     <Input
                         type="text"
-                        placeholder="Name"
-                        {...register("constactName", {
-                            required: "Name required",
-                            minLength: {
-                                value: 1,
-                                message: "Minimum 1 symbol",
-                            },
+                        placeholder="@username"
+                        {...register("contactUsername", {
+                            required: "@username required",
                         })}
-                        errorMessage={errors.constactName?.message}
+                        errorMessage={errors.contactUsername?.message}
                         className="h-[45px] border-white/5"
                     />
                     <Input
                         type="text"
-                        placeholder="Surname"
-                        {...register("contactSurname")}
-                        errorMessage={errors.contactSurname?.message}
-                        className="h-[45px] border-white/5"
-                    />
-                    <Input
-                        type="text"
-                        placeholder="Phone number"
-                        {...register("contactPhone", {
-                            required: "Phone number required",
-                            pattern: {
-                                value: /^\+?[0-9]{10,15}$/,
-                                message: "Enter a valid phone number",
-                            },
-                        })}
-                        errorMessage={errors.contactPhone?.message}
+                        placeholder="Custom name (optional)"
+                        {...register("contactCustomName")}
+                        errorMessage={errors.contactCustomName?.message}
                         className="h-[45px] border-white/5"
                     />
                 </div>
-
+                {modalMessage && (
+                    <p className="text-red-500 text-sm">{modalMessage}</p>
+                )}
                 <div className="flex justify-end gap-[5px]">
                     <Button
                         type="button"
@@ -112,21 +96,17 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
                             onClose();
                             reset();
                         }}
-                        className=" cursor-pointer"
+                        className="cursor-pointer"
                     >
                         Cancel
                     </Button>
                     <Button
                         type="submit"
-                        className="bg-neutral-950 border border-white/5 cursor-pointer"
+                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
                     >
-                        Create
+                        Add
                     </Button>
                 </div>
-
-                {modalMessage && (
-                    <p className="text-red-500 text-sm">{modalMessage}</p>
-                )}
             </form>
         </ModalWrapper>
     );
