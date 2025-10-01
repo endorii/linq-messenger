@@ -75,10 +75,10 @@ export default function CreateNewChannel({
                 <div className="flex items-center gap-[15px]">
                     <label
                         htmlFor="picture"
-                        className="relative bg-neutral-950 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
+                        className="relative bg-neutral-900 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
                     >
-                        <CameraIcon className="w-[40px] h-[40px] fill-none stroke-2 stroke-neutral-200" />
-                        <Input
+                        <CameraIcon className="w-[40px] h-[40px] fill-none stroke-[1.5] stroke-neutral-300" />
+                        <input
                             id="picture"
                             type="file"
                             accept="image/*"
@@ -100,7 +100,7 @@ export default function CreateNewChannel({
                             },
                         })}
                         errorMessage={errors.channelName?.message}
-                        className="h-[45px] border-white/5"
+                        className="h-[45px]"
                     />
                 </div>
 
@@ -108,7 +108,7 @@ export default function CreateNewChannel({
                     placeholder="Description (optional)"
                     {...register("channelDescription")}
                     errorMessage={errors.channelDescription?.message}
-                    className="h-[45px] max-w-[500px] border-neutral-800"
+                    className="h-[45px] max-w-[500px] text-base!"
                 />
 
                 {modalMessage && (

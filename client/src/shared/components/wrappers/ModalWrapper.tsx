@@ -11,7 +11,7 @@ function ModalWrapper({ onClose, children, modalTitle }: IModalWrapperProps) {
             onClick={onClose}
         >
             <div
-                className="flex flex-col gap-[20px] bg-neutral-900 rounded-xl text-white border border-white/5 p-[30px] max-w-[90vw] h-auto max-h-[80vh] shadow-lg overflow-y-auto cursor-default"
+                className="flex flex-col gap-[15px] bg-neutral-900 rounded-xl text-white border border-white/5 p-[30px] max-w-[90vw] h-auto max-h-[80vh] shadow-lg overflow-y-auto cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {modalTitle && (

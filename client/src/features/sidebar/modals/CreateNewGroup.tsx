@@ -18,6 +18,7 @@ interface CreateNewGroupProps {
 
 interface FormData {
     groupName: string;
+    groupDescription?: string;
 }
 
 export default function CreateNewGroup({
@@ -73,10 +74,10 @@ export default function CreateNewGroup({
                 <div className="flex items-center gap-[15px]">
                     <label
                         htmlFor="picture"
-                        className="relative bg-neutral-950 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
+                        className="relative bg-neutral-900 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
                     >
-                        <CameraIcon className="w-[40px] h-[40px] fill-none stroke-2 stroke-neutral-200" />
-                        <Input
+                        <CameraIcon className="w-[40px] h-[40px] fill-none stroke-[1.5] stroke-neutral-300" />
+                        <input
                             id="picture"
                             type="file"
                             accept="image/*"
@@ -93,14 +94,22 @@ export default function CreateNewGroup({
                         {...register("groupName", {
                             required: "Enter group name",
                             minLength: {
-                                value: 3,
-                                message: "Minimum 3 symbols",
+                                value: 1,
+                                message: "Minimum 1 symbols",
                             },
                         })}
                         errorMessage={errors.groupName?.message}
-                        className="h-[45px] border-white/5"
+                        className="h-[45px]"
                     />
                 </div>
+
+                <Textarea
+                    placeholder="Description (optional)"
+                    {...register("groupDescription")}
+                    errorMessage={errors.groupDescription?.message}
+                    className="h-[45px] max-w-[500px] text-base!"
+                />
+
                 {modalMessage && (
                     <p className="text-red-500 text-sm">{modalMessage}</p>
                 )}

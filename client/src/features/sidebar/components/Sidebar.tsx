@@ -12,6 +12,9 @@ import SidebarChats from "./SidebarChats";
 import SidebarDropdownPlus from "./SidebarDropdownPlus";
 import SidebarContacts from "./SidebarContacts";
 import SidebarContactsMenu from "./SidebarContactsMenu";
+import SidebarSettings from "./SidebarSettings";
+import SidebarSettingsMenu from "./SidebarSettingsMenu";
+import SidebarContactsPlus from "./SidebarContactsPlus";
 
 function Sidebar({ user }: { user: IUser }) {
     const [searchValue, setSearchValue] = useState<string>("");
@@ -32,11 +35,22 @@ function Sidebar({ user }: { user: IUser }) {
             {activeTab === "contacts" && (
                 <SidebarContactsMenu setActiveTab={setActiveTab} />
             )}
+            {activeTab === "settings" && (
+                <SidebarSettingsMenu setActiveTab={setActiveTab} />
+            )}
 
             {activeTab === "chats" && <SidebarChats />}
             {activeTab === "contacts" && <SidebarContacts />}
+            {activeTab === "settings" && (
+                <SidebarSettings setActiveTab={setActiveTab} />
+            )}
 
-            <SidebarDropdownPlus setActiveModal={setActiveModal} />
+            {activeTab === "chats" && (
+                <SidebarDropdownPlus setActiveModal={setActiveModal} />
+            )}
+            {activeTab === "contacts" && (
+                <SidebarContactsPlus setActiveModal={setActiveModal} />
+            )}
 
             <CreateFolder
                 isOpen={activeModal === "addFolder"}

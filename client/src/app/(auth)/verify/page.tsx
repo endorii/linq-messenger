@@ -101,7 +101,7 @@ const VerifyPage = () => {
                                     },
                                 })}
                                 errorMessage={errors.email?.message}
-                                className="h-[45px] border-neutral-800"
+                                className="h-[45px]"
                             />
                         </div>
                         <Button

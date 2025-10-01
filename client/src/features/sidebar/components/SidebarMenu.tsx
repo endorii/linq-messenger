@@ -61,7 +61,10 @@ function SidebarMenu({
                         <AccountIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
                         <div>Contacts</div>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="group">
+                    <DropdownMenuItem
+                        className="group"
+                        onClick={() => setActiveTab("settings")}
+                    >
                         <SettingsIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
                         <div>Settings</div>
                     </DropdownMenuItem>
@@ -93,9 +96,9 @@ function SidebarMenu({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="w-full relative rounded-xl group bg-transparent focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
+            <div className="w-full relative rounded-xl group">
                 <Input
-                    className="py-[10px] px-[43px] rounded-xl w-full bg-neutral-900 focus:bg-neutral-950 focus:border-white border-none h-auto"
+                    className="py-[10px] px-[43px] rounded-xl w-full h-auto"
                     placeholder="Search"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}

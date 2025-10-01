@@ -107,7 +107,7 @@ function SignUp() {
                                         },
                                     })}
                                     errorMessage={errors.email?.message}
-                                    className="h-[45px] border-neutral-800 w-full"
+                                    className="h-[45px]"
                                 />
                             </div>
 
@@ -120,7 +120,7 @@ function SignUp() {
                                         required: "Username required",
                                     })}
                                     errorMessage={errors.username?.message}
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
                             <div className="flex flex-col gap-[7px] ">
@@ -129,7 +129,7 @@ function SignUp() {
                                     type="text"
                                     placeholder="Phone number (optional)"
                                     {...register("phone")}
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
                             <Button
@@ -153,7 +153,7 @@ function SignUp() {
                                         required: "First name required",
                                     })}
                                     errorMessage={errors.firstName?.message}
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
                             <div className="flex flex-col gap-[7px] ">
@@ -162,7 +162,7 @@ function SignUp() {
                                     type="text"
                                     placeholder="Last Name (optional)"
                                     {...register("lastName")}
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
                             <div className="flex flex-col gap-[7px] ">
@@ -179,7 +179,7 @@ function SignUp() {
                                         },
                                     })}
                                     errorMessage={errors.password?.message}
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
 
@@ -199,7 +199,7 @@ function SignUp() {
                                     errorMessage={
                                         errors.confirmPassword?.message
                                     }
-                                    className="h-[45px] border-neutral-800"
+                                    className="h-[45px]"
                                 />
                             </div>
 

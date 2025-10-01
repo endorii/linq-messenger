@@ -51,7 +51,6 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
             reset();
             handleClose();
         } catch (error: any) {
-            // Зробити так у всіх компонентах (обробка помилок)
             setModalMessage(
                 error.response.data.message || "Error during adding contact"
             );
@@ -76,14 +75,14 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
                             required: "@username required",
                         })}
                         errorMessage={errors.contactUsername?.message}
-                        className="h-[45px] border-white/5"
+                        className="h-[45px]"
                     />
                     <Input
                         type="text"
                         placeholder="Custom name (optional)"
                         {...register("contactCustomName")}
                         errorMessage={errors.contactCustomName?.message}
-                        className="h-[45px] border-white/5"
+                        className="h-[45px]"
                     />
                 </div>
                 {modalMessage && (

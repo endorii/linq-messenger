@@ -18,9 +18,9 @@ function SidebarContactsMenu({
                 <BackIcon className="w-[24px] stroke-white stroke-3" />
             </button>
 
-            <div className="w-full relative rounded-xl group bg-transparent focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
+            <div className="w-full relative rounded-xl group">
                 <Input
-                    className="py-[10px] px-[43px] rounded-xl w-full bg-neutral-900 focus:bg-neutral-950 focus:border-white border-none h-auto"
+                    className="py-[10px] px-[43px] rounded-xl w-full h-auto"
                     placeholder="Contacts search"
                     value={inputSearchContacts}
                     onChange={(e) => setInputSearchContacts(e.target.value)}

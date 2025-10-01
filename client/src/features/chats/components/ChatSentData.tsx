@@ -52,7 +52,7 @@ function ChatSentData({ chatId }: { chatId: string }) {
                     <DropdownMenuItem>Document</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300">
+            <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
                 <ChatTextarea
                     value={inputValue}
                     onChange={setInputValue}

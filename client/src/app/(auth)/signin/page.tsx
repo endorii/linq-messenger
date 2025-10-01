@@ -77,7 +77,7 @@ function SignIn() {
                                 required: "Username required",
                             })}
                             errorMessage={errors.username?.message}
-                            className="h-[45px] border-neutral-800"
+                            className="h-[45px]"
                         />
                     </div>
 
@@ -91,7 +91,7 @@ function SignIn() {
                                 required: "Password required",
                             })}
                             errorMessage={errors.password?.message}
-                            className="h-[45px] border-neutral-800"
+                            className="h-[45px]"
                         />
                     </div>
 

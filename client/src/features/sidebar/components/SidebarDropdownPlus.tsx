@@ -36,9 +36,6 @@ function SidebarDropdownPlus({
                 <DropdownMenuItem onClick={() => setActiveModal("addNewGroup")}>
                     New group
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setActiveModal("addContact")}>
-                    Add contact
-                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

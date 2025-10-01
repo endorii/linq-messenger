@@ -80,7 +80,7 @@ export default function CreateFolder({
                             },
                         })}
                         errorMessage={errors.folderName?.message}
-                        className="h-[45px] border-white/5"
+                        className="h-[45px]"
                     />
                 </div>
                 {modalMessage && (
