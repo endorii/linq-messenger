@@ -1,6 +1,12 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { CreatePrivateChatDto } from "./dto/create-chat.dto";
+import { CreateChannelDto, CreateGroupChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
+import { ChatType, MemberRole } from "generated/prisma";
 // import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
@@ -9,7 +15,7 @@ export class ChatsService {
     async createPrivateChat(userId: string, createPrivateChatDto: CreatePrivateChatDto) {
         const existingChat = await this.prisma.chat.findFirst({
             where: {
-                type: "PRIVATE",
+                type: ChatType.PRIVATE,
                 members: { every: { userId: { in: [userId, createPrivateChatDto.userId] } } },
             },
         });
@@ -26,10 +32,68 @@ export class ChatsService {
                         { userId: createPrivateChatDto.userId, role: "MEMBER" },
                     ],
                 },
-                type: "PRIVATE",
+                type: ChatType.PRIVATE,
             },
         });
         return { message: "Chat created successfully", data: privateChat };
+    }
+
+    async createGroupChat(userId: string, createGroupChatDto: CreateGroupChatDto) {
+        const groupChat = await this.prisma.chat.create({
+            data: {
+                name: createGroupChatDto.name,
+                description: createGroupChatDto.description,
+                avatar: createGroupChatDto.avatar,
+                adminId: userId,
+                type: ChatType.GROUP,
+                members: {
+                    create: [
+                        ...createGroupChatDto.memberIds
+                            .filter((id) => id !== userId)
+                            .map((id) => ({
+                                role: MemberRole.MEMBER,
+                                user: { connect: { id } },
+                            })),
+                        {
+                            role: MemberRole.ADMIN,
+                            user: { connect: { id: userId } },
+                        },
+                    ],
+                },
+            },
+        });
+
+        return { message: "Group created successfully", data: groupChat };
+    }
+
+    async createChannel(userId: string, createChannelDto: CreateChannelDto) {
+        console.log(createChannelDto);
+
+        if (!userId) throw new BadRequestException("userId is required");
+        const channel = await this.prisma.chat.create({
+            data: {
+                name: createChannelDto.name,
+                description: createChannelDto.description,
+                avatar: createChannelDto.avatar,
+                adminId: userId || "",
+                type: ChatType.CHANNEL,
+                members: {
+                    create: [
+                        ...createChannelDto.memberIds
+                            .filter((id) => id !== userId)
+                            .map((id) => ({
+                                role: MemberRole.MEMBER,
+                                user: { connect: { id } },
+                            })),
+                        {
+                            role: MemberRole.ADMIN,
+                            user: { connect: { id: userId } },
+                        },
+                    ],
+                },
+            },
+        });
+        return { message: "Channel created successfully", data: channel };
     }
 
     async getChats(userId: string) {

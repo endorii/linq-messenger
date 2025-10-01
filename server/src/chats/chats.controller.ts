@@ -2,7 +2,7 @@ import { Controller, Post, Body, UseGuards, Req, Get, Param } from "@nestjs/comm
 import { ChatsService } from "./chats.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
-import { CreatePrivateChatDto } from "./dto/create-chat.dto";
+import { CreateChannelDto, CreateGroupChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
 import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 
@@ -20,8 +20,27 @@ export class ChatsController {
     }
 
     @Post("private")
-    createPrivateChat(@Req() req: AuthenticatedRequest, @Body() dto: CreatePrivateChatDto) {
-        return this.chatsService.createPrivateChat(req.user.id, dto);
+    createPrivateChat(
+        @Req() req: AuthenticatedRequest,
+        @Body() createPrivateChatDto: CreatePrivateChatDto
+    ) {
+        return this.chatsService.createPrivateChat(req.user.id, createPrivateChatDto);
+    }
+
+    @Post("group")
+    createGroupChat(
+        @Req() req: AuthenticatedRequest,
+        @Body() createGroupChatDto: CreateGroupChatDto
+    ) {
+        return this.chatsService.createGroupChat(req.user.id, createGroupChatDto);
+    }
+
+    @Post("channel")
+    createChannel(@Req() req: AuthenticatedRequest, @Body() createChannelDto: CreateChannelDto) {
+        console.log("req.user:", req.user);
+        console.log("typeof req.user.id:", typeof req.user.id);
+
+        return this.chatsService.createChannel(req.user.id, createChannelDto);
     }
 
     @Get(":chatId")

@@ -1,6 +1,7 @@
-import { ChatType, MemberRole } from "../types/types";
+import { MemberRole } from "../types/types";
 import { IMessage } from "./IMessage";
 import { IUser } from "./IUser";
+import { ChatEnum } from "../enums/enums";
 
 export interface IChatMember {
     id: string;
@@ -17,7 +18,7 @@ export interface IChat {
     name?: string;
     description?: string;
     avatar?: string;
-    type: ChatType;
+    type: ChatEnum;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;
@@ -31,3 +32,12 @@ export interface IChat {
     lastMessageId?: string;
     lastMessage?: IMessage;
 }
+
+export interface GroupChatPayload {
+    name: string;
+    description?: string;
+    avatar?: string;
+    memberIds: string[];
+}
+
+export interface ChannelPayload extends GroupChatPayload {}

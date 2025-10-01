@@ -10,7 +10,7 @@ function Input({
     ...props
 }: React.ComponentProps<"input"> & { errorMessage?: string }) {
     return (
-        <>
+        <div className="flex flex-col gap-[3px] w-full">
             <GradientInputWrapper>
                 <input
                     type={type}
@@ -26,9 +26,11 @@ function Input({
                 />
             </GradientInputWrapper>
             {errorMessage && (
-                <div className="text-sm text-red-500">{errorMessage}</div>
+                <div className=" pl-[5px] text-sm text-red-500">
+                    {errorMessage}
+                </div>
             )}
-        </>
+        </div>
     );
 }
 

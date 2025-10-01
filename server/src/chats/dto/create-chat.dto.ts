@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreatePrivateChatDto {
     @IsString()
@@ -6,7 +6,7 @@ export class CreatePrivateChatDto {
 }
 
 export class CreateGroupChatDto {
-    @IsString()
+    @MinLength(1, { message: "Name must be at least 1 character long" })
     name: string;
 
     @IsOptional()
@@ -15,20 +15,21 @@ export class CreateGroupChatDto {
     @IsOptional()
     avatar?: string;
 
-    @IsString()
-    adminId: string;
-
     @IsString({ each: true })
     memberIds: string[];
 }
 
 export class CreateChannelDto {
     @IsString()
+    @MinLength(1, { message: "Name must be at least 1 character long" })
     name: string;
 
     @IsOptional()
     description?: string;
 
-    @IsString()
-    adminId: string;
+    @IsOptional()
+    avatar?: string;
+
+    @IsString({ each: true })
+    memberIds: string[];
 }

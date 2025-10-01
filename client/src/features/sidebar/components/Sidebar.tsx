@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import CreateNewChannel from "../modals/CreateNewChannel";
 import { ModalType, SidebarTabType } from "@/shared/types/types";
-import CreateNewGroup from "../modals/CreateNewGroup";
 import AddContact from "../modals/AddContact";
 import { IUser } from "@/shared/interfaces/IUser";
 import CreateFolder from "../modals/CreateFolder";
@@ -15,6 +13,8 @@ import SidebarContactsMenu from "./SidebarContactsMenu";
 import SidebarSettings from "./SidebarSettings";
 import SidebarSettingsMenu from "./SidebarSettingsMenu";
 import SidebarContactsPlus from "./SidebarContactsPlus";
+import CreateGroupOrChannel from "../modals/CreateGroupOrChannel";
+import { ChatEnum } from "@/shared/enums/enums";
 
 function Sidebar({ user }: { user: IUser }) {
     const [searchValue, setSearchValue] = useState<string>("");
@@ -56,13 +56,15 @@ function Sidebar({ user }: { user: IUser }) {
                 isOpen={activeModal === "addFolder"}
                 onClose={() => setActiveModal(null)}
             />
-            <CreateNewChannel
+            <CreateGroupOrChannel
                 isOpen={activeModal === "addNewChannel"}
                 onClose={() => setActiveModal(null)}
+                type={ChatEnum.CHANNEL}
             />
-            <CreateNewGroup
+            <CreateGroupOrChannel
                 isOpen={activeModal === "addNewGroup"}
                 onClose={() => setActiveModal(null)}
+                type={ChatEnum.GROUP}
             />
             <AddContact
                 isOpen={activeModal === "addContact"}
