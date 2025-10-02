@@ -113,7 +113,7 @@ export class AuthService {
     }
 
     async refreshTokens(refreshToken: string) {
-        const tokenInDb = await this.prisma.token.findUnique({
+        const tokenInDb = await this.prisma.token.findFirst({
             where: { refreshToken },
             include: { user: true },
         });
@@ -123,9 +123,13 @@ export class AuthService {
         }
 
         if (tokenInDb.expiresIn.getTime() < Date.now()) {
-            await this.prisma.token.delete({ where: { id: tokenInDb.id } });
+            await this.prisma.token.deleteMany({ where: { id: tokenInDb.id } });
             throw new BadRequestException("Refresh token expired");
         }
+
+        const newToken = await this.getRefreshToken(tokenInDb.userId);
+
+        await this.prisma.token.deleteMany({ where: { id: tokenInDb.id } });
 
         const accessToken = this.jwtService.sign({
             id: tokenInDb.user.id,
@@ -133,13 +137,9 @@ export class AuthService {
             email: tokenInDb.user.email,
         });
 
-        const newRefreshToken = await this.getRefreshToken(tokenInDb.userId);
-
-        await this.prisma.token.delete({ where: { id: tokenInDb.id } });
-
         return {
             accessToken,
-            refreshToken: newRefreshToken.refreshToken,
+            refreshToken: newToken.refreshToken,
         };
     }
 
