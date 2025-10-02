@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, CreateGroupChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
-import { ChatType, MemberRole } from "generated/prisma";
+import { ChatType, MemberRole, MessageType } from "generated/prisma";
 // import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
@@ -46,6 +46,15 @@ export class ChatsService {
                 avatar: createGroupChatDto.avatar,
                 adminId: userId,
                 type: ChatType.GROUP,
+                messages: {
+                    create: [
+                        {
+                            type: MessageType.SYSTEM,
+                            content: `Group "${createGroupChatDto.name}" created`,
+                            senderId: null,
+                        },
+                    ],
+                },
                 members: {
                     create: [
                         ...createGroupChatDto.memberIds
