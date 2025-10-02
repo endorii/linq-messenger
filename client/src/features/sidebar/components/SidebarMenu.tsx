@@ -85,12 +85,13 @@ function SidebarMenu({
                         </DropdownMenuPortal>
                     </DropdownMenuSub>
                     <DropdownMenuItem
+                        variant="destructive"
                         className="group"
                         onClick={() => {
                             useLogoutUserMutation.mutate();
                         }}
                     >
-                        <LogoutIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
+                        <LogoutIcon className="stroke-2 stroke-red-600 fill-none" />
                         <div>Logout</div>
                     </DropdownMenuItem>
                 </DropdownMenuContent>

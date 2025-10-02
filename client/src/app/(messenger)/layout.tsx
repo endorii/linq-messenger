@@ -40,11 +40,11 @@ export default function MessengerLayout({
     return (
         <div className="flex w-screen h-screen bg-neutral-900 text-white">
             <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel minSize={15} maxSize={30} defaultSize={18}>
+                <ResizablePanel minSize={15} maxSize={30}>
                     <Sidebar user={user} />
                 </ResizablePanel>
                 <ResizableHandle />
-                <ResizablePanel defaultSize={72}>{children}</ResizablePanel>
+                <ResizablePanel defaultSize={80}>{children}</ResizablePanel>
             </ResizablePanelGroup>
         </div>
     );

@@ -7,6 +7,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/shared/components/ui/tabs";
+import { ChatEnum } from "@/shared/enums/enums";
 import { BackIcon, InfoIcon, LinkIcon, NotifcationIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 import Image from "next/image";
@@ -33,11 +34,11 @@ function ChatSidebar({
                             <BackIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
                         </button>
                         <div className="text-xl font-semibold text-nowrap">
-                            {chat.type === "PRIVATE"
+                            {chat.type === ChatEnum.PRIVATE
                                 ? "User information"
-                                : chat.type === "GROUP"
+                                : chat.type === ChatEnum.GROUP
                                 ? "Group information"
-                                : chat.type === "CHANNEL"
+                                : chat.type === ChatEnum.CHANNEL
                                 ? "Channel information"
                                 : "Chat information"}
                         </div>
@@ -55,7 +56,7 @@ function ChatSidebar({
                                 {chat.name}
                             </div>
                             <div className="text-sm text-neutral-400">
-                                {chat.type === "PRIVATE"
+                                {chat.type === ChatEnum.PRIVATE
                                     ? "last seen recently"
                                     : `${chat.members?.length || 0} members`}
                             </div>
@@ -93,12 +94,14 @@ function ChatSidebar({
                     <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                         <Tabs
                             defaultValue={
-                                chat.type === "PRIVATE" ? "media" : "members"
+                                chat.type === ChatEnum.PRIVATE
+                                    ? "media"
+                                    : "members"
                             }
                             className="flex-1 flex flex-col"
                         >
                             <TabsList className="flex w-full mb-[5px]">
-                                {chat.type !== "PRIVATE" && (
+                                {chat.type !== ChatEnum.PRIVATE && (
                                     <TabsTrigger value="members">
                                         Members
                                     </TabsTrigger>

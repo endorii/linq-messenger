@@ -6,9 +6,11 @@ import { usePathname } from "next/navigation";
 export default function SafeLink({
     href,
     children,
+    className,
 }: {
     href: string;
     children: React.ReactNode;
+    className?: string;
 }) {
     const pathname = usePathname();
 
@@ -19,7 +21,7 @@ export default function SafeLink({
     };
 
     return (
-        <Link href={href} onClick={handleClick}>
+        <Link href={href} onClick={handleClick} className={className}>
             {children}
         </Link>
     );
