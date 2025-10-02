@@ -3,15 +3,16 @@
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
 import { SidebarTabType } from "@/shared/types/types";
-import { useState } from "react";
 
 function SidebarContactsMenu({
     setActiveTab,
+    searchValue,
+    setSearchValue,
 }: {
     setActiveTab: React.Dispatch<React.SetStateAction<SidebarTabType>>;
+    searchValue: string;
+    setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }) {
-    const [inputSearchContacts, setInputSearchContacts] = useState<string>("");
-
     return (
         <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <button onClick={() => setActiveTab("chats")}>
@@ -22,18 +23,18 @@ function SidebarContactsMenu({
                 <Input
                     className="py-[10px] px-[43px] rounded-xl w-full h-auto"
                     placeholder="Contacts search"
-                    value={inputSearchContacts}
-                    onChange={(e) => setInputSearchContacts(e.target.value)}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
                 />
 
                 <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-[15px] w-[20px] stroke-neutral-700 fill-none stroke-3 group-focus-within:stroke-neutral-400 transition-colors duration-300" />
 
                 <button
-                    onClick={() => setInputSearchContacts("")}
+                    onClick={() => setSearchValue("")}
                     className={`absolute top-[50%] translate-y-[-50%] right-[15px] flex items-center justify-center
                             w-[24px] h-[24px] rounded-full transition-all duration-300 cursor-pointer
                             ${
-                                inputSearchContacts.length > 0
+                                searchValue.length > 0
                                     ? "opacity-100 scale-100"
                                     : "opacity-0 scale-0"
                             }`}
