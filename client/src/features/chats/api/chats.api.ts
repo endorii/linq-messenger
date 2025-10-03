@@ -12,6 +12,13 @@ export async function fetchChat(chatId: string): Promise<IChat> {
     return data;
 }
 
+export async function fetchCreatePrivateChat(
+    otherUserId: string | undefined
+): Promise<ServerResponseWithMessage<IChat>> {
+    const { data } = await httpService.post(`/chats/private`, { otherUserId });
+    return data;
+}
+
 export async function fetchCreateGroupChat(
     groupChatPayload: GroupChatPayload
 ): Promise<ServerResponseWithMessage<IChat>> {

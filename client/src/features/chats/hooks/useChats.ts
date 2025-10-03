@@ -1,8 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchChat, fetchChats, fetchCreateChannel, fetchCreateGroupChat } from "../api/chats.api";
+import {
+    fetchChat,
+    fetchChats,
+    fetchCreateChannel,
+    fetchCreateGroupChat,
+    fetchCreatePrivateChat,
+} from "../api/chats.api";
 import { ChannelPayload, GroupChatPayload, IChat } from "@/shared/interfaces/IChat";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 export function useChats() {
     return useQuery<IChat[], Error>({
@@ -17,6 +24,23 @@ export function useChat(chatId: string) {
         queryKey: ["chats", chatId],
         queryFn: () => fetchChat(chatId),
         retry: false,
+    });
+}
+
+export function useCreatePrivateChat() {
+    const queryClient = useQueryClient();
+    const router = useRouter();
+    return useMutation({
+        mutationFn: (otherUserId: string | undefined) => fetchCreatePrivateChat(otherUserId),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+            toast.success(data.message);
+            router.push(`/${data.data?.id}`);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
     });
 }
 

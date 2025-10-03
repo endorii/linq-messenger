@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { useChat } from "@/features/chats/hooks/useChats";
-
 import ChatHeader from "@/features/chats/components/ChatHeader";
 import ChatSentData from "@/features/chats/components/ChatSentData";
 import ChatSidebar from "@/features/chats/components/ChatSidebar";
+import { useProfile } from "@/features/auth/hooks/useAuth";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -15,6 +15,7 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
 
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
+    const { data: me, isLoading: isMeLoading } = useProfile();
 
     useEffect(() => {
         if (!isChatLoading && !chat) {
@@ -26,6 +27,13 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
         return null;
     }
 
+    const isAdmin = chat.members.some(
+        (member) => member.user.id === me?.id && member.role === "ADMIN"
+    );
+
+    const canSendMessages =
+        chat.type !== "CHANNEL" || (chat.type === "CHANNEL" && isAdmin);
+
     return (
         <div className="flex w-full h-[100vh]">
             <div className="flex-1 relative">
@@ -33,7 +41,7 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                 <div className="h-full pt-[65px] pb-[80px] w-full bg-[url('https://i.pinimg.com/736x/a4/a4/61/a4a461c572891b4bf1f2e6af3d127428.jpg')]">
                     {children}
                 </div>
-                <ChatSentData chatId={chat.id} />
+                {canSendMessages && <ChatSentData chatId={chat.id} />}
             </div>
             <ChatSidebar
                 sidebarOpen={sidebarOpen}
