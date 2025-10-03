@@ -1,22 +1,66 @@
-import {
-    BadRequestException,
-    ForbiddenException,
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChannelDto, CreateGroupChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
 import { ChatType, MemberRole, MessageType } from "generated/prisma";
-// import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatsService {
     constructor(private readonly prisma: PrismaService) {}
+
+    async getChats(userId: string) {
+        return await this.prisma.chat.findMany({
+            where: {
+                members: { some: { userId } },
+            },
+            include: {
+                members: {
+                    include: { user: true },
+                },
+                lastMessage: true,
+                messages: { take: 1, orderBy: { createdAt: "desc" } },
+            },
+            orderBy: { updatedAt: "desc" },
+        });
+    }
+
+    async getChat(userId: string, chatId: string) {
+        const chat = await this.prisma.chat.findFirst({
+            where: {
+                id: chatId,
+                members: {
+                    some: {
+                        userId: userId,
+                    },
+                },
+            },
+            include: {
+                members: {
+                    include: {
+                        user: true,
+                    },
+                },
+                messages: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                    take: 50, // Опціонально: обмежити кількість повідомлень
+                },
+            },
+        });
+
+        if (!chat) return null;
+
+        return chat;
+    }
+
     async createPrivateChat(userId: string, createPrivateChatDto: CreatePrivateChatDto) {
         const existingChat = await this.prisma.chat.findFirst({
             where: {
                 type: ChatType.PRIVATE,
-                members: { every: { userId: { in: [userId, createPrivateChatDto.userId] } } },
+                AND: [
+                    { members: { some: { userId } } },
+                    { members: { some: { userId: createPrivateChatDto.otherUserId } } },
+                ],
             },
         });
 
@@ -24,12 +68,22 @@ export class ChatsService {
             return { message: "Chat already exists", data: existingChat };
         }
 
+        const companion = await this.prisma.user.findUnique({
+            where: { id: createPrivateChatDto.otherUserId },
+        });
+
+        if (!companion) {
+            throw new NotFoundException("Cmpanion not found");
+        }
+
         const privateChat = await this.prisma.chat.create({
             data: {
+                name: companion.username,
+                avatar: companion.avatarUrl,
                 members: {
                     create: [
                         { userId, role: "MEMBER" },
-                        { userId: createPrivateChatDto.userId, role: "MEMBER" },
+                        { userId: createPrivateChatDto.otherUserId, role: "MEMBER" },
                     ],
                 },
                 type: ChatType.PRIVATE,
@@ -44,7 +98,6 @@ export class ChatsService {
                 name: createGroupChatDto.name,
                 description: createGroupChatDto.description,
                 avatar: createGroupChatDto.avatar,
-                adminId: userId,
                 type: ChatType.GROUP,
                 messages: {
                     create: [
@@ -84,7 +137,6 @@ export class ChatsService {
                 name: createChannelDto.name,
                 description: createChannelDto.description,
                 avatar: createChannelDto.avatar,
-                adminId: userId || "",
                 type: ChatType.CHANNEL,
                 members: {
                     create: [
@@ -103,71 +155,6 @@ export class ChatsService {
             },
         });
         return { message: "Channel created successfully", data: channel };
-    }
-
-    async getChats(userId: string) {
-        const chats = await this.prisma.chat.findMany({
-            where: {
-                members: { some: { userId } },
-            },
-            include: {
-                members: {
-                    include: { user: true },
-                },
-                lastMessage: true,
-                messages: { take: 1, orderBy: { createdAt: "desc" } },
-            },
-            orderBy: { updatedAt: "desc" },
-        });
-
-        return chats.map((chat) => {
-            if (chat.type === "PRIVATE") {
-                // Знаходимо іншого учасника
-
-                const otherMember = chat.members.find((m) => m.userId !== userId);
-                if (otherMember) {
-                    chat.name =
-                        `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
-                }
-                chat.avatar = otherMember?.user.avatarUrl ?? null;
-            }
-            return chat;
-        });
-    }
-
-    async getChat(userId: string, chatId: string) {
-        const chat = await this.prisma.chat.findUnique({
-            where: { id: chatId },
-            include: {
-                members: {
-                    include: { user: true },
-                },
-                // lastMessage: true,
-            },
-        });
-
-        if (!chat) {
-            throw new NotFoundException("Chat not found");
-        }
-
-        const isPrivate = chat.type === "PRIVATE";
-        const isMember = chat.members.some((member) => member.userId === userId);
-
-        if (isPrivate && !isMember) {
-            throw new ForbiddenException("Access denied to this private chat");
-        }
-
-        // Для приватного чату підставляємо ім'я співрозмовника
-        if (isPrivate) {
-            const otherMember = chat.members.find((m) => m.userId !== userId);
-            if (otherMember) {
-                chat.name =
-                    `${otherMember.user.firstName || otherMember.user.username} ${otherMember.user.lastName || ""}`.trim();
-            }
-            chat.avatar = otherMember?.user.avatarUrl ?? null;
-        }
-
-        return chat;
     }
 
     async findChat(chatId: string) {

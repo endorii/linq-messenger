@@ -2,7 +2,7 @@ import { IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreatePrivateChatDto {
     @IsString()
-    userId: string;
+    otherUserId: string;
 }
 
 export class CreateGroupChatDto {

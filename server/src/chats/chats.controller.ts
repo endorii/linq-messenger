@@ -19,6 +19,11 @@ export class ChatsController {
         return this.chatsService.getChats(req.user.id);
     }
 
+    @Get(":chatId")
+    async getChat(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
+        return this.chatsService.getChat(req.user.id, chatId);
+    }
+
     @Post("private")
     createPrivateChat(
         @Req() req: AuthenticatedRequest,
@@ -41,11 +46,6 @@ export class ChatsController {
         console.log("typeof req.user.id:", typeof req.user.id);
 
         return this.chatsService.createChannel(req.user.id, createChannelDto);
-    }
-
-    @Get(":chatId")
-    getChat(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
-        return this.chatsService.getChat(req.user.id, chatId);
     }
 
     @Get(":chatId/messages")
