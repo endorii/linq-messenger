@@ -60,8 +60,8 @@ function SidebarChat({ chat }: { chat: IChat }) {
                 </SafeLink>
             </ContextMenuTrigger>
             <ContextMenuContent className="w-[200px]">
-                <ContextMenuItem>
-                    <SettingsIcon className="w-[30px] stroke-2 stroke-white" />
+                <ContextMenuItem className="group">
+                    <SettingsIcon className="w-[30px] stroke-2 stroke-white fill-none group-hover:stroke-black" />
                     <div>Open in New Tab</div>
                 </ContextMenuItem>
                 <ContextMenuItem>Add to Folder</ContextMenuItem>

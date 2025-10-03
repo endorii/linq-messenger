@@ -11,8 +11,6 @@ function SidebarChats() {
     const { data: chats, isPending: isChatsPending } = useChats();
     const { data: folders, isPending: isFoldersPending } = useFolders();
 
-    if (!chats || chats.length === 0) return null;
-
     return (
         <div className="flex flex-col px-[10px] py-[5px] overflow-hidden">
             <Tabs

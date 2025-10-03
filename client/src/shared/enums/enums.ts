@@ -1,5 +1,5 @@
 export enum ChatEnum {
-    PRIVATE,
-    GROUP,
-    CHANNEL,
+    PRIVATE = "PRIVATE",
+    GROUP = "GROUP",
+    CHANNEL = "CHANNEL",
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChatEnum } from "@/shared/enums/enums";
 import { OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 
@@ -26,14 +27,14 @@ function ChatHeader({
                 <div>
                     <div className="font-semibold">{chat.name}</div>
                     <div className="text-sm text-neutral-400">
-                        {chat.type === "PRIVATE"
+                        {chat.type === ChatEnum.PRIVATE
                             ? "last seen recently"
                             : `${chat.members?.length || 0} members`}
                     </div>
                 </div>
             </div>
             <div className="flex gap-[25px]">
-                {chat.type === "PRIVATE" ? (
+                {chat.type === ChatEnum.PRIVATE ? (
                     <button>
                         <PhoneIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
                     </button>

@@ -9,7 +9,6 @@ function SidebarChatsFolders({
 }: {
     folders: IChatFolder[] | undefined;
 }) {
-    if (!folders || folders.length === 0) return null;
     return (
         <>
             <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[5px]">

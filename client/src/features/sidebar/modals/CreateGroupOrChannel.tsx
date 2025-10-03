@@ -160,7 +160,7 @@ export default function CreateGroupOrChannel({
 
                 {step === 2 && (
                     <>
-                        <div className="flex items-center gap-[15px]">
+                        <div className="flex flex-col items-center gap-[15px]">
                             {contacts && contacts.length > 0
                                 ? contacts.map((contact) => (
                                       <div

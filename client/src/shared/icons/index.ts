@@ -25,3 +25,4 @@ export { default as CheckBothIcon } from "./CheckBothIcon";
 export { default as CheckIcon } from "./CheckIcon";
 export { default as MicrophoneIcon } from "./MicrophoneIcon";
 export { default as EmojiIcon } from "./EmojiIcon";
+export { default as MessageIcon } from "./MessageIcon";
