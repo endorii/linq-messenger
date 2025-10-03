@@ -22,8 +22,11 @@ function ContactsTab({
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
             />
+            <SidebarContacts
+                searchValue={searchValue}
+                setActiveTab={setActiveTab}
+            />
             <SidebarContactsPlus setActiveModal={setActiveModal} />
-            <SidebarContacts searchValue={searchValue} />
         </>
     );
 }

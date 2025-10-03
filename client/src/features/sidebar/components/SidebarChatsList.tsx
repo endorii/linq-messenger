@@ -10,9 +10,9 @@ function SidebarChatsList({
     chats,
 }: {
     folders: IChatFolder[] | undefined;
-    chats: IChat[];
+    chats: IChat[] | undefined;
 }) {
-    if (!folders || folders.length === 0) return null;
+    if (!chats || chats.length === 0) return null;
 
     return (
         <div className="flex-1 overflow-y-auto">

@@ -1,10 +1,19 @@
 "use client";
 
+import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
-import SafeLink from "@/shared/ui/links/SafeLink";
+import { SidebarTabType } from "@/shared/types/types";
 
-function SidebarContacts({ searchValue }: { searchValue: string }) {
+function SidebarContacts({
+    searchValue,
+    setActiveTab,
+}: {
+    searchValue: string;
+    setActiveTab: React.Dispatch<React.SetStateAction<SidebarTabType>>;
+}) {
     const { data: contacts, isPending: isContactsPending } = useContacts();
+
+    const useGetOrCreatePrivateChatMutation = useCreatePrivateChat();
 
     if (isContactsPending) return <div>Завантаження...</div>;
     if (!contacts || contacts.length === 0) return <div>Контакти відсутні</div>;
@@ -28,8 +37,13 @@ function SidebarContacts({ searchValue }: { searchValue: string }) {
     return (
         <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto">
             {filteredContacts.map((contact) => (
-                <SafeLink
-                    href={`/${contact.nickname}`}
+                <div
+                    onClick={() => {
+                        useGetOrCreatePrivateChatMutation.mutateAsync(
+                            contact.contact?.id
+                        );
+                        setActiveTab("chats");
+                    }}
                     key={contact.id}
                     className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                 >
@@ -62,7 +76,7 @@ function SidebarContacts({ searchValue }: { searchValue: string }) {
                                 : "last seen recently"}
                         </div>
                     </div>
-                </SafeLink>
+                </div>
             ))}
         </div>
     );
