@@ -5,6 +5,7 @@ import {
     fetchCreateChannel,
     fetchCreateGroupChat,
     fetchCreatePrivateChat,
+    fetchDeleteChat,
 } from "../api/chats.api";
 import { ChannelPayload, GroupChatPayload, IChat } from "@/shared/interfaces/IChat";
 import { toast } from "sonner";
@@ -63,6 +64,21 @@ export function useCreateChannel() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (channelPayload: ChannelPayload) => fetchCreateChannel(channelPayload),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+            toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useDeleteChat() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (chatId: string) => fetchDeleteChat(chatId),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);

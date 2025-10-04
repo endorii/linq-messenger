@@ -43,7 +43,7 @@ export class ChatsService {
                     orderBy: {
                         createdAt: "desc",
                     },
-                    take: 50, // Опціонально: обмежити кількість повідомлень
+                    take: 50,
                 },
             },
         });
@@ -82,8 +82,8 @@ export class ChatsService {
                 avatar: companion.avatarUrl,
                 members: {
                     create: [
-                        { userId, role: "MEMBER" },
-                        { userId: createPrivateChatDto.otherUserId, role: "MEMBER" },
+                        { userId, role: "ADMIN" },
+                        { userId: createPrivateChatDto.otherUserId, role: "ADMIN" },
                     ],
                 },
                 type: ChatType.PRIVATE,
@@ -138,6 +138,15 @@ export class ChatsService {
                 description: createChannelDto.description,
                 avatar: createChannelDto.avatar,
                 type: ChatType.CHANNEL,
+                messages: {
+                    create: [
+                        {
+                            type: MessageType.SYSTEM,
+                            content: `Channel "${createChannelDto.name}" created`,
+                            senderId: null,
+                        },
+                    ],
+                },
                 members: {
                     create: [
                         ...createChannelDto.memberIds
@@ -168,5 +177,31 @@ export class ChatsService {
             throw new NotFoundException("Chat not found");
         }
         return chat;
+    }
+
+    async deleteChat(userId: string, chatId: string) {
+        const existingChat = await this.prisma.chat.findUnique({
+            where: {
+                id: chatId,
+                members: {
+                    some: {
+                        userId,
+                        role: "ADMIN",
+                    },
+                },
+            },
+        });
+
+        if (!existingChat) throw new NotFoundException("Chat not found");
+
+        await this.prisma.chat.delete({
+            where: {
+                id: chatId,
+            },
+        });
+
+        return {
+            message: "Chat deleted successfully",
+        };
     }
 }

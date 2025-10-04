@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete } from "@nestjs/common";
 import { ChatsService } from "./chats.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
@@ -46,6 +46,11 @@ export class ChatsController {
         console.log("typeof req.user.id:", typeof req.user.id);
 
         return this.chatsService.createChannel(req.user.id, createChannelDto);
+    }
+
+    @Delete(":chatId")
+    deleteChat(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
+        return this.chatsService.deleteChat(req.user.id, chatId);
     }
 
     @Get(":chatId/messages")

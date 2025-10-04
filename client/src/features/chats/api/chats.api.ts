@@ -32,3 +32,8 @@ export async function fetchCreateChannel(
     const { data } = await httpService.post(`/chats/channel`, channelPayload);
     return data;
 }
+
+export async function fetchDeleteChat(chatId: string): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.delete(`/chats/${chatId}`);
+    return data;
+}
