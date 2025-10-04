@@ -192,7 +192,7 @@ export class ChatsService {
             },
         });
 
-        if (!existingChat) throw new NotFoundException("Chat not found");
+        if (!existingChat) throw new NotFoundException("Chat not found or access denied");
 
         await this.prisma.chat.delete({
             where: {
