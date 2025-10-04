@@ -1,5 +1,13 @@
 "use client";
 
+import { useContacts } from "@/features/contacts/hooks/useContacts";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu";
 import { ChatEnum } from "@/shared/enums/enums";
 import { OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -11,6 +19,20 @@ function ChatHeader({
     chat: IChat;
     setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+    const { data: contacts, isPending: isContactsPending } = useContacts();
+    const isPrivate = chat.type === ChatEnum.PRIVATE;
+    if (!contacts) return null;
+    const DESTRUCTIVE_ACTIONS = {
+        [ChatEnum.PRIVATE]: { label: "Delete chat", onClick: () => {} },
+        [ChatEnum.GROUP]: { label: "Leave group", onClick: () => {} },
+        [ChatEnum.CHANNEL]: {
+            label: "Leave channel",
+            onClick: () => {},
+        },
+    } as const;
+
+    const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];
+
     return (
         <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
             <div
@@ -42,9 +64,42 @@ function ChatHeader({
                 <button>
                     <SearchIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
                 </button>
-                <button>
-                    <OptionsIcon className="w-[21px] fill-neutral-300" />
-                </button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="cursor-pointer">
+                            <OptionsIcon className="w-[21px] fill-neutral-300" />
+                        </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent className="w-56">
+                        {isPrivate &&
+                        contacts.some(
+                            (contact) =>
+                                contact.contact?.id === chat.members[1].user.id
+                        ) ? (
+                            <DropdownMenuItem>Edit contact</DropdownMenuItem>
+                        ) : (
+                            <DropdownMenuItem>Add contact</DropdownMenuItem>
+                        )}
+                        {chat.type === ChatEnum.PRIVATE && (
+                            <DropdownMenuItem>Video Call</DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem>Mute</DropdownMenuItem>
+                        <DropdownMenuItem>Select messages</DropdownMenuItem>
+                        {chat.type === ChatEnum.PRIVATE && (
+                            <DropdownMenuItem>Block user</DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        {destructiveAction && (
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={destructiveAction.onClick}
+                            >
+                                {destructiveAction.label}
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </div>
     );

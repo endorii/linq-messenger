@@ -92,24 +92,38 @@ function ChatSlug() {
                                 {dayjs(date).format("D MMMM")}
                             </div>
                             {msgs.map((msg) => (
-                                //message
-                                <ContextMenu>
-                                    <ContextMenuTrigger
-                                        className={`px-[10px] py-[5px] text-white max-w-[500px] rounded-xl wrap-anywhere ${
-                                            msg.isMine
-                                                ? "bg-purple-gradient self-end rounded-br-none"
-                                                : "bg-neutral-800 self-start rounded-bl-none"
-                                        }`}
-                                    >
-                                        <div key={msg.id}>
-                                            {msg.content}
-                                            <div className="text-xs text-gray-400 text-right">
-                                                {dayjs(msg.createdAt).format(
-                                                    "HH:mm"
-                                                )}
+                                <ContextMenu key={msg.id}>
+                                    {msg.type === "TEXT" ? (
+                                        <ContextMenuTrigger
+                                            className={`px-[10px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
+                                                msg.isMine
+                                                    ? "bg-purple-gradient self-end rounded-br-none"
+                                                    : "bg-neutral-800 self-start rounded-bl-none"
+                                            }`}
+                                        >
+                                            <div key={msg.id}>
+                                                {msg.content}
+                                                <div className="text-xs text-gray-400 text-right">
+                                                    {dayjs(
+                                                        msg.createdAt
+                                                    ).format("HH:mm")}
+                                                </div>
                                             </div>
+                                        </ContextMenuTrigger>
+                                    ) : (
+                                        <div className="flex items-center justify-center">
+                                            <ContextMenuTrigger className="flex items-center justify-center p-[2px] bg-purple-gradient rounded-xl">
+                                                <div
+                                                    key={msg.id}
+                                                    className={
+                                                        "px-[15px] py-[3px] border border-white/5 bg-neutral-900 rounded-xl backdrop-blur-[5px] font-medium text-neutral-300"
+                                                    }
+                                                >
+                                                    {msg.content}
+                                                </div>
+                                            </ContextMenuTrigger>
                                         </div>
-                                    </ContextMenuTrigger>
+                                    )}
 
                                     <ContextMenuContent className="w-[200px]">
                                         <ContextMenuItem

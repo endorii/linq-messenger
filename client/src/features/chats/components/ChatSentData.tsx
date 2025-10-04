@@ -61,7 +61,7 @@ function ChatSentData({ chatId }: { chatId: string }) {
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="absolute top-[12px] right-[15px] transition-all duration-300 cursor-pointer">
+                        <button className="absolute top-[14px] right-[15px] transition-all duration-300 cursor-pointer">
                             <EmojiIcon className="w-[20px] h-[20px] fill-neutral-400 group-focus-within:fill-white" />
                         </button>
                     </DropdownMenuTrigger>
