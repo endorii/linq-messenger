@@ -1,12 +1,9 @@
 import { PlusIcon } from "@/shared/icons";
-import { ModalType } from "@/shared/types/types";
+import { useSidebarStore } from "@/store/sidebarStore";
 import React from "react";
 
-function SidebarContactsPlus({
-    setActiveModal,
-}: {
-    setActiveModal: React.Dispatch<React.SetStateAction<ModalType>>;
-}) {
+function SidebarContactsPlus() {
+    const { setActiveModal } = useSidebarStore();
     return (
         <div>
             <button

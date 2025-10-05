@@ -2,7 +2,6 @@
 
 import { useChats } from "@/features/chats/hooks/useChats";
 import { useFolders } from "@/features/folders/hooks/useFolders";
-import React from "react";
 import SidebarChatsFolders from "./SidebarChatsFolders";
 import { Tabs } from "@/shared/components/ui/tabs";
 import SidebarChatsList from "./SidebarChatsList";

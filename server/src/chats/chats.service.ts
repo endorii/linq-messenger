@@ -11,6 +11,7 @@ export class ChatsService {
         return await this.prisma.chat.findMany({
             where: {
                 members: { some: { userId } },
+                isActive: true,
             },
             include: {
                 members: {
@@ -25,26 +26,10 @@ export class ChatsService {
 
     async getChat(userId: string, chatId: string) {
         const chat = await this.prisma.chat.findFirst({
-            where: {
-                id: chatId,
-                members: {
-                    some: {
-                        userId: userId,
-                    },
-                },
-            },
+            where: { id: chatId, members: { some: { userId } } },
             include: {
-                members: {
-                    include: {
-                        user: true,
-                    },
-                },
-                messages: {
-                    orderBy: {
-                        createdAt: "desc",
-                    },
-                    take: 50,
-                },
+                members: { include: { user: true } },
+                messages: { orderBy: { createdAt: "desc" }, take: 50 },
             },
         });
 
@@ -54,41 +39,36 @@ export class ChatsService {
     }
 
     async createPrivateChat(userId: string, createPrivateChatDto: CreatePrivateChatDto) {
+        const { otherUserId } = createPrivateChatDto;
+
         const existingChat = await this.prisma.chat.findFirst({
             where: {
-                type: ChatType.PRIVATE,
-                AND: [
-                    { members: { some: { userId } } },
-                    { members: { some: { userId: createPrivateChatDto.otherUserId } } },
-                ],
+                type: "PRIVATE",
+                members: {
+                    every: { userId: { in: [userId, otherUserId] } },
+                },
             },
+            include: { members: true },
         });
 
-        if (existingChat) {
-            return { message: "Chat already exists", data: existingChat };
-        }
+        if (existingChat) return existingChat;
 
         const companion = await this.prisma.user.findUnique({
-            where: { id: createPrivateChatDto.otherUserId },
+            where: { id: otherUserId },
         });
 
-        if (!companion) {
-            throw new NotFoundException("Cmpanion not found");
-        }
+        if (!companion) throw new NotFoundException("User not found");
 
         const privateChat = await this.prisma.chat.create({
             data: {
-                name: companion.username,
-                avatar: companion.avatarUrl,
+                type: "PRIVATE",
                 members: {
-                    create: [
-                        { userId, role: "ADMIN" },
-                        { userId: createPrivateChatDto.otherUserId, role: "ADMIN" },
-                    ],
+                    create: [{ userId }, { userId: otherUserId }],
                 },
-                type: ChatType.PRIVATE,
             },
+            include: { members: { include: { user: true } } },
         });
+
         return { message: "Chat created successfully", data: privateChat };
     }
 

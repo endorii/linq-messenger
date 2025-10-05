@@ -4,6 +4,7 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
+import { useChatName } from "@/shared/hooks/useChatName";
 import { ChatEnum } from "@/shared/enums/enums";
 import { SettingsIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -12,17 +13,20 @@ import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLast
 import { useParams } from "next/navigation";
 import { ModalType } from "@/shared/types/types";
 
+interface SidebarChatProps {
+    setSelectedChat: React.Dispatch<React.SetStateAction<IChat | null>>;
+    chat: IChat;
+    setActiveModal: React.Dispatch<React.SetStateAction<ModalType>>;
+}
+
 function SidebarChat({
     setSelectedChat,
     chat,
     setActiveModal,
-}: {
-    setSelectedChat: React.Dispatch<React.SetStateAction<IChat | null>>;
-    chat: IChat;
-    setActiveModal: React.Dispatch<React.SetStateAction<ModalType>>;
-}) {
+}: SidebarChatProps) {
     const params = useParams();
     const chatId = params?.chatSlug;
+    const chatName = useChatName(chat);
 
     return (
         <>
@@ -47,7 +51,7 @@ function SidebarChat({
                             <div className="flex flex-col justify-between flex-1 min-w-0">
                                 <div className="flex justify-between gap-[2px]">
                                     <div className="font-semibold truncate">
-                                        {chat?.name ?? "Chat name"}
+                                        {chatName}
                                     </div>
                                     <div className="text-xs text-neutral-400">
                                         {formatSidebarLastMessageDateInChat(

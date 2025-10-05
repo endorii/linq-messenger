@@ -1,5 +1,6 @@
 "use client";
 
+import { useChatName } from "@/shared/hooks/useChatName";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
 import {
     DropdownMenu,
@@ -19,9 +20,11 @@ function ChatHeader({
     chat: IChat;
     setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-    const { data: contacts, isPending: isContactsPending } = useContacts();
+    const chatName = useChatName(chat);
+    const { data: contacts } = useContacts();
+
     const isPrivate = chat.type === ChatEnum.PRIVATE;
-    if (!contacts) return null;
+
     const DESTRUCTIVE_ACTIONS = {
         [ChatEnum.PRIVATE]: { label: "Delete chat", onClick: () => {} },
         [ChatEnum.GROUP]: { label: "Leave group", onClick: () => {} },
@@ -47,7 +50,7 @@ function ChatHeader({
                     />
                 </div>
                 <div>
-                    <div className="font-semibold">{chat.name}</div>
+                    <div className="font-semibold">{chatName}</div>
                     <div className="text-sm text-neutral-400">
                         {chat.type === ChatEnum.PRIVATE
                             ? "last seen recently"
@@ -73,9 +76,9 @@ function ChatHeader({
 
                     <DropdownMenuContent className="w-56">
                         {isPrivate &&
-                        contacts.some(
+                        contacts?.some(
                             (contact) =>
-                                contact.contact?.id === chat.members[1].user.id
+                                contact.contactId === chat.members[1]?.userId
                         ) ? (
                             <DropdownMenuItem>Edit contact</DropdownMenuItem>
                         ) : (

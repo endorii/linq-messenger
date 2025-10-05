@@ -1,7 +1,6 @@
 "use client";
 
 import PlusIcon from "@/shared/icons/PlusIcon";
-import { ModalType } from "@/shared/types/types";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -9,12 +8,10 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator,
 } from "@/shared/components/ui/dropdown-menu";
+import { useSidebarStore } from "@/store/sidebarStore";
 
-function SidebarDropdownPlus({
-    setActiveModal,
-}: {
-    setActiveModal: React.Dispatch<React.SetStateAction<ModalType>>;
-}) {
+function SidebarDropdownPlus() {
+    const { setActiveModal } = useSidebarStore();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

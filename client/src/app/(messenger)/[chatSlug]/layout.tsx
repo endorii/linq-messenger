@@ -8,11 +8,14 @@ import ChatHeader from "@/features/chats/components/ChatHeader";
 import ChatSentData from "@/features/chats/components/ChatSentData";
 import ChatSidebar from "@/features/chats/components/ChatSidebar";
 import { useProfile } from "@/features/auth/hooks/useAuth";
+import ChatMessages from "@/features/chats/components/ChatMessages";
+import { ChatEnum } from "@/shared/enums/enums";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
+
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
     const { data: me, isLoading: isMeLoading } = useProfile();
@@ -32,15 +35,16 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
     );
 
     const canSendMessages =
-        chat.type !== "CHANNEL" || (chat.type === "CHANNEL" && isAdmin);
+        chat.type !== ChatEnum.CHANNEL ||
+        (chat.type === ChatEnum.CHANNEL && isAdmin);
 
     return (
         <div className="flex w-full h-[100vh]">
             <div className="flex-1 relative">
                 <ChatHeader chat={chat} setSidebarOpen={setSidebarOpen} />
-                <div className="h-full pt-[65px] pb-[80px] w-full bg-[url('https://i.pinimg.com/736x/a4/a4/61/a4a461c572891b4bf1f2e6af3d127428.jpg')]">
-                    {children}
-                </div>
+
+                <ChatMessages>{children}</ChatMessages>
+
                 {canSendMessages && <ChatSentData chatId={chat.id} />}
             </div>
             <ChatSidebar

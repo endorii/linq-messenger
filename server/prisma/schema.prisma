@@ -34,8 +34,8 @@ model User {
 
     chatMembers ChatMember[]
 
-    chatsWhereIsAdmin Chat[]       @relation("ChatWhereIsAdmin")
-    chatFolder        ChatFolder[]
+    chatsWhereIsAdmin Chat[]   @relation("ChatWhereIsAdmin")
+    folders           Folder[]
 
     contacts  Contact[] @relation("UserContacts")
     contactOf Contact[] @relation("ContactUser")
@@ -88,10 +88,12 @@ model Chat {
     members     ChatMember[]
     messages    Message[]
 
-    lastMessageId String?          @unique
-    lastMessage   Message?         @relation("LastMessage", fields: [lastMessageId], references: [id])
-    chatFolders   ChatFolderChat[]
-    deletedChats  DeletedChat[]
+    lastMessageId String?  @unique
+    lastMessage   Message? @relation("LastMessage", fields: [lastMessageId], references: [id])
+
+    folders FolderChat[]
+
+    deletedChats DeletedChat[]
 
     @@map("chats")
 }
@@ -109,7 +111,7 @@ model DeletedChat {
     @@map("deleted_chats")
 }
 
-model ChatFolder {
+model Folder {
     id        String   @id @default(cuid())
     name      String
     icon      String?
@@ -120,22 +122,22 @@ model ChatFolder {
     userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    chats ChatFolderChat[]
+    chats FolderChat[]
 
-    @@map("chat_folders")
+    @@map("folders")
 }
 
-model ChatFolderChat {
+model FolderChat {
     id       String   @id @default(cuid())
     chatId   String
     folderId String
     addedAt  DateTime @default(now())
 
-    chat   Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
-    folder ChatFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+    chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
     @@unique([chatId, folderId])
-    @@map("chat_folder_chats")
+    @@map("folder_chats")
 }
 
 model ChatMember {
