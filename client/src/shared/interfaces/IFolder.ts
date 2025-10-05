@@ -1,6 +1,6 @@
 import { IChat } from "./IChat";
 
-export interface IChatFolder {
+export interface IFolder {
     id: string;
     name: string;
     icon?: string;

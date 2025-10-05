@@ -6,6 +6,6 @@ export class CreateContactDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(20)
+    @MaxLength(30)
     nickname?: string;
 }

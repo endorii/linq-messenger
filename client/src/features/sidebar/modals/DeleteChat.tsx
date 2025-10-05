@@ -11,7 +11,7 @@ import { useDeleteChat } from "@/features/chats/hooks/useChats";
 interface CreateNewChannelProps {
     isOpen: boolean;
     onClose: () => void;
-    user: IChatMember | null;
+    user: IChatMember | undefined;
     chat: IChat | null;
 }
 

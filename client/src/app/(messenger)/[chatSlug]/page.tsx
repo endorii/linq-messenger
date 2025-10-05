@@ -162,7 +162,6 @@ function ChatSlug() {
                                         <ContextMenuSeparator />
 
                                         <ContextMenuItem className="group">
-                                            {/* <SettingsIcon className="w-[30px] stroke-2 stroke-white fill-none group-hover:stroke-black" /> */}
                                             <div>Reply</div>
                                         </ContextMenuItem>
 

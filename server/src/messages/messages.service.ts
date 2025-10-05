@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { ChatsService } from "src/chats/chats.service";
-// import { UpdateMessageDto } from './dto/update-message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -20,7 +19,6 @@ export class MessagesService {
             include: { sender: { select: { id: true, username: true, avatarUrl: true } } },
         });
 
-        // Додаємо поле isMine
         const messagesWithIsMine = messages.map((msg) => ({
             ...msg,
             isMine: msg.senderId === userId,

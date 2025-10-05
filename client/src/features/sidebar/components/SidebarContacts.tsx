@@ -16,7 +16,12 @@ function SidebarContacts({
     const useGetOrCreatePrivateChatMutation = useCreatePrivateChat();
 
     if (isContactsPending) return <div>Завантаження...</div>;
-    if (!contacts || contacts.length === 0) return <div>Контакти відсутні</div>;
+    if (!contacts || contacts.length === 0)
+        return (
+            <div className="flex justify-center p-[10px] bg-neutral-900 mt-[10px] font-medium">
+                No contacts
+            </div>
+        );
 
     const filteredContacts = contacts.filter((contact) => {
         const search = searchValue.toLowerCase().trim();

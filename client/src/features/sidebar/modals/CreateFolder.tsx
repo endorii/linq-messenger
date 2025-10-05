@@ -3,7 +3,6 @@
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-// import CameraIcon from "@/shared/icons/CameraIcon";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { useState } from "react";
 import { createPortal } from "react-dom";

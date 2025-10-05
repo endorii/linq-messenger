@@ -79,8 +79,14 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
                     />
                     <Input
                         type="text"
-                        placeholder="Custom name (optional)"
-                        {...register("contactCustomName")}
+                        placeholder="Contact name (optional)"
+                        {...register("contactCustomName", {
+                            maxLength: {
+                                value: 30,
+                                message:
+                                    "Conatact name length should be maximum or equels 30 symbols",
+                            },
+                        })}
                         errorMessage={errors.contactCustomName?.message}
                         className="h-[45px]"
                     />

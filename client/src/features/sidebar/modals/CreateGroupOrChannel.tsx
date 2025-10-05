@@ -90,7 +90,6 @@ export default function CreateGroupOrChannel({
 
     if (!isOpen) return null;
 
-    // залежно від типу — змінюємо підписи
     const entityLabel = type === ChatEnum.CHANNEL ? "Channel" : "Group";
 
     const modalContent = (

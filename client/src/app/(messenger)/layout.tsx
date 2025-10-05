@@ -44,7 +44,12 @@ export default function MessengerLayout({
                     <Sidebar user={user} />
                 </ResizablePanel>
                 <ResizableHandle />
-                <ResizablePanel defaultSize={80}>{children}</ResizablePanel>
+                <ResizablePanel
+                    defaultSize={80}
+                    className="bg-[url('https://i.pinimg.com/736x/a4/a4/61/a4a461c572891b4bf1f2e6af3d127428.jpg')]"
+                >
+                    {children}
+                </ResizablePanel>
             </ResizablePanelGroup>
         </div>
     );
