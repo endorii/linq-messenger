@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware"; // <-- імпорт devtools
+import { devtools } from "zustand/middleware";
 import { ModalType } from "@/shared/types/types";
 import { IFolder } from "@/shared/interfaces/IFolder";
 

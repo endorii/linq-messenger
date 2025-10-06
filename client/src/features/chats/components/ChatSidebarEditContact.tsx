@@ -34,14 +34,7 @@ function ChatSidebarEditContact({
 
     const onSubmit = (data: { customContactName: string }) => {
         try {
-            // useRegisterUserMutation.mutate({
-            //     email: data.email,
-            //     username: data.username,
-            //     phone: data.phone,
-            //     firstName: data.firstName,
-            //     lastName: data.lastName,
-            //     password: data.password,
-            // });
+            // функція мутації для редагування контакту
             reset();
         } catch (error: any) {
             console.log(error);

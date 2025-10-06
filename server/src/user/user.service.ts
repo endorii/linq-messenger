@@ -56,13 +56,6 @@ export class UserService {
         }
     }
 
-    // async updateUser(id: string, updateData: UpdateUserDto) {
-    //     return this.prisma.user.update({
-    //         where: { id },
-    //         data: updateData,
-    //     });
-    // }
-
     async updateVerificationData(id: string, verificationToken: string, tokenExpiry: Date) {
         return this.prisma.user.update({
             where: { id },

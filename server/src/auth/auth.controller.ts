@@ -52,7 +52,7 @@ export class AuthController {
             httpOnly: true,
             secure: this.configService.get("NODE_ENV") === "production",
             sameSite: "lax",
-            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+            maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
         return { message: "Login succesfully!", data: { accessToken } };

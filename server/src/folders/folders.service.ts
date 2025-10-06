@@ -1,6 +1,4 @@
 import { ConflictException, Injectable } from "@nestjs/common";
-// import { CreateFolderDto } from "./dto/create-folder.dto";
-// import { UpdateFolderDto } from "./dto/update-folder.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateFolderDto } from "./dto/create-folder.dto";
 import { UpdateFolderDto } from "./dto/update-folder.dto";

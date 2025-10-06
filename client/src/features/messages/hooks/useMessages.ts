@@ -24,7 +24,6 @@ export function useCreateMessage() {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats"] });
-            // queryClient.invalidateQueries({ queryKey: ["chat", variables.chatId] });
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;
