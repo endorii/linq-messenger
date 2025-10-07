@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateContactDto } from "./dto/create-contact.dto";
+import { UpdateContactDto } from "./dto/update-contact.dto";
 
 @Injectable()
 export class ContactsService {
@@ -61,27 +62,45 @@ export class ContactsService {
         });
     }
 
+    async updateContact(userId: string, contactId: string, updateContactDto: UpdateContactDto) {
+        const contact = await this.prisma.contact.findUnique({
+            where: {
+                userId_contactId: { userId, contactId },
+            },
+        });
+
+        if (!contact) throw new ConflictException("This user does not exist in your contacts");
+
+        const updatedContact = await this.prisma.contact.update({
+            where: {
+                userId_contactId: { userId, contactId },
+            },
+            data: { nickname: updateContactDto.nickname },
+        });
+
+        return {
+            message: `Contact successfully updated`,
+            data: updatedContact,
+        };
+    }
+
     async deleteContact(userId: string, contactId: string) {
         const contact = await this.prisma.contact.findUnique({
             where: {
-                userId_contactId: {
-                    userId,
-                    contactId,
-                },
+                userId_contactId: { userId, contactId },
             },
         });
 
-        if (!contact) {
-            throw new ConflictException("This user does not exist in your contacts");
-        }
+        if (!contact) throw new ConflictException("This user does not exist in your contacts");
 
-        return this.prisma.contact.delete({
+        await this.prisma.contact.delete({
             where: {
-                userId_contactId: {
-                    userId,
-                    contactId,
-                },
+                userId_contactId: { userId, contactId },
             },
         });
+
+        return {
+            message: `Contact successfully deleted`,
+        };
     }
 }

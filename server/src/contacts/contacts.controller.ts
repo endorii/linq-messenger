@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, UseGuards, Req, Delete, Param } from "@nestjs/common";
+import { Controller, Get, Post, Body, UseGuards, Req, Delete, Param, Patch } from "@nestjs/common";
 import { ContactsService } from "./contacts.service";
 import { CreateContactDto } from "./dto/create-contact.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
+import { UpdateContactDto } from "./dto/update-contact.dto";
 
 @Controller("contacts")
 @UseGuards(JwtAuthGuard)
@@ -17,6 +18,15 @@ export class ContactsController {
     @Post()
     addContact(@Req() req: AuthenticatedRequest, @Body() createContactDto: CreateContactDto) {
         return this.contactsService.addContact(req.user.id, createContactDto);
+    }
+
+    @Patch(":contactId")
+    updateContact(
+        @Req() req: AuthenticatedRequest,
+        @Param("contactId") contactId: string,
+        @Body() updateContactDto: UpdateContactDto
+    ) {
+        return this.contactsService.updateContact(req.user.id, contactId, updateContactDto);
     }
 
     @Delete(":contactId")
