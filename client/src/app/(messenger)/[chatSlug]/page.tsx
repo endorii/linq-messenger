@@ -126,10 +126,7 @@ function ChatSlug() {
                                     )}
 
                                     <ContextMenuContent className="w-[200px]">
-                                        <ContextMenuItem
-                                            className="p-0 focus:bg-transparent"
-                                            // inset={true}
-                                        >
+                                        <ContextMenuItem className="p-0 focus:bg-transparent">
                                             <div className="flex gap-2 overflow-x-auto max-w-full p-2">
                                                 {[
                                                     "👍",

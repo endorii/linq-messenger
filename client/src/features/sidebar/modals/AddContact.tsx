@@ -4,10 +4,11 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useCreateContact } from "@/features/contacts/hooks/useContacts";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 interface AddContactProps {
     isOpen: boolean;
@@ -20,6 +21,8 @@ interface FormData {
 }
 
 export default function AddContact({ isOpen, onClose }: AddContactProps) {
+    const { selectedUser, setSelectedUser } = useSidebarStore();
+
     const {
         register,
         handleSubmit,
@@ -32,11 +35,21 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
         },
     });
 
+    useEffect(() => {
+        if (isOpen && selectedUser) {
+            reset({
+                contactUsername: selectedUser.username,
+                contactCustomName: "",
+            });
+        }
+    }, [isOpen, selectedUser, reset]);
+
     const [modalMessage, setModalMessage] = useState("");
 
     const createContactMutation = useCreateContact();
 
     const handleClose = () => {
+        setSelectedUser(null);
         reset();
         setModalMessage("");
         onClose();
@@ -48,6 +61,7 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
                 username: data.contactUsername,
                 nickname: data.contactCustomName,
             });
+            setSelectedUser(null);
             reset();
             handleClose();
         } catch (error: any) {
@@ -97,10 +111,7 @@ export default function AddContact({ isOpen, onClose }: AddContactProps) {
                 <div className="flex justify-end gap-[5px]">
                     <Button
                         type="button"
-                        onClick={() => {
-                            onClose();
-                            reset();
-                        }}
+                        onClick={handleClose}
                         className="cursor-pointer"
                     >
                         Cancel

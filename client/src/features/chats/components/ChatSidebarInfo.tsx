@@ -1,7 +1,6 @@
 "use client";
 
-import { useChatName } from "@/shared/hooks/useChatName";
-import { useContacts } from "@/features/contacts/hooks/useContacts";
+import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import {
     Tabs,
     TabsContent,
@@ -19,32 +18,41 @@ import {
 } from "@/shared/icons";
 import AddContactIcon from "@/shared/icons/AddContactIcon";
 import { IChat } from "@/shared/interfaces/IChat";
-import { Switch } from "@radix-ui/react-switch";
+import { Switch } from "@/shared/components/ui/switch";
 import Image from "next/image";
-import { ChatSidebarTabType } from "@/shared/types/types";
+import { useSidebarStore } from "@/store/sidebarStore";
 
-function ChatSidebarInfo({
-    chat,
-    setSidebarOpen,
-    setChatSidebarTab,
-}: {
-    chat: IChat;
-    setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setChatSidebarTab: React.Dispatch<React.SetStateAction<ChatSidebarTabType>>;
-}) {
-    const chatName = useChatName(chat);
-    const { data: contacts } = useContacts();
+function ChatSidebarInfo({ chat }: { chat: IChat }) {
+    const { entity, chatName, isContact, otherUserId } = useChatEntity(chat);
+
+    const {
+        setChatSidebarOpened,
+        setChatSidebarTab,
+        setActiveModal,
+        setSelectedUser,
+    } = useSidebarStore();
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const showMembers = isGroupChat || isChannel;
 
+    const otherMember = isPrivateChat
+        ? chat.members.find((m) => m.userId === otherUserId)
+        : null;
+
+    const handleAddContact = () => {
+        if (otherUserId && "username" in entity) {
+            setSelectedUser(entity);
+            setActiveModal("addContact");
+        }
+    };
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
-                    <button onClick={() => setSidebarOpen(false)}>
+                    <button onClick={() => setChatSidebarOpened(false)}>
                         <BackIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
                     </button>
                     <div className="text-xl font-semibold text-nowrap">
@@ -58,10 +66,7 @@ function ChatSidebarInfo({
                     </div>
                 </div>
 
-                {isPrivateChat &&
-                contacts?.some(
-                    (contact) => contact.contactId === chat.members[1]?.userId
-                ) ? (
+                {isPrivateChat && isContact ? (
                     <button
                         onClick={() => {
                             setChatSidebarTab("editContact");
@@ -70,7 +75,7 @@ function ChatSidebarInfo({
                         <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
                     </button>
                 ) : isPrivateChat ? (
-                    <button onClick={() => {}}>
+                    <button onClick={handleAddContact}>
                         <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
                     </button>
                 ) : null}
@@ -112,11 +117,11 @@ function ChatSidebarInfo({
                             <div className="text-sm text-neutral-400">Link</div>
                         </div>
                     </div>
-                ) : chat.type === ChatEnum.PRIVATE ? (
+                ) : isPrivateChat && otherMember ? (
                     <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
                         <AtSignIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
-                            <div>@{chat.members[1]?.user?.username}</div>
+                            <div>@{otherMember.user?.username}</div>
                             <div className="text-sm text-neutral-400">
                                 username
                             </div>
@@ -132,6 +137,7 @@ function ChatSidebarInfo({
                 </div>
             </div>
 
+            {/* ... (Секція Tabs) ... */}
             <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                 <Tabs
                     defaultValue={showMembers ? "members" : "media"}
@@ -168,6 +174,8 @@ function ChatSidebarInfo({
                                         </div>
                                         <div className="flex flex-col">
                                             <div className="font-semibold">
+                                                {/* Тут також варто використовувати логіку імені, 
+                                                але для Members List зазвичай достатньо username */}
                                                 {member.user?.username}
                                             </div>
                                             <div className="text-neutral-400 text-sm">
@@ -180,6 +188,7 @@ function ChatSidebarInfo({
                         </TabsContent>
                     )}
 
+                    {/* ... (Інші TabsContent) ... */}
                     <TabsContent value="media" className="h-full">
                         <div className="flex flex-wrap w-full">
                             {Array.from({ length: 9 }).map((_, i) => (

@@ -85,6 +85,7 @@ export function useLogoutUser() {
             localStorage.removeItem("accessToken");
 
             queryClient.setQueryData(["me"], null);
+            queryClient.clear();
 
             toast.success(data.message);
 

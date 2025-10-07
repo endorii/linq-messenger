@@ -1,10 +1,12 @@
+"use client";
+
 import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { useChatName } from "@/shared/hooks/useChatName";
+import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { ChatEnum } from "@/shared/enums/enums";
 import { SettingsIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -26,7 +28,21 @@ function SidebarChat({
 }: SidebarChatProps) {
     const params = useParams();
     const chatId = params?.chatSlug;
-    const chatName = useChatName(chat);
+
+    const { chatName } = useChatEntity(chat);
+
+    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
+
+    const handleSetChatAndDeleteModal = () => {
+        setSelectedChat(chat);
+        setActiveModal("deleteChat");
+    };
+
+    // TODO: Додати тут обробник для блокування користувача
+    const handleBlockUser = () => {
+        // Логіка для блокування
+        console.log(`Block user in chat: ${chat.id}`);
+    };
 
     return (
         <>
@@ -84,27 +100,32 @@ function SidebarChat({
                     <ContextMenuItem>Pin</ContextMenuItem>
                     <ContextMenuItem>Mute</ContextMenuItem>
                     <ContextMenuItem>Roport</ContextMenuItem>
-                    {chat.type === ChatEnum.PRIVATE ? (
+
+                    {isPrivateChat && (
+                        <ContextMenuItem onClick={handleBlockUser}>
+                            Block User
+                        </ContextMenuItem>
+                    )}
+
+                    {/* 4. Деструктивні дії */}
+                    {isPrivateChat ? (
                         <ContextMenuItem
                             variant="destructive"
-                            onClick={() => {
-                                setSelectedChat(chat);
-                                setActiveModal("deleteChat");
-                            }}
+                            onClick={handleSetChatAndDeleteModal}
                         >
                             Delete Chat
                         </ContextMenuItem>
                     ) : chat.type === ChatEnum.GROUP ? (
                         <ContextMenuItem
                             variant="destructive"
-                            onClick={() => {}}
+                            onClick={() => {}} // TODO: Add logic to leave group
                         >
                             Leave Group
                         </ContextMenuItem>
                     ) : (
                         <ContextMenuItem
                             variant="destructive"
-                            onClick={() => {}}
+                            onClick={() => {}} // TODO: Add logic to leave channel
                         >
                             Leave Channel
                         </ContextMenuItem>
