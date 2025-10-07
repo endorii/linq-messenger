@@ -13,3 +13,18 @@ export async function fetchAddContact(
     const { data } = await httpService.post("/contacts", contactPayload);
     return data;
 }
+
+export async function fetchUpdateContact(
+    contactId: string,
+    updateContactPayload: Partial<ContactPayload>
+): Promise<ServerResponseWithMessage<ServerResponseWithMessage<IContact>>> {
+    const { data } = await httpService.patch(`/contacts/${contactId}`, updateContactPayload);
+    return data;
+}
+
+export async function fetchDeleteContact(
+    contactId: string
+): Promise<ServerResponseWithMessage<ServerResponseWithMessage<IContact>>> {
+    const { data } = await httpService.delete(`/contacts/${contactId}`);
+    return data;
+}
