@@ -28,9 +28,10 @@ model User {
 
     tokens Token[]
 
-    messages         Message[]
-    messageReactions MessageReaction[]
-    messagesRead     MessageRead[]
+    messages          Message[]
+    messageReactions  MessageReaction[]
+    messagesRead      MessageRead[]
+    forwardedMessages Message[]         @relation("ForwardedMessages")
 
     chatMembers ChatMember[]
 
@@ -81,12 +82,17 @@ model Chat {
     uniqueLink  String?      @unique @map("unique_link")
     type        ChatType     @default(PRIVATE)
     isActive    Boolean      @default(true)
+    isDeleted   Boolean      @default(false)
+    deletedAt   DateTime?
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     adminId     String?
     admin       User?        @relation("ChatWhereIsAdmin", fields: [adminId], references: [id])
     members     ChatMember[]
     messages    Message[]
+
+    pinnedMessageId String?  @map("pinned_message_id")
+    pinnedMessage   Message? @relation("PinnedMessage", fields: [pinnedMessageId], references: [id])
 
     lastMessageId String?  @unique
     lastMessage   Message? @relation("LastMessage", fields: [lastMessageId], references: [id])
@@ -141,16 +147,18 @@ model FolderChat {
 }
 
 model ChatMember {
-    id     String     @id @default(cuid())
-    userId String
-    chatId String
-    role   MemberRole @default(MEMBER)
+    id         String     @id @default(cuid())
+    userId     String
+    chatId     String
+    role       MemberRole @default(MEMBER)
+    joinedAt   DateTime   @default(now())
+    lastReadAt DateTime   @default(now())
 
-    joinedAt   DateTime @default(now())
-    lastReadAt DateTime @default(now())
-
-    isMuted   Boolean   @default(false) @map("is_muted")
-    muteUntil DateTime? @map("mute_until")
+    isMuted     Boolean   @default(false) @map("is_muted")
+    muteUntil   DateTime? @map("mute_until")
+    pinnedOrder Int?      @map("pinned_order")
+    isArchived  Boolean   @default(false) @map("is_archived")
+    leftAt      DateTime? @map("left_at")
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
@@ -169,6 +177,7 @@ model Message {
     replies    Message[]   @relation("MessageReply")
     editedAt   DateTime?
     isDeleted  Boolean     @default(false)
+    isRevoked  Boolean     @default(false) @map("is_revoked")
     createdAt  DateTime    @default(now())
     updatedAt  DateTime    @updatedAt
 
@@ -178,6 +187,11 @@ model Message {
     chatId String
     chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
+    forwardedFromId String? @map("forwarded_from_id")
+    forwardedFrom   User?   @relation("ForwardedMessages", fields: [forwardedFromId], references: [id])
+
+    pinnedInChats Chat[] @relation("PinnedMessage")
+
     attachments     Attachment[]
     reactions       MessageReaction[]
     messagesRead    MessageRead[]
@@ -185,6 +199,8 @@ model Message {
     deletedMessages DeletedMessage[]
 
     @@index([chatId])
+    @@index([chatId, createdAt])
+    @@index([chatId, isDeleted])
     @@index([senderId])
     @@map("messages")
 }
