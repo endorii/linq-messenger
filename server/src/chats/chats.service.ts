@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
-import { MemberRole, MessageType } from "generated/prisma";
+import { ChatType, MemberRole, MessageType } from "generated/prisma";
 import { UpdateChatDto } from "./dto/update-chat.dto";
 
 @Injectable()
@@ -11,11 +11,13 @@ export class ChatsService {
     async getChats(userId: string) {
         return await this.prisma.chat.findMany({
             where: {
-                members: { some: { userId } },
+                members: { some: { userId, leftAt: null } },
                 isActive: true,
+                deletedChats: { none: { userId } },
             },
             include: {
                 members: {
+                    where: { leftAt: null },
                     include: { user: true },
                 },
                 lastMessage: true,
@@ -27,9 +29,15 @@ export class ChatsService {
 
     async getChat(userId: string, chatId: string) {
         const chat = await this.prisma.chat.findFirst({
-            where: { id: chatId, members: { some: { userId } } },
+            where: {
+                id: chatId,
+                members: { some: { userId, leftAt: null } },
+            },
             include: {
-                members: { include: { user: true } },
+                members: {
+                    where: { leftAt: null },
+                    include: { user: true },
+                },
                 messages: { orderBy: { createdAt: "desc" }, take: 50 },
             },
         });
@@ -152,24 +160,67 @@ export class ChatsService {
         };
     }
 
-    async deleteChat(userId: string, chatId: string) {
-        const existingChat = await this.prisma.chat.findUnique({
-            where: {
-                id: chatId,
-                adminId: userId,
-            },
+    async leaveChat(userId: string, chatId: string) {
+        const chat = await this.prisma.chat.findUnique({
+            where: { id: chatId },
+            include: { members: true, admin: true },
         });
 
-        if (!existingChat) throw new NotFoundException("Chat not found or access denied");
+        if (!chat) throw new NotFoundException("Chat not found");
 
-        await this.prisma.chat.delete({
-            where: {
-                id: chatId,
-            },
+        if (chat.type === ChatType.PRIVATE) {
+            return this.prisma.deletedChat.create({ data: { chatId, userId } });
+        }
+
+        if (chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) {
+            const member = chat.members.find((m) => m.userId === userId);
+            if (!member) throw new ForbiddenException("You are not a member");
+
+            await this.prisma.chatMember.update({
+                where: { userId_chatId: { userId, chatId } },
+                data: { leftAt: new Date() },
+            });
+
+            return { message: "You successfully leave the chat" };
+        }
+    }
+
+    async deleteChat(userId: string, chatId: string, deleteForMe: boolean) {
+        const chat = await this.prisma.chat.findUnique({
+            where: { id: chatId },
+            include: { members: true },
         });
 
-        return {
-            message: "Chat deleted successfully",
-        };
+        if (!chat) throw new NotFoundException("Chat not found");
+
+        if (
+            (chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) &&
+            chat.adminId !== userId
+        ) {
+            throw new ForbiddenException("Only admin can delete this chat");
+        }
+
+        if (chat.type === ChatType.PRIVATE) {
+            if (deleteForMe) {
+                await this.prisma.deletedChat.create({ data: { chatId, userId } });
+                return { message: "Chat deleted only for you" };
+            } else {
+                const operations = chat.members.map((m) =>
+                    this.prisma.deletedChat.create({ data: { chatId, userId: m.userId } })
+                );
+                await this.prisma.$transaction(operations);
+                return { message: "Private chat deleted for all" };
+            }
+        }
+
+        if (chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) {
+            await this.prisma.$transaction([
+                this.prisma.message.deleteMany({ where: { chatId } }),
+                this.prisma.chatMember.deleteMany({ where: { chatId } }),
+                this.prisma.deletedChat.deleteMany({ where: { chatId } }),
+                this.prisma.chat.delete({ where: { id: chatId } }),
+            ]);
+            return { message: "Chat deleted for all" };
+        }
     }
 }
