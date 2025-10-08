@@ -32,11 +32,8 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const currentContact = isContact ? (entity as IContact) : null;
 
     if (!currentContact || !contactId || !otherUserId) {
-        return (
-            <div className="text-red-500 p-4">
-                Error: Contact data not available for editing.
-            </div>
-        );
+        setChatSidebarTab("info");
+        return null;
     }
 
     const initialNickname = currentContact.nickname || "";
@@ -44,7 +41,7 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const {
         handleSubmit,
         register,
-        formState: { errors },
+        formState: { errors, isDirty },
     } = useForm<{ customContactName: string }>({
         defaultValues: {
             customContactName: initialNickname,
@@ -117,12 +114,14 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
                             errorMessage={errors.customContactName?.message}
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="absolute top-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
-                    >
-                        <PlusIcon className="w-[30px] stroke-white stroke-2 fill-none" />
-                    </button>
+                    {isDirty && (
+                        <button
+                            type="submit"
+                            className="absolute top-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                        >
+                            <PlusIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                        </button>
+                    )}
                 </form>
 
                 <hr className="border-neutral-800" />

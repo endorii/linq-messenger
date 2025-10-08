@@ -12,12 +12,18 @@ import { ChatEnum } from "@/shared/enums/enums";
 import { OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 import { useSidebarStore } from "@/store/sidebarStore";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { useEffect } from "react";
 
 function ChatHeader({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, contactId, otherUserId } =
         useChatEntity(chat);
+
+    const { data: me } = useProfile();
+
     const {
         chatSidebarOpened,
+        chatSidebarTab,
         setChatSidebarOpened,
         setChatSidebarTab,
         setActiveModal,
@@ -26,14 +32,20 @@ function ChatHeader({ chat }: { chat: IChat }) {
 
     const isPrivate = chat.type === ChatEnum.PRIVATE;
 
+    useEffect(() => {
+        if (isPrivate && chatSidebarTab === "editChat") {
+            setChatSidebarTab("info");
+        }
+    }, [isPrivate, chatSidebarTab, setChatSidebarTab]);
+
     const handleAddContact = async () => {
         if (otherUserId && "username" in entity) {
-            await setSelectedUser(entity);
+            setSelectedUser(entity);
             setActiveModal("addContact");
         }
     };
 
-    const handleEditContact = () => {
+    const handleEditContact = async () => {
         if (contactId) {
             setChatSidebarTab("editContact");
             setChatSidebarOpened(true);
@@ -59,7 +71,6 @@ function ChatHeader({ chat }: { chat: IChat }) {
                 className="flex gap-[20px] w-full"
                 onClick={() => setChatSidebarOpened(!chatSidebarOpened)}
             >
-                {/* ... (Аватар) ... */}
                 <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
                     <img
                         src={chat.avatar}
@@ -98,6 +109,19 @@ function ChatHeader({ chat }: { chat: IChat }) {
                                 {contactActionLabel}
                             </DropdownMenuItem>
                         )}
+
+                        {!isPrivate &&
+                            "adminId" in entity &&
+                            entity.adminId === me?.id && (
+                                <DropdownMenuItem
+                                    onClick={() => {
+                                        setChatSidebarOpened(true);
+                                        setChatSidebarTab("editChat");
+                                    }}
+                                >
+                                    Edit
+                                </DropdownMenuItem>
+                            )}
 
                         {chat.type === ChatEnum.PRIVATE && (
                             <>

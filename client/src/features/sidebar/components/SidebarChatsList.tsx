@@ -21,13 +21,15 @@ function SidebarChatsList({
     const [selectedChat, setSelectedChat] = useState<IChat | null>(null);
     const { data: me } = useProfile();
 
-    if (!chats || chats.length === 0) return null;
+    const filteredChats = chats?.filter((chat) => chat.messages.length > 0);
+
+    if (!filteredChats || filteredChats.length === 0) return null;
 
     return (
         <div className="flex-1 overflow-y-auto">
             <TabsContent value="allChats" className="h-full mt-0">
                 <div className="flex flex-col gap-[3px] w-full">
-                    {chats.map((chat) => (
+                    {filteredChats.map((chat) => (
                         <SidebarChat
                             key={chat.id}
                             setSelectedChat={setSelectedChat}

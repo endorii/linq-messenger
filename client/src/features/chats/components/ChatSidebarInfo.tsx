@@ -21,9 +21,11 @@ import { IChat } from "@/shared/interfaces/IChat";
 import { Switch } from "@/shared/components/ui/switch";
 import Image from "next/image";
 import { useSidebarStore } from "@/store/sidebarStore";
+import { useProfile } from "@/features/auth/hooks/useAuth";
 
 function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, otherUserId } = useChatEntity(chat);
+    const { data: me } = useProfile();
 
     const {
         setChatSidebarOpened,
@@ -36,6 +38,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const showMembers = isGroupChat || isChannel;
+    const isAdmin = chat.adminId === me?.id;
 
     const otherMember = isPrivateChat
         ? chat.members.find((m) => m.userId === otherUserId)
@@ -140,11 +143,11 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
             {/* ... (Секція Tabs) ... */}
             <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                 <Tabs
-                    defaultValue={showMembers ? "members" : "media"}
+                    defaultValue={showMembers && isAdmin ? "members" : "media"}
                     className="flex-1 flex flex-col"
                 >
                     <TabsList className="flex w-full mb-[5px]">
-                        {showMembers && (
+                        {showMembers && isAdmin && (
                             <TabsTrigger value="members">Members</TabsTrigger>
                         )}
                         <TabsTrigger value="media">Media</TabsTrigger>
@@ -154,7 +157,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         <TabsTrigger value="music">Music</TabsTrigger>
                     </TabsList>
 
-                    {showMembers && (
+                    {showMembers && isAdmin && (
                         <TabsContent value="members" className="h-full">
                             <div className="flex flex-col gap-[2px] w-full">
                                 {chat.members?.map((member, i) => (
@@ -191,7 +194,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                     {/* ... (Інші TabsContent) ... */}
                     <TabsContent value="media" className="h-full">
                         <div className="flex flex-wrap w-full">
-                            {Array.from({ length: 9 }).map((_, i) => (
+                            {/* {Array.from({ length: 9 }).map((_, i) => (
                                 <Image
                                     key={i}
                                     src="https://onetreeplanted.org/cdn/shop/articles/nature_facts_600x.jpg?v=1705008496"
@@ -200,7 +203,8 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                                     height={500}
                                     className="object-cover w-1/3 aspect-square p-[1px]"
                                 />
-                            ))}
+                            ))} */}
+                            media
                         </div>
                     </TabsContent>
                     <TabsContent value="files" className="h-full">

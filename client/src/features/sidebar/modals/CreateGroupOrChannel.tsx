@@ -9,10 +9,7 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import {
-    useCreateChannel,
-    useCreateGroupChat,
-} from "@/features/chats/hooks/useChats";
+import { useCreateChat } from "@/features/chats/hooks/useChats";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
 import { ChatEnum } from "@/shared/enums/enums";
 
@@ -51,6 +48,8 @@ export default function CreateGroupOrChannel({
     const [step, setStep] = useState(1);
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
 
+    const useCreateChatMutation = useCreateChat();
+
     const nextStep = async () => {
         const valid = await trigger(["name"]);
         if (valid) {
@@ -59,9 +58,6 @@ export default function CreateGroupOrChannel({
     };
 
     const prevStep = () => setStep((prev) => prev - 1);
-
-    const mutation =
-        type === ChatEnum.CHANNEL ? useCreateChannel() : useCreateGroupChat();
 
     const handleClose = () => {
         reset();
@@ -72,8 +68,9 @@ export default function CreateGroupOrChannel({
 
     const onSubmit = async (data: FormData) => {
         try {
-            await mutation.mutateAsync({
+            await useCreateChatMutation.mutateAsync({
                 name: data.name,
+                type,
                 description: data.description || "",
                 memberIds: selectedContacts,
             });

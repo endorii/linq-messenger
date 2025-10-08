@@ -36,11 +36,10 @@ export interface IChat {
     lastMessage?: IMessage;
 }
 
-export interface GroupChatPayload {
+export interface ChatPayload {
     name: string;
+    type: ChatEnum;
     description?: string;
     avatar?: string;
-    memberIds: string[];
+    memberIds?: string[];
 }
-
-export interface ChannelPayload extends GroupChatPayload {}

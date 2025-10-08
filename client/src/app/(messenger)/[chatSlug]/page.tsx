@@ -17,6 +17,7 @@ import {
     ContextMenuTrigger,
     ContextMenuSeparator,
 } from "@/shared/components/ui/context-menu";
+import Image from "next/image";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -91,97 +92,144 @@ function ChatSlug() {
                             <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
                                 {dayjs(date).format("D MMMM")}
                             </div>
-                            {msgs.map((msg) => (
-                                <ContextMenu key={msg.id}>
-                                    {msg.type === "TEXT" ? (
-                                        <ContextMenuTrigger
-                                            className={`px-[10px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
-                                                msg.isMine
-                                                    ? "bg-purple-gradient self-end rounded-br-none"
-                                                    : "bg-neutral-800 self-start rounded-bl-none"
-                                            }`}
+                            {msgs.map((msg, i) => {
+                                const prevMsg = msgs[i - 1];
+                                const nextMsg = msgs[i + 1];
+
+                                const isSameSenderAsPrev =
+                                    prevMsg &&
+                                    prevMsg.sender?.id === msg.sender?.id;
+                                const isSameSenderAsNext =
+                                    nextMsg &&
+                                    nextMsg.sender?.id === msg.sender?.id;
+
+                                const sender = msg.sender;
+                                const avatarUrl =
+                                    sender?.avatarUrl ||
+                                    "/images/default-avatar.png";
+                                const username = sender?.username || "Unknown";
+
+                                if (msg.type === "SYSTEM") {
+                                    return (
+                                        <div
+                                            key={msg.id}
+                                            className="self-center text-sm text-gray-400 my-3 bg-neutral-900/40 px-3 py-1 rounded-md"
                                         >
-                                            <div key={msg.id}>
-                                                {msg.content}
-                                                <div className="text-xs text-gray-400 text-right">
-                                                    {dayjs(
-                                                        msg.createdAt
-                                                    ).format("HH:mm")}
-                                                </div>
-                                            </div>
-                                        </ContextMenuTrigger>
-                                    ) : (
-                                        <div className="flex items-center justify-center">
-                                            <ContextMenuTrigger className="flex items-center justify-center p-[2px] bg-purple-gradient rounded-xl">
-                                                <div
-                                                    key={msg.id}
-                                                    className={
-                                                        "px-[15px] py-[3px] border border-white/5 bg-neutral-900 rounded-xl backdrop-blur-[5px] font-medium text-neutral-300"
-                                                    }
-                                                >
-                                                    {msg.content}
-                                                </div>
-                                            </ContextMenuTrigger>
+                                            {msg.content}
                                         </div>
-                                    )}
+                                    );
+                                }
 
-                                    <ContextMenuContent className="w-[200px]">
-                                        <ContextMenuItem className="p-0 focus:bg-transparent">
-                                            <div className="flex gap-2 overflow-x-auto max-w-full p-2">
-                                                {[
-                                                    "👍",
-                                                    "❤️",
-                                                    "😂",
-                                                    "🔥",
-                                                    "🎉",
-                                                    "😢",
-                                                    "😡",
-                                                    "🤔",
-                                                    "🙏",
-                                                ].map((emoji) => (
-                                                    <button
-                                                        key={emoji}
-                                                        className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
-                                                        onClick={() => {
-                                                            console.log(
-                                                                "Clicked emoji:",
-                                                                emoji
-                                                            );
-                                                            // тут треба викликати мутацію для реакції
-                                                        }}
-                                                    >
-                                                        {emoji}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </ContextMenuItem>
+                                return (
+                                    <div
+                                        key={msg.id}
+                                        className={`flex ${
+                                            msg.isMine
+                                                ? "justify-end"
+                                                : "justify-start"
+                                        } ${!isSameSenderAsPrev ? "mt-3" : ""}`}
+                                    >
+                                        <div
+                                            className={`flex flex-col ${
+                                                msg.isMine
+                                                    ? "items-end"
+                                                    : "items-start"
+                                            } relative`}
+                                        >
+                                            <ContextMenu>
+                                                <ContextMenuTrigger
+                                                    className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
+                                                        msg.isMine
+                                                            ? "bg-purple-gradient self-end rounded-br-none"
+                                                            : "bg-neutral-800 self-start rounded-bl-none"
+                                                    } ${
+                                                        isSameSenderAsPrev
+                                                            ? "mt-[2px]"
+                                                            : ""
+                                                    }`}
+                                                >
+                                                    <div>
+                                                        {msg.content}
+                                                        <div className="text-xs text-gray-400 text-right">
+                                                            {dayjs(
+                                                                msg.createdAt
+                                                            ).format("HH:mm")}
+                                                        </div>
+                                                    </div>
+                                                </ContextMenuTrigger>
 
-                                        <ContextMenuSeparator />
+                                                <ContextMenuContent className="w-[200px]">
+                                                    <ContextMenuItem className="p-0 focus:bg-transparent">
+                                                        <div className="flex gap-2 overflow-x-auto max-w-full p-2">
+                                                            {[
+                                                                "👍",
+                                                                "❤️",
+                                                                "😂",
+                                                                "🔥",
+                                                                "🎉",
+                                                                "😢",
+                                                                "😡",
+                                                                "🤔",
+                                                                "🙏",
+                                                            ].map((emoji) => (
+                                                                <button
+                                                                    key={emoji}
+                                                                    className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
+                                                                    onClick={() =>
+                                                                        console.log(
+                                                                            "Clicked emoji:",
+                                                                            emoji
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {emoji}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                        Reply
+                                                    </ContextMenuItem>
+                                                    {msg.isMine && (
+                                                        <ContextMenuItem>
+                                                            Edit
+                                                        </ContextMenuItem>
+                                                    )}
+                                                    <ContextMenuItem>
+                                                        Copy
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Pin
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Forward
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Select
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem variant="destructive">
+                                                        Delete
+                                                    </ContextMenuItem>
+                                                </ContextMenuContent>
+                                            </ContextMenu>
 
-                                        <ContextMenuItem className="group">
-                                            <div>Reply</div>
-                                        </ContextMenuItem>
-
-                                        {msg.isMine && (
-                                            <ContextMenuItem>
-                                                Edit
-                                            </ContextMenuItem>
-                                        )}
-
-                                        <ContextMenuItem>Copy</ContextMenuItem>
-                                        <ContextMenuItem>Pin</ContextMenuItem>
-                                        <ContextMenuItem>
-                                            Forward
-                                        </ContextMenuItem>
-                                        <ContextMenuItem>
-                                            Select
-                                        </ContextMenuItem>
-                                        <ContextMenuItem variant="destructive">
-                                            Delete
-                                        </ContextMenuItem>
-                                    </ContextMenuContent>
-                                </ContextMenu>
-                            ))}
+                                            {!msg.isMine &&
+                                                !isSameSenderAsNext && (
+                                                    <div className="absolute bottom-0 left-[-40px]">
+                                                        <Image
+                                                            src={avatarUrl}
+                                                            alt={username}
+                                                            width={32}
+                                                            height={32}
+                                                            className="rounded-full object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     ))}
         </div>

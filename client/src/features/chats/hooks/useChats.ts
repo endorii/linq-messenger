@@ -2,12 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchChat,
     fetchChats,
-    fetchCreateChannel,
-    fetchCreateGroupChat,
+    fetchCreateChat,
     fetchCreatePrivateChat,
     fetchDeleteChat,
+    fetchUpdateChat,
 } from "../api/chats.api";
-import { ChannelPayload, GroupChatPayload, IChat } from "@/shared/interfaces/IChat";
+import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -45,10 +45,10 @@ export function useCreatePrivateChat() {
     });
 }
 
-export function useCreateGroupChat() {
+export function useCreateChat() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (groupChatPayload: GroupChatPayload) => fetchCreateGroupChat(groupChatPayload),
+        mutationFn: (chatPayload: ChatPayload) => fetchCreateChat(chatPayload),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
@@ -60,10 +60,16 @@ export function useCreateGroupChat() {
     });
 }
 
-export function useCreateChannel() {
+export function useUpdateChat() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (channelPayload: ChannelPayload) => fetchCreateChannel(channelPayload),
+        mutationFn: ({
+            chatId,
+            updateChatPayload,
+        }: {
+            chatId: string;
+            updateChatPayload: Partial<ChatPayload>;
+        }) => fetchUpdateChat(chatId, updateChatPayload),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);

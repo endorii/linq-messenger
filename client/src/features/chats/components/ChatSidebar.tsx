@@ -4,6 +4,7 @@ import { IChat } from "@/shared/interfaces/IChat";
 import ChatSidebarInfo from "./ChatSidebarInfo";
 import ChatSidebarEditContact from "./ChatSidebarEditContact";
 import { useSidebarStore } from "@/store/sidebarStore";
+import ChatSidebarEditChat from "./ChatSidebarEditChat";
 
 function ChatSidebar({ chat }: { chat: IChat }) {
     const { chatSidebarOpened, chatSidebarTab } = useSidebarStore();
@@ -17,6 +18,8 @@ function ChatSidebar({ chat }: { chat: IChat }) {
             {chatSidebarOpened &&
                 (chatSidebarTab === "editContact" ? (
                     <ChatSidebarEditContact chat={chat} />
+                ) : chatSidebarTab === "editChat" ? (
+                    <ChatSidebarEditChat chat={chat} />
                 ) : (
                     <ChatSidebarInfo chat={chat} />
                 ))}

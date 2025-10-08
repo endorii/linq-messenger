@@ -92,8 +92,7 @@ function SidebarChat({
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-[200px]">
                     <ContextMenuItem className="group">
-                        <SettingsIcon className="w-[30px] stroke-2 stroke-white fill-none group-hover:stroke-black" />
-                        <div>Open in New Tab</div>
+                        Open in New Tab
                     </ContextMenuItem>
                     <ContextMenuItem>Add to Folder</ContextMenuItem>
                     <ContextMenuItem>Mark</ContextMenuItem>
