@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { ChatsService } from "src/chats/chats.service";
+import { UpdateMessageDto } from "./dto/update-message.dto";
 
 @Injectable()
 export class MessagesService {
@@ -11,7 +12,7 @@ export class MessagesService {
     ) {}
 
     async getChatMessages(userId: string, chatId: string) {
-        await this.chatsService.findChat(chatId);
+        await this.chatsService.ensureMembership(chatId, userId);
 
         const messages = await this.prisma.message.findMany({
             where: { chatId },
@@ -19,12 +20,10 @@ export class MessagesService {
             include: { sender: { select: { id: true, username: true, avatarUrl: true } } },
         });
 
-        const messagesWithIsMine = messages.map((msg) => ({
+        return messages.map((msg) => ({
             ...msg,
             isMine: msg.senderId === userId,
         }));
-
-        return messagesWithIsMine;
     }
 
     async postMessage(userId: string, chatId: string, createMessageDto: CreateMessageDto) {
@@ -43,6 +42,13 @@ export class MessagesService {
             });
 
             return message;
+        });
+    }
+
+    async updateMessage(userId: string, messageId: string, updateMessageDto: UpdateMessageDto) {
+        await this.prisma.message.update({
+            where: { id: messageId, senderId: userId },
+            data: { ...updateMessageDto },
         });
     }
 }
