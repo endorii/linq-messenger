@@ -176,7 +176,6 @@ model Message {
     replyTo    Message?    @relation("MessageReply", fields: [replyToId], references: [id])
     replies    Message[]   @relation("MessageReply")
     editedAt   DateTime?
-    isDeleted  Boolean     @default(false)
     isRevoked  Boolean     @default(false) @map("is_revoked")
     createdAt  DateTime    @default(now())
     updatedAt  DateTime    @updatedAt
@@ -200,7 +199,7 @@ model Message {
 
     @@index([chatId])
     @@index([chatId, createdAt])
-    @@index([chatId, isDeleted])
+    @@index([chatId, isRevoked])
     @@index([senderId])
     @@map("messages")
 }
@@ -267,7 +266,6 @@ enum ChatType {
 enum MemberRole {
     OWNER
     ADMIN
-    MODERATOR
     MEMBER
 }
 
