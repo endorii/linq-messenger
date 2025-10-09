@@ -4,68 +4,111 @@ import { Button } from "@/shared/components/ui/button";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { createPortal } from "react-dom";
-import { IChat, IChatMember } from "@/shared/interfaces/IChat";
 import { CloseIcon } from "@/shared/icons";
-import { useDeleteChat } from "@/features/chats/hooks/useChats";
+import { useSidebarStore } from "@/store/sidebarStore";
+import { ChatEnum } from "@/shared/enums/enums";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { useDeleteChat, useLeaveChat } from "@/features/chats/hooks/useChats";
 
-interface CreateNewChannelProps {
+interface DeleteChatProps {
     isOpen: boolean;
     onClose: () => void;
-    user: IChatMember | undefined;
-    chat: IChat | null;
 }
 
-export default function DeleteChat({
-    isOpen,
-    onClose,
-    user,
-    chat,
-}: CreateNewChannelProps) {
-    const useDeleteChatMutation = useDeleteChat();
+export default function DeleteChat({ isOpen, onClose }: DeleteChatProps) {
+    const { selectedChat } = useSidebarStore();
+    const { data: me } = useProfile();
+
+    const leaveChatMutation = useLeaveChat();
+    const deleteChatMutation = useDeleteChat();
 
     useEscapeKeyClose({ isOpen, onClose });
+    if (!isOpen || !selectedChat || !me) return null;
 
-    if (!isOpen) return null;
+    const otherUser =
+        selectedChat.type === ChatEnum.PRIVATE
+            ? selectedChat.members.find((m) => m.user.id !== me.id)
+            : undefined;
+
+    const handleDeleteChat = () => {
+        if (!selectedChat) return;
+        deleteChatMutation.mutate(selectedChat.id);
+        onClose();
+    };
+
+    const handleLeaveChat = () => {
+        if (!selectedChat) return;
+        leaveChatMutation.mutate(selectedChat.id);
+        onClose();
+    };
+
+    const modalTitle =
+        selectedChat.type === ChatEnum.PRIVATE
+            ? `Delete chat with ${otherUser?.user.username ?? "User"}`
+            : selectedChat.type === ChatEnum.GROUP
+            ? "Leave or Delete Group"
+            : "Leave or Delete Channel";
 
     const modalContent = (
-        <ModalWrapper
-            onClose={onClose}
-            modalTitle={`Delete chat with ${user?.user.username}`}
-        >
+        <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
+            <Button
+                type="button"
+                onClick={onClose}
+                className="absolute top-[10px] right-[10px] cursor-pointer"
+            >
+                <CloseIcon className="w-[30px] stroke-3 stroke-white" />
+            </Button>
+
             <div className="flex flex-col gap-[15px]">
-                <Button
-                    type="button"
-                    onClick={() => {
-                        onClose();
-                    }}
-                    className="absolute top-[10px] right-[10px] cursor-pointer"
-                >
-                    <CloseIcon className="w-[30px] stroke-3 stroke-white" />
-                </Button>
-                <div>Choose how you want to delete this chat.</div>
-                <div className="flex flex-col w-full gap-[10px]">
-                    <div className="flex gap-[10px]">
+                <div className="max-w-[400px]">
+                    The action cannot be undone, all data will be cleared in
+                    relation to the selection.
+                </div>
+                {selectedChat.type === ChatEnum.PRIVATE && (
+                    <div className="flex gap-[10px] flex-wrap">
                         <Button
-                            onClick={() => {
-                                onClose();
-                                //Логіка видалення тільки для мене
-                            }}
-                            className="flex-1 cursor-pointer border-2 border-red-900 transition-all duration-200 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700"
+                            onClick={handleLeaveChat}
+                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
                         >
-                            Delete only for me
+                            Leave chat
                         </Button>
                         <Button
-                            onClick={() => {
-                                if (!chat) return;
-                                useDeleteChatMutation.mutateAsync(chat.id);
-                                onClose();
-                            }}
-                            className="flex-1 cursor-pointer border-2 border-red-900 transition-all duration-200 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700"
+                            onClick={handleDeleteChat}
+                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
                         >
                             Delete for all
                         </Button>
                     </div>
-                </div>
+                )}
+
+                {(selectedChat.type === ChatEnum.GROUP ||
+                    selectedChat.type === ChatEnum.CHANNEL) && (
+                    <div className="flex flex-col w-full gap-[10px]">
+                        <Button
+                            onClick={handleLeaveChat}
+                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                        >
+                            Leave
+                            {selectedChat.type === ChatEnum.GROUP
+                                ? "Group"
+                                : "Channel"}
+                        </Button>
+
+                        {selectedChat?.adminId === me.id &&
+                            (selectedChat.type === ChatEnum.GROUP ||
+                                selectedChat.type === ChatEnum.CHANNEL) && (
+                                <Button
+                                    onClick={handleDeleteChat}
+                                    className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                                >
+                                    Delete{" "}
+                                    {selectedChat.type === ChatEnum.GROUP
+                                        ? "Group"
+                                        : "Channel"}
+                                </Button>
+                            )}
+                    </div>
+                )}
             </div>
         </ModalWrapper>
     );

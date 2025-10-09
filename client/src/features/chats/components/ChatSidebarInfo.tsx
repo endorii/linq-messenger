@@ -19,9 +19,9 @@ import {
 import AddContactIcon from "@/shared/icons/AddContactIcon";
 import { IChat } from "@/shared/interfaces/IChat";
 import { Switch } from "@/shared/components/ui/switch";
-import Image from "next/image";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
+import OwnerIcon from "@/shared/icons/OwnerIcon";
 
 function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, otherUserId } = useChatEntity(chat);
@@ -37,8 +37,8 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
-    const showMembers = isGroupChat || isChannel;
     const isAdmin = chat.adminId === me?.id;
+    const canViewMembers = !isChannel || chat.members.length < 50 || isAdmin;
 
     const otherMember = isPrivateChat
         ? chat.members.find((m) => m.userId === otherUserId)
@@ -143,11 +143,11 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
             {/* ... (Секція Tabs) ... */}
             <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                 <Tabs
-                    defaultValue={showMembers && isAdmin ? "members" : "media"}
+                    defaultValue={canViewMembers ? "members" : "media"}
                     className="flex-1 flex flex-col"
                 >
                     <TabsList className="flex w-full mb-[5px]">
-                        {showMembers && isAdmin && (
+                        {canViewMembers && (
                             <TabsTrigger value="members">Members</TabsTrigger>
                         )}
                         <TabsTrigger value="media">Media</TabsTrigger>
@@ -157,7 +157,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         <TabsTrigger value="music">Music</TabsTrigger>
                     </TabsList>
 
-                    {showMembers && isAdmin && (
+                    {canViewMembers && (
                         <TabsContent value="members" className="h-full">
                             <div className="flex flex-col gap-[2px] w-full">
                                 {chat.members?.map((member, i) => (
@@ -176,10 +176,13 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                                             />
                                         </div>
                                         <div className="flex flex-col">
-                                            <div className="font-semibold">
-                                                {/* Тут також варто використовувати логіку імені, 
-                                                але для Members List зазвичай достатньо username */}
-                                                {member.user?.username}
+                                            <div className="flex gap-[7px] font-semibold items-center">
+                                                <div>
+                                                    {member.user?.username}
+                                                </div>
+                                                {member.role === "OWNER" && (
+                                                    <OwnerIcon className="w-[20px] stroke-2 stroke-violet-500 fill-none" />
+                                                )}
                                             </div>
                                             <div className="text-neutral-400 text-sm">
                                                 last seen recently

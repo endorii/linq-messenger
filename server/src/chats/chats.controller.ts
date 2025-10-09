@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param, Patch } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Req, Get, Param, Patch, Delete } from "@nestjs/common";
 import { ChatsService } from "./chats.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
@@ -52,13 +52,9 @@ export class ChatsController {
         return this.chatsService.leaveChat(req.user.id, chatId);
     }
 
-    @Post(":chatId")
-    deleteChat(
-        @Req() req: AuthenticatedRequest,
-        @Param("chatId") chatId: string,
-        @Body() deleteForMe: boolean
-    ) {
-        return this.chatsService.deleteChat(req.user.id, chatId, deleteForMe);
+    @Delete(":chatId")
+    deleteChat(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
+        return this.chatsService.deleteChat(req.user.id, chatId);
     }
 
     @Get(":chatId/messages")

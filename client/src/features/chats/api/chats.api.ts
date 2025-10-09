@@ -36,6 +36,11 @@ export async function fetchUpdateChat(
     return data;
 }
 
+export async function fetchLeaveChat(chatId: string): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.post(`/chats/${chatId}/leave`);
+    return data;
+}
+
 export async function fetchDeleteChat(chatId: string): Promise<ServerResponseWithMessage> {
     const { data } = await httpService.delete(`/chats/${chatId}`);
     return data;

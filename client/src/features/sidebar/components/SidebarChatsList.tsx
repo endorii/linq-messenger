@@ -1,14 +1,9 @@
 "use client";
 
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import { useContacts } from "@/features/contacts/hooks/useContacts";
 import SidebarChat from "@/features/sidebar/components/SidebarChat";
 import { TabsContent } from "@/shared/components/ui/tabs";
 import { IChat } from "@/shared/interfaces/IChat";
 import { IFolder } from "@/shared/interfaces/IFolder";
-import { ModalType } from "@/shared/types/types";
-import { useMemo, useState } from "react";
-import DeleteChat from "../modals/DeleteChat";
 
 function SidebarChatsList({
     folders,
@@ -17,11 +12,7 @@ function SidebarChatsList({
     folders: IFolder[] | undefined;
     chats: IChat[] | undefined;
 }) {
-    const [activeModal, setActiveModal] = useState<ModalType>(null);
-    const [selectedChat, setSelectedChat] = useState<IChat | null>(null);
-    const { data: me } = useProfile();
-
-    const filteredChats = chats?.filter((chat) => chat.messages.length > 0);
+    const filteredChats = chats?.filter((chat) => chat.messages?.length > 0);
 
     if (!filteredChats || filteredChats.length === 0) return null;
 
@@ -30,12 +21,7 @@ function SidebarChatsList({
             <TabsContent value="allChats" className="h-full mt-0">
                 <div className="flex flex-col gap-[3px] w-full">
                     {filteredChats.map((chat) => (
-                        <SidebarChat
-                            key={chat.id}
-                            setSelectedChat={setSelectedChat}
-                            chat={chat}
-                            setActiveModal={setActiveModal}
-                        />
+                        <SidebarChat key={chat.id} chat={chat} />
                     ))}
                 </div>
             </TabsContent>
@@ -48,26 +34,11 @@ function SidebarChatsList({
                 >
                     <div className="flex flex-col gap-[3px] w-full">
                         {folder.chats.map((chat) => (
-                            <SidebarChat
-                                key={chat.id}
-                                setSelectedChat={setSelectedChat}
-                                chat={chat}
-                                setActiveModal={setActiveModal}
-                            />
+                            <SidebarChat key={chat.id} chat={chat} />
                         ))}
                     </div>
                 </TabsContent>
             ))}
-
-            <DeleteChat
-                isOpen={activeModal === "deleteChat"}
-                onClose={() => {
-                    setActiveModal(null);
-                    setSelectedChat(null);
-                }}
-                user={selectedChat?.members.find((m) => m.userId !== me?.id)}
-                chat={selectedChat}
-            />
         </div>
     );
 }

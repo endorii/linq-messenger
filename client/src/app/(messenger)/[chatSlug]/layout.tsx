@@ -23,14 +23,9 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
         }
     }, [isChatLoading, chat, router]);
 
-    if (!chat) {
-        return null;
-    }
+    if (!chat) return null;
 
-    const isAdmin = chat.members.some(
-        (member) => member.user.id === me?.id && member.role === "ADMIN"
-    );
-
+    const isAdmin = chat.adminId === me?.id;
     const canSendMessages =
         chat.type !== ChatEnum.CHANNEL ||
         (chat.type === ChatEnum.CHANNEL && isAdmin);

@@ -12,9 +12,10 @@ import ContactsTab from "./tabs/ContactsTab";
 import SettingsTab from "./tabs/SettingsTab";
 import EditFolder from "../modals/EditFolder";
 import { useSidebarStore } from "@/store/sidebarStore";
+import DeleteChat from "../modals/DeleteChat";
 
 function Sidebar({ user }: { user: IUser }) {
-    const { activeModal, setActiveModal } = useSidebarStore();
+    const { activeModal, setActiveModal, setSelectedChat } = useSidebarStore();
     const [activeTab, setActiveTab] = useState<SidebarTabType>("chats");
 
     return (
@@ -50,6 +51,14 @@ function Sidebar({ user }: { user: IUser }) {
             <AddContact
                 isOpen={activeModal === "addContact"}
                 onClose={() => setActiveModal(null)}
+            />
+
+            <DeleteChat
+                isOpen={activeModal === "deleteChat"}
+                onClose={() => {
+                    setActiveModal(null);
+                    setSelectedChat(null);
+                }}
             />
         </div>
     );

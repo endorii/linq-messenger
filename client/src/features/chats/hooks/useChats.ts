@@ -5,6 +5,7 @@ import {
     fetchCreateChat,
     fetchCreatePrivateChat,
     fetchDeleteChat,
+    fetchLeaveChat,
     fetchUpdateChat,
 } from "../api/chats.api";
 import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
@@ -70,6 +71,21 @@ export function useUpdateChat() {
             chatId: string;
             updateChatPayload: Partial<ChatPayload>;
         }) => fetchUpdateChat(chatId, updateChatPayload),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+            toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useLeaveChat() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (chatId: string) => fetchLeaveChat(chatId),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);

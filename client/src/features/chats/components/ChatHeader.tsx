@@ -28,6 +28,7 @@ function ChatHeader({ chat }: { chat: IChat }) {
         setChatSidebarTab,
         setActiveModal,
         setSelectedUser,
+        setSelectedChat,
     } = useSidebarStore();
 
     const isPrivate = chat.type === ChatEnum.PRIVATE;
@@ -58,9 +59,27 @@ function ChatHeader({ chat }: { chat: IChat }) {
         : handleAddContact;
 
     const DESTRUCTIVE_ACTIONS = {
-        [ChatEnum.PRIVATE]: { label: "Delete chat", onClick: () => {} },
-        [ChatEnum.GROUP]: { label: "Leave group", onClick: () => {} },
-        [ChatEnum.CHANNEL]: { label: "Leave channel", onClick: () => {} },
+        [ChatEnum.PRIVATE]: {
+            label: "Delete chat",
+            onClick: () => {
+                setSelectedChat(chat);
+                setActiveModal("deleteChat");
+            },
+        },
+        [ChatEnum.GROUP]: {
+            label: "Leave group",
+            onClick: () => {
+                setSelectedChat(chat);
+                setActiveModal("deleteChat");
+            },
+        },
+        [ChatEnum.CHANNEL]: {
+            label: "Leave channel",
+            onClick: () => {
+                setSelectedChat(chat);
+                setActiveModal("deleteChat");
+            },
+        },
     } as const;
 
     const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];

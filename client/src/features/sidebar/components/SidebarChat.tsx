@@ -8,28 +8,23 @@ import {
 } from "@/shared/components/ui/context-menu";
 import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { ChatEnum } from "@/shared/enums/enums";
-import { SettingsIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 import SafeLink from "@/shared/ui/links/SafeLink";
 import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
 import { useParams } from "next/navigation";
-import { ModalType } from "@/shared/types/types";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 interface SidebarChatProps {
-    setSelectedChat: React.Dispatch<React.SetStateAction<IChat | null>>;
     chat: IChat;
-    setActiveModal: React.Dispatch<React.SetStateAction<ModalType>>;
 }
 
-function SidebarChat({
-    setSelectedChat,
-    chat,
-    setActiveModal,
-}: SidebarChatProps) {
+function SidebarChat({ chat }: SidebarChatProps) {
     const params = useParams();
     const chatId = params?.chatSlug;
 
     const { chatName } = useChatEntity(chat);
+
+    const { setSelectedChat, setActiveModal } = useSidebarStore();
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
@@ -98,7 +93,7 @@ function SidebarChat({
                     <ContextMenuItem>Mark</ContextMenuItem>
                     <ContextMenuItem>Pin</ContextMenuItem>
                     <ContextMenuItem>Mute</ContextMenuItem>
-                    <ContextMenuItem>Roport</ContextMenuItem>
+                    <ContextMenuItem>Report</ContextMenuItem>
 
                     {isPrivateChat && (
                         <ContextMenuItem onClick={handleBlockUser}>
@@ -106,27 +101,26 @@ function SidebarChat({
                         </ContextMenuItem>
                     )}
 
-                    {/* 4. Деструктивні дії */}
-                    {isPrivateChat ? (
+                    {chat.type === ChatEnum.GROUP ? (
+                        <ContextMenuItem
+                            variant="destructive"
+                            onClick={handleSetChatAndDeleteModal}
+                        >
+                            Leave Group
+                        </ContextMenuItem>
+                    ) : chat.type === ChatEnum.CHANNEL ? (
+                        <ContextMenuItem
+                            variant="destructive"
+                            onClick={handleSetChatAndDeleteModal}
+                        >
+                            Leave Channel
+                        </ContextMenuItem>
+                    ) : (
                         <ContextMenuItem
                             variant="destructive"
                             onClick={handleSetChatAndDeleteModal}
                         >
                             Delete Chat
-                        </ContextMenuItem>
-                    ) : chat.type === ChatEnum.GROUP ? (
-                        <ContextMenuItem
-                            variant="destructive"
-                            onClick={() => {}} // TODO: Add logic to leave group
-                        >
-                            Leave Group
-                        </ContextMenuItem>
-                    ) : (
-                        <ContextMenuItem
-                            variant="destructive"
-                            onClick={() => {}} // TODO: Add logic to leave channel
-                        >
-                            Leave Channel
                         </ContextMenuItem>
                     )}
                 </ContextMenuContent>
