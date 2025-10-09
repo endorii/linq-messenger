@@ -1,6 +1,6 @@
 import { IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCreateMessage, fetchMessages } from "../api/messages.api";
+import { fetchCreateMessage, fetchMessages, fetchUpdateMessage } from "../api/messages.api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -21,6 +21,29 @@ export function useCreateMessage() {
             chatId: string;
             messagePayload: MessagePayload;
         }) => fetchCreateMessage(chatId, messagePayload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useUpdateMessage() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            chatId,
+            messageId,
+            messagePayload,
+        }: {
+            chatId: string;
+            messageId: string;
+            messagePayload: Partial<MessagePayload>;
+        }) => fetchUpdateMessage(messageId, messagePayload),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats"] });

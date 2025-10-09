@@ -9,3 +9,11 @@ export async function fetchCreateMessage(chatId: string, messagePayload: Message
     const { data } = await httpService.post(`/chats/${chatId}/messages`, messagePayload);
     return data;
 }
+
+export async function fetchUpdateMessage(
+    messageId: string,
+    updateMessagePayload: Partial<MessagePayload>
+) {
+    const { data } = await httpService.patch(`/messages/${messageId}`, updateMessagePayload);
+    return data;
+}

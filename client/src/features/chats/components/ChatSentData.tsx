@@ -1,41 +1,70 @@
 "use client";
 
-import { useCreateMessage } from "@/features/messages/hooks/useMessages";
+import { useState, useEffect } from "react";
+import {
+    useCreateMessage,
+    useUpdateMessage,
+} from "@/features/messages/hooks/useMessages";
+import {
+    ClipIcon,
+    MicrophoneIcon,
+    SendIcon,
+    EmojiIcon,
+    EditIcon,
+    CloseIcon,
+} from "@/shared/icons";
 import {
     DropdownMenu,
+    DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { ClipIcon, MicrophoneIcon, SendIcon, EmojiIcon } from "@/shared/icons";
-
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
-import { useState } from "react";
 import ChatTextarea from "./ChatTextarea";
+import { useSidebarStore } from "@/store/sidebarStore";
 
-function ChatSentData({ chatId }: { chatId: string }) {
+interface ChatSentDataProps {
+    chatId: string;
+}
+
+function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
 
-    const useCreateMessageMutation = useCreateMessage();
+    const createMessageMutation = useCreateMessage();
+    const { chatSentType, messageForEdit, setMessageForEdit, setChatSentType } =
+        useSidebarStore();
 
-    const handleSend = (inputValue: string) => {
-        if (inputValue.length > 0) {
-            if (!inputValue.trim()) return;
-            useCreateMessageMutation.mutateAsync({
-                chatId,
-                messagePayload: {
-                    content: inputValue,
-                },
-            });
-            setInputValue("");
-        } else {
-            //Recording voice
-            console.log("Voice recording");
+    const updateMessageMutation = useUpdateMessage();
+
+    useEffect(() => {
+        if (chatSentType === "edit" && messageForEdit) {
+            setInputValue(messageForEdit.content);
         }
+    }, [chatSentType, messageForEdit]);
+
+    const handleSend = (value: string) => {
+        if (!value.trim()) return;
+
+        if (chatSentType === "edit" && messageForEdit) {
+            updateMessageMutation.mutateAsync({
+                chatId,
+                messageId: messageForEdit.id,
+                messagePayload: { content: value },
+            });
+            setChatSentType("sent");
+            setMessageForEdit(null);
+        } else {
+            createMessageMutation.mutateAsync({
+                chatId,
+                messagePayload: { content: value },
+            });
+        }
+
+        setInputValue("");
     };
 
     const handleEmojiClick = (emojiData: EmojiClickData) => {
-        setInputValue((prev: string) => `${prev + emojiData.emoji}`);
+        setInputValue((prev) => prev + emojiData.emoji);
     };
 
     return (
@@ -46,26 +75,49 @@ function ChatSentData({ chatId }: { chatId: string }) {
                         <ClipIcon className="w-[24px] h-[24px] fill-white" />
                     </button>
                 </DropdownMenuTrigger>
-
                 <DropdownMenuContent className="w-56">
                     <DropdownMenuItem>Photo or Video</DropdownMenuItem>
                     <DropdownMenuItem>Document</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+
             <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
-                <ChatTextarea
-                    value={inputValue}
-                    onChange={setInputValue}
-                    onEnter={() => handleSend(inputValue)}
-                />
+                <div className="flex flex-col w-full gap-[3px]">
+                    {chatSentType === "edit" ? (
+                        <div className="flex gap-[5px] px-[10px] py-[3px] ">
+                            <EditIcon className="w-[30px] stroke-2 stroke-white fill-none mx-[10px]" />
+                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 border-violet-600">
+                                <div className="font-bold text-sm">
+                                    Edit message
+                                </div>
+                                <div className="text-sm">
+                                    {messageForEdit?.content}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setInputValue("");
+                                    setMessageForEdit(null);
+                                    setChatSentType("sent");
+                                }}
+                            >
+                                <CloseIcon className="w-[20px] stroke-3 stroke-white fill-none mx-[10px]" />
+                            </button>
+                        </div>
+                    ) : null}
+                    <ChatTextarea
+                        value={inputValue}
+                        onChange={setInputValue}
+                        onEnter={() => handleSend(inputValue)}
+                    />
+                </div>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <button className="absolute top-[14px] right-[15px] transition-all duration-300 cursor-pointer">
+                        <button className="absolute bottom-[14px] right-[15px] transition-all duration-300 cursor-pointer">
                             <EmojiIcon className="w-[20px] h-[20px] fill-neutral-400 group-focus-within:fill-white" />
                         </button>
                     </DropdownMenuTrigger>
-
                     <DropdownMenuContent className="p-0 border-none shadow-lg">
                         <EmojiPicker
                             onEmojiClick={handleEmojiClick}
@@ -75,6 +127,7 @@ function ChatSentData({ chatId }: { chatId: string }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
             <button
                 onClick={() => handleSend(inputValue)}
                 className="bg-purple-gradient rounded-xl p-[23px] cursor-pointer flex items-center justify-center"
@@ -86,7 +139,6 @@ function ChatSentData({ chatId }: { chatId: string }) {
                             : "opacity-0 scale-75"
                     }`}
                 />
-
                 <MicrophoneIcon
                     className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-white transition-all duration-200 ${
                         inputValue.length === 0

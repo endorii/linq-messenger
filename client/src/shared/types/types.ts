@@ -12,3 +12,4 @@ export type SidebarTabType = "chats" | "contacts" | "settings" | "profile";
 export type ChatSidebarTabType = "info" | "editContact" | "editChat";
 export type MemberRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER";
 export type MessageType = "TEXT" | "IMAGE" | "FILE" | "VOICE" | "VIDEO" | "SYSTEM";
+export type ChatSentType = "sent" | "edit" | "reply";

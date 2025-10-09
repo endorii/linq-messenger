@@ -18,6 +18,7 @@ import {
     ContextMenuSeparator,
 } from "@/shared/components/ui/context-menu";
 import Image from "next/image";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -25,6 +26,8 @@ function ChatSlug() {
     const { data: chat } = useChat(chatId);
     const { data: me } = useProfile();
     const useCreateMessageMutation = useCreateMessage();
+
+    const { setMessageForEdit, setChatSentType } = useSidebarStore();
 
     const handleSend = (msg: string) => {
         useCreateMessageMutation.mutateAsync({
@@ -138,6 +141,9 @@ function ChatSlug() {
                                         >
                                             <ContextMenu>
                                                 <ContextMenuTrigger
+                                                    onContextMenu={() =>
+                                                        setMessageForEdit(msg)
+                                                    }
                                                     className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
                                                         msg.isMine
                                                             ? "bg-purple-gradient self-end rounded-br-none"
@@ -150,10 +156,22 @@ function ChatSlug() {
                                                 >
                                                     <div>
                                                         {msg.content}
-                                                        <div className="text-xs text-gray-400 text-right">
-                                                            {dayjs(
-                                                                msg.createdAt
-                                                            ).format("HH:mm")}
+                                                        <div className="flex gap-[3px] justify-end">
+                                                            <div className="text-xs text-gray-400 ">
+                                                                {msg.createdAt !==
+                                                                msg.updatedAt ? (
+                                                                    <div className="text-xs text-gray-400 text-right">
+                                                                        edited
+                                                                    </div>
+                                                                ) : null}
+                                                            </div>
+                                                            <div className="text-xs text-gray-400 text-right">
+                                                                {dayjs(
+                                                                    msg.createdAt
+                                                                ).format(
+                                                                    "HH:mm"
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </ContextMenuTrigger>
@@ -192,7 +210,13 @@ function ChatSlug() {
                                                         Reply
                                                     </ContextMenuItem>
                                                     {msg.isMine && (
-                                                        <ContextMenuItem>
+                                                        <ContextMenuItem
+                                                            onClick={() => {
+                                                                setChatSentType(
+                                                                    "edit"
+                                                                );
+                                                            }}
+                                                        >
                                                             Edit
                                                         </ContextMenuItem>
                                                     )}

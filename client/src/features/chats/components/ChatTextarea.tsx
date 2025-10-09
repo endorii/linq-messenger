@@ -2,23 +2,21 @@
 
 import { useRef, useEffect } from "react";
 
-function ChatTextarea({
-    value,
-    onChange,
-    onEnter,
-}: {
+interface ChatTextareaProps {
     value: string;
     onChange: (value: string) => void;
     onEnter: () => void;
-}) {
+}
+
+function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const resize = () => {
         const el = textareaRef.current;
         if (el) {
-            el.style.height = "40px";
+            el.style.height = "40px"; // базова висота
             const newHeight = Math.min(el.scrollHeight, 500);
-            el.style.height = Math.max(newHeight, 40) + "px";
+            el.style.height = `${Math.max(newHeight, 40)}px`;
         }
     };
 
