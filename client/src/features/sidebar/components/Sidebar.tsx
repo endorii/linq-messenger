@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { SidebarTabType } from "@/shared/types/types";
 import AddContact from "../modals/AddContact";
 import CreateFolder from "../modals/CreateFolder";
 import CreateGroupOrChannel from "../modals/CreateGroupOrChannel";
@@ -13,22 +11,18 @@ import SettingsTab from "./tabs/SettingsTab";
 import EditFolder from "../modals/EditFolder";
 import { useSidebarStore } from "@/store/sidebarStore";
 import DeleteChat from "../modals/DeleteChat";
+import { SearchTab } from "./tabs/SearchTab";
 
 function Sidebar({ user }: { user: IUser }) {
-    const { activeModal, setActiveModal, setSelectedChat } = useSidebarStore();
-    const [activeTab, setActiveTab] = useState<SidebarTabType>("chats");
+    const { activeModal, setActiveModal, setSelectedChat, sidebarTab } =
+        useSidebarStore();
 
     return (
         <div className="relative bg-neutral-950 h-full flex flex-col">
-            {activeTab === "chats" && (
-                <ChatsTab user={user} setActiveTab={setActiveTab} />
-            )}
-            {activeTab === "contacts" && (
-                <ContactsTab setActiveTab={setActiveTab} />
-            )}
-            {activeTab === "settings" && (
-                <SettingsTab setActiveTab={setActiveTab} />
-            )}
+            {sidebarTab === "chats" && <ChatsTab user={user} />}
+            {sidebarTab === "contacts" && <ContactsTab />}
+            {sidebarTab === "settings" && <SettingsTab />}
+            {sidebarTab === "search" && <SearchTab />}
 
             <CreateFolder
                 isOpen={activeModal === "addFolder"}

@@ -16,29 +16,53 @@ function SidebarChatsList({
 
     if (!filteredChats || filteredChats.length === 0) return null;
 
+    const sortedChats = filteredChats
+        .map((chat) => ({
+            ...chat,
+            lastMessageDate: chat.messages?.[0]?.createdAt ?? 0,
+        }))
+        .sort(
+            (a, b) =>
+                new Date(b.lastMessageDate).getTime() -
+                new Date(a.lastMessageDate).getTime()
+        );
+
     return (
         <div className="flex-1 overflow-y-auto">
             <TabsContent value="allChats" className="h-full mt-0">
                 <div className="flex flex-col gap-[3px] w-full">
-                    {filteredChats.map((chat) => (
+                    {sortedChats.map((chat) => (
                         <SidebarChat key={chat.id} chat={chat} />
                     ))}
                 </div>
             </TabsContent>
 
-            {folders?.map((folder) => (
-                <TabsContent
-                    value={folder.name}
-                    key={folder.id}
-                    className="mt-0"
-                >
-                    <div className="flex flex-col gap-[3px] w-full">
-                        {folder.chats.map((chat) => (
-                            <SidebarChat key={chat.id} chat={chat} />
-                        ))}
-                    </div>
-                </TabsContent>
-            ))}
+            {folders?.map((folder) => {
+                const sortedFolderChats = folder.chats
+                    .map((chat) => ({
+                        ...chat,
+                        lastMessageDate: chat.messages?.[0]?.createdAt ?? 0,
+                    }))
+                    .sort(
+                        (a, b) =>
+                            new Date(b.lastMessageDate).getTime() -
+                            new Date(a.lastMessageDate).getTime()
+                    );
+
+                return (
+                    <TabsContent
+                        value={folder.name}
+                        key={folder.id}
+                        className="mt-0"
+                    >
+                        <div className="flex flex-col gap-[3px] w-full">
+                            {sortedFolderChats.map((chat) => (
+                                <SidebarChat key={chat.id} chat={chat} />
+                            ))}
+                        </div>
+                    </TabsContent>
+                );
+            })}
         </div>
     );
 }

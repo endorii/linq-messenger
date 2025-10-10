@@ -1,11 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
-import { SidebarTabType } from "@/shared/types/types";
 import { useSidebarStore } from "@/store/sidebarStore";
 
-function SidebarContactsMenu({
+function SidebarSearchMenu({
     searchValue,
     setSearchValue,
 }: {
@@ -13,6 +13,17 @@ function SidebarContactsMenu({
     setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }) {
     const { setSidebarTab } = useSidebarStore();
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+
+    const handleClear = () => {
+        setSearchValue("");
+        inputRef.current?.focus();
+    };
+
     return (
         <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <button onClick={() => setSidebarTab("chats")}>
@@ -21,8 +32,9 @@ function SidebarContactsMenu({
 
             <div className="w-full relative rounded-xl group">
                 <Input
+                    ref={inputRef}
                     className="py-[10px] px-[43px] rounded-xl w-full h-auto"
-                    placeholder="Contacts search"
+                    placeholder="Search"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
@@ -30,7 +42,7 @@ function SidebarContactsMenu({
                 <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-[15px] w-[20px] stroke-neutral-700 fill-none stroke-3 group-focus-within:stroke-neutral-400 transition-colors duration-300" />
 
                 <button
-                    onClick={() => setSearchValue("")}
+                    onClick={handleClear}
                     className={`absolute top-[50%] translate-y-[-50%] right-[15px] flex items-center justify-center
                             w-[24px] h-[24px] rounded-full transition-all duration-300 cursor-pointer
                             ${
@@ -46,4 +58,4 @@ function SidebarContactsMenu({
     );
 }
 
-export default SidebarContactsMenu;
+export default SidebarSearchMenu;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { ChatSentType, ChatSidebarTabType, ModalType } from "@/shared/types/types";
+import { ChatSentType, ChatSidebarTabType, ModalType, SidebarTabType } from "@/shared/types/types";
 import { IFolder } from "@/shared/interfaces/IFolder";
 import { IUser } from "@/shared/interfaces/IUser";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -16,6 +16,7 @@ interface SidebarState {
     selectedUser: IUser | null;
     selectedMessage: IMessage | null;
     chatSentType: ChatSentType;
+    sidebarTab: SidebarTabType;
 
     setActiveModal: (modal: ModalType | null) => void;
     setSelectedFolder: (folder: IFolder | null) => void;
@@ -25,6 +26,7 @@ interface SidebarState {
     setSelectedUser: (user: IUser | null) => void;
     setSelectedMessage: (message: IMessage | null) => void;
     setChatSentType: (type: ChatSentType) => void;
+    setSidebarTab: (tab: SidebarTabType) => void;
 }
 
 export const useSidebarStore = create<SidebarState>()(
@@ -39,15 +41,17 @@ export const useSidebarStore = create<SidebarState>()(
             selectedUser: null,
             selectedMessage: null,
             chatSentType: "sent",
+            sidebarTab: "chats",
 
             setActiveModal: (modal) => set({ activeModal: modal }),
             setSelectedFolder: (folder) => set({ selectedFolder: folder }),
             setSelectedChat: (chat) => set({ selectedChat: chat }),
             setChatSidebarOpened: (state) => set({ chatSidebarOpened: state }),
             setChatSidebarTab: (tab) => set({ chatSidebarTab: tab }),
-            setSelectedUser: (user: IUser) => set({ selectedUser: user }),
-            setSelectedMessage: (message: IMessage) => set({ selectedMessage: message }),
-            setChatSentType: (type: ChatSentType) => set({ chatSentType: type }),
+            setSelectedUser: (user) => set({ selectedUser: user }),
+            setSelectedMessage: (message) => set({ selectedMessage: message }),
+            setChatSentType: (type) => set({ chatSentType: type }),
+            setSidebarTab: (tab) => set({ sidebarTab: tab }),
         }),
         { name: "SidebarStore" }
     )

@@ -2,17 +2,11 @@
 
 import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
-import { SidebarTabType } from "@/shared/types/types";
+import { useSidebarStore } from "@/store/sidebarStore";
 
-function SidebarContacts({
-    searchValue,
-    setActiveTab,
-}: {
-    searchValue: string;
-    setActiveTab: React.Dispatch<React.SetStateAction<SidebarTabType>>;
-}) {
+function SidebarContacts({ searchValue }: { searchValue: string }) {
     const { data: contacts, isPending: isContactsPending } = useContacts();
-
+    const { setSidebarTab } = useSidebarStore();
     const useGetOrCreatePrivateChatMutation = useCreatePrivateChat();
 
     if (isContactsPending) return <div>Завантаження...</div>;
@@ -47,7 +41,7 @@ function SidebarContacts({
                         useGetOrCreatePrivateChatMutation.mutateAsync(
                             contact.contact?.id
                         );
-                        setActiveTab("chats");
+                        setSidebarTab("chats");
                     }}
                     key={contact.id}
                     className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"

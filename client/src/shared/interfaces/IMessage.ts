@@ -1,4 +1,5 @@
 import { MessageType } from "../types/types";
+import { IChat } from "./IChat";
 import { IUser } from "./IUser";
 
 export interface IAttachment {
@@ -39,6 +40,7 @@ export interface IMessage {
     senderId: string;
     sender: IUser;
 
+    chat: IChat;
     chatId: string;
 
     attachments: IAttachment[];

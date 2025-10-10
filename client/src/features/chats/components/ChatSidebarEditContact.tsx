@@ -13,7 +13,6 @@ import {
     TrashIcon,
 } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
-import { ChatSidebarTabType } from "@/shared/types/types";
 import {
     useDeleteContact,
     useUpdateContact,
