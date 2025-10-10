@@ -42,6 +42,6 @@ export async function fetchLeaveChat(chatId: string): Promise<ServerResponseWith
 }
 
 export async function fetchDeleteChat(chatId: string): Promise<ServerResponseWithMessage> {
-    const { data } = await httpService.delete(`/chats/${chatId}`);
+    const { data } = await httpService.patch(`/chats/${chatId}/delete`);
     return data;
 }

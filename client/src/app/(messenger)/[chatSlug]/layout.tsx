@@ -10,12 +10,16 @@ import ChatSidebar from "@/features/chats/components/ChatSidebar";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import ChatMessages from "@/features/chats/components/ChatMessages";
 import { ChatEnum } from "@/shared/enums/enums";
+import DeleteMessage from "@/features/sidebar/modals/DeleteMessage";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
     const { data: me, isLoading: isMeLoading } = useProfile();
+    const { activeModal, setSelectedMessage, setActiveModal } =
+        useSidebarStore();
 
     useEffect(() => {
         if (!isChatLoading && !chat) {
@@ -40,6 +44,14 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                 {canSendMessages && <ChatSentData chatId={chat.id} />}
             </div>
             <ChatSidebar chat={chat} />
+            <DeleteMessage
+                isOpen={activeModal === "deleteMessage"}
+                onClose={() => {
+                    setActiveModal(null);
+                    setSelectedMessage(null);
+                }}
+                chatId={chat.id}
+            />
         </div>
     );
 }

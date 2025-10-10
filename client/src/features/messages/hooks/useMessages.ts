@@ -1,6 +1,12 @@
 import { IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCreateMessage, fetchMessages, fetchUpdateMessage } from "../api/messages.api";
+import {
+    fetchCreateMessage,
+    fetchDeleteMessage,
+    fetchDeleteMessageForMe,
+    fetchMessages,
+    fetchUpdateMessage,
+} from "../api/messages.api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -44,6 +50,38 @@ export function useUpdateMessage() {
             messageId: string;
             messagePayload: Partial<MessagePayload>;
         }) => fetchUpdateMessage(messageId, messagePayload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useDeleteMessageForMe() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatId, messageId }: { chatId: string; messageId: string }) =>
+            fetchDeleteMessageForMe(messageId),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useDeleteMessage() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatId, messageId }: { chatId: string; messageId: string }) =>
+            fetchDeleteMessage(messageId),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats"] });

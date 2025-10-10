@@ -1,0 +1,86 @@
+"use client";
+
+import { Button } from "@/shared/components/ui/button";
+import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
+import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { createPortal } from "react-dom";
+import { CloseIcon } from "@/shared/icons";
+import { useSidebarStore } from "@/store/sidebarStore";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import {
+    useDeleteMessage,
+    useDeleteMessageForMe,
+} from "@/features/messages/hooks/useMessages";
+
+interface DeleteMessageProps {
+    isOpen: boolean;
+    onClose: () => void;
+    chatId: string;
+}
+
+export default function DeleteMessage({
+    isOpen,
+    onClose,
+    chatId,
+}: DeleteMessageProps) {
+    const { selectedMessage } = useSidebarStore();
+    const { data: me } = useProfile();
+
+    const deleteMessageForMeMutation = useDeleteMessageForMe();
+    const deleteMessageMutation = useDeleteMessage();
+
+    useEscapeKeyClose({ isOpen, onClose });
+    if (!isOpen || !selectedMessage || !me) return null;
+
+    const handleDeleteMessageForMe = () => {
+        if (!selectedMessage) return;
+        deleteMessageForMeMutation.mutate({
+            chatId,
+            messageId: selectedMessage.id,
+        });
+        onClose();
+    };
+
+    const handleDeleteMessage = () => {
+        if (!selectedMessage) return;
+        deleteMessageMutation.mutate({ chatId, messageId: selectedMessage.id });
+        onClose();
+    };
+
+    const modalTitle = "Delete message";
+
+    const modalContent = (
+        <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
+            <Button
+                type="button"
+                onClick={onClose}
+                className="absolute top-[10px] right-[10px] cursor-pointer"
+            >
+                <CloseIcon className="w-[30px] stroke-3 stroke-white" />
+            </Button>
+
+            <div className="flex flex-col gap-[15px]">
+                <div className="max-w-[400px]">
+                    The action cannot be undone, all data will be cleared in
+                    relation to the selection.
+                </div>
+                <div className="flex gap-[10px] flex-wrap">
+                    <Button
+                        onClick={handleDeleteMessageForMe}
+                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                    >
+                        Delete only for me
+                    </Button>
+                    <Button
+                        onClick={handleDeleteMessage}
+                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                    >
+                        Delete for all
+                    </Button>
+                </div>
+            </div>
+        </ModalWrapper>
+    );
+
+    return createPortal(modalContent, document.body);
+}

@@ -14,7 +14,7 @@ interface SidebarState {
     chatSidebarTab: ChatSidebarTabType;
     activeSidebarFolder: string;
     selectedUser: IUser | null;
-    messageForEdit: IMessage | null;
+    selectedMessage: IMessage | null;
     chatSentType: ChatSentType;
 
     setActiveModal: (modal: ModalType | null) => void;
@@ -23,7 +23,7 @@ interface SidebarState {
     setChatSidebarOpened: (state: boolean) => void;
     setChatSidebarTab: (tab: ChatSidebarTabType) => void;
     setSelectedUser: (user: IUser | null) => void;
-    setMessageForEdit: (message: IMessage | null) => void;
+    setSelectedMessage: (message: IMessage | null) => void;
     setChatSentType: (type: ChatSentType) => void;
 }
 
@@ -37,7 +37,7 @@ export const useSidebarStore = create<SidebarState>()(
             activeSidebarFolder: "allChats",
             selectedChat: null,
             selectedUser: null,
-            messageForEdit: null,
+            selectedMessage: null,
             chatSentType: "sent",
 
             setActiveModal: (modal) => set({ activeModal: modal }),
@@ -46,7 +46,7 @@ export const useSidebarStore = create<SidebarState>()(
             setChatSidebarOpened: (state) => set({ chatSidebarOpened: state }),
             setChatSidebarTab: (tab) => set({ chatSidebarTab: tab }),
             setSelectedUser: (user: IUser) => set({ selectedUser: user }),
-            setMessageForEdit: (message: IMessage) => set({ messageForEdit: message }),
+            setSelectedMessage: (message: IMessage) => set({ selectedMessage: message }),
             setChatSentType: (type: ChatSentType) => set({ chatSentType: type }),
         }),
         { name: "SidebarStore" }

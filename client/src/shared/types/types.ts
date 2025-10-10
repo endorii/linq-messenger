@@ -7,6 +7,7 @@ export type ModalType =
     | "deleteChat"
     | "deleteGroup"
     | "deleteChannel"
+    | "deleteMessage"
     | null;
 export type SidebarTabType = "chats" | "contacts" | "settings" | "profile";
 export type ChatSidebarTabType = "info" | "editContact" | "editChat";

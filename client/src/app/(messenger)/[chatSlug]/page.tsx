@@ -27,7 +27,8 @@ function ChatSlug() {
     const { data: me } = useProfile();
     const useCreateMessageMutation = useCreateMessage();
 
-    const { setMessageForEdit, setChatSentType } = useSidebarStore();
+    const { setSelectedMessage, setChatSentType, setActiveModal } =
+        useSidebarStore();
 
     const handleSend = (msg: string) => {
         useCreateMessageMutation.mutateAsync({
@@ -142,7 +143,7 @@ function ChatSlug() {
                                             <ContextMenu>
                                                 <ContextMenuTrigger
                                                     onContextMenu={() =>
-                                                        setMessageForEdit(msg)
+                                                        setSelectedMessage(msg)
                                                     }
                                                     className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
                                                         msg.isMine
@@ -232,9 +233,23 @@ function ChatSlug() {
                                                     <ContextMenuItem>
                                                         Select
                                                     </ContextMenuItem>
-                                                    <ContextMenuItem variant="destructive">
-                                                        Delete
-                                                    </ContextMenuItem>
+                                                    {(chat?.type ===
+                                                        ChatEnum.PRIVATE ||
+                                                        chat?.adminId ===
+                                                            me?.id ||
+                                                        msg.senderId ===
+                                                            me?.id) && (
+                                                        <ContextMenuItem
+                                                            variant="destructive"
+                                                            onClick={() => {
+                                                                setActiveModal(
+                                                                    "deleteMessage"
+                                                                );
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </ContextMenuItem>
+                                                    )}
                                                 </ContextMenuContent>
                                             </ContextMenu>
 
