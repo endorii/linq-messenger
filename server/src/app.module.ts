@@ -7,6 +7,7 @@ import { ChatsModule } from './chats/chats.module';
 import { FoldersModule } from './folders/folders.module';
 import { MessagesModule } from './messages/messages.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { ContactsModule } from './contacts/contacts.module';
         FoldersModule,
         MessagesModule,
         ContactsModule,
+        SearchModule,
     ],
 })
 export class AppModule {}
