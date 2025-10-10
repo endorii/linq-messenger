@@ -56,7 +56,7 @@ export class ChatsService {
     }
 
     async getChats(userId: string) {
-        return this.prisma.chat.findMany({
+        const chats = await this.prisma.chat.findMany({
             where: {
                 isActive: true,
                 isDeleted: false,
@@ -65,10 +65,21 @@ export class ChatsService {
             },
             include: {
                 members: { where: { leftAt: null }, include: { user: true } },
-                lastMessage: true,
-                messages: { take: 1, orderBy: { createdAt: "desc" } },
+                messages: {
+                    where: { isRevoked: false, deletedMessages: { none: { userId } } },
+                    orderBy: { createdAt: "desc" },
+                },
             },
             orderBy: { updatedAt: "desc" },
+        });
+
+        return chats.map((chat) => {
+            const lastMessage = chat.messages[0] || null;
+
+            return {
+                ...chat,
+                lastMessage,
+            };
         });
     }
 

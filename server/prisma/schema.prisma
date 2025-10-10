@@ -94,9 +94,6 @@ model Chat {
     pinnedMessageId String?  @map("pinned_message_id")
     pinnedMessage   Message? @relation("PinnedMessage", fields: [pinnedMessageId], references: [id])
 
-    lastMessageId String?  @unique
-    lastMessage   Message? @relation("LastMessage", fields: [lastMessageId], references: [id])
-
     folders FolderChat[]
 
     deletedChats DeletedChat[]
@@ -194,7 +191,6 @@ model Message {
     attachments     Attachment[]
     reactions       MessageReaction[]
     messagesRead    MessageRead[]
-    lastMessageOf   Chat?             @relation("LastMessage")
     deletedMessages DeletedMessage[]
 
     @@index([chatId])
