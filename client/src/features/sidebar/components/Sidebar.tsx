@@ -51,7 +51,6 @@ function Sidebar({ user }: { user: IUser }) {
                 isOpen={activeModal === "deleteChat"}
                 onClose={() => {
                     setActiveModal(null);
-                    setSelectedChat(null);
                 }}
             />
         </div>

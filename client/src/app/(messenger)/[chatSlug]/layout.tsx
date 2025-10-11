@@ -18,13 +18,15 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
     const { data: me, isLoading: isMeLoading } = useProfile();
-    const { activeModal, setSelectedMessage, setActiveModal } =
+    const { activeModal, setSelectedMessage, setActiveModal, setSelectedChat } =
         useSidebarStore();
 
     useEffect(() => {
         if (!isChatLoading && !chat) {
             router.push("/");
         }
+
+        setSelectedChat(chat ?? null);
     }, [isChatLoading, chat, router]);
 
     if (!chat) return null;

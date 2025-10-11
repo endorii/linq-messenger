@@ -13,6 +13,8 @@ import {
 import { IChat } from "@/shared/interfaces/IChat";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useUpdateChat } from "../hooks/useChats";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { ChatEnum } from "@/shared/enums/enums";
 
 interface FormData {
     name: string;
@@ -21,9 +23,10 @@ interface FormData {
 
 function ChatSidebarEditChat({ chat }: { chat: IChat }) {
     const useUpdateChatMutation = useUpdateChat();
-    // const useDeleteContactMutation = useDeleteContact();
 
-    const { setChatSidebarTab } = useSidebarStore();
+    const { setChatSidebarTab, setActiveModal } = useSidebarStore();
+    const { data: me } = useProfile();
+    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
     const {
         handleSubmit,
@@ -50,15 +53,6 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
         }
     };
 
-    const handleDeleteChat = () => {
-        try {
-            // useDeleteContactMutation.mutateAsync(contactId);
-            setChatSidebarTab("info");
-        } catch (error: any) {
-            console.log(error);
-        }
-    };
-
     return (
         <div className="relative flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[18px]">
@@ -75,9 +69,14 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
             <div className="flex flex-col gap-[20px] items-center p-[20px]">
                 <div className="w-[120px] h-[120px] bg-neutral-600 rounded-full overflow-hidden">
                     <img
-                        src={chat.avatar || "/default-avatar.png"}
-                        alt="avatar"
-                        className="rounded-full w-full h-full object-cover"
+                        src={
+                            isPrivateChat
+                                ? chat.members.find((m) => m.userId !== me?.id)
+                                      ?.user.avatarUrl
+                                : chat.avatar
+                        }
+                        alt="avatar2"
+                        className="rounded-full"
                     />
                 </div>
             </div>
@@ -174,7 +173,9 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
 
                 <button
                     className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
-                    onClick={handleDeleteChat}
+                    onClick={() => {
+                        setActiveModal("deleteChat");
+                    }}
                 >
                     <TrashIcon className="w-[30px] fill-none stroke-2 stroke-red-600" />
                     <div className="text-red-600 bg-transparent font-medium">

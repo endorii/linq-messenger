@@ -27,8 +27,8 @@ export default function MessengerLayout({
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center w-screen h-screen bg-neutral-950 text-white">
-                <LinqIcon className="w-[100px] h-[100px] animate-spin" />
+            <div className="flex items-center justify-center w-screen h-screen bg-purple-gradient text-white">
+                <LinqIcon className="w-[100px] h-[100px] animate-ping" />
             </div>
         );
     }

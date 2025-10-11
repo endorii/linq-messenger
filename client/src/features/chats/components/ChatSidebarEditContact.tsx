@@ -18,6 +18,8 @@ import {
     useUpdateContact,
 } from "@/features/contacts/hooks/useContacts";
 import { useSidebarStore } from "@/store/sidebarStore";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { ChatEnum } from "@/shared/enums/enums";
 
 function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, contactId, otherUserId } =
@@ -27,6 +29,9 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const useDeleteContactMutation = useDeleteContact();
 
     const { setChatSidebarTab } = useSidebarStore();
+
+    const { data: me } = useProfile();
+    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
     const currentContact = isContact ? (entity as IContact) : null;
 
@@ -91,9 +96,14 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
             <div className="flex flex-col gap-[20px] items-center p-[20px]">
                 <div className="w-[120px] h-[120px] bg-neutral-600 rounded-full overflow-hidden">
                     <img
-                        src={chat.avatar || "/default-avatar.png"}
-                        alt="avatar"
-                        className="rounded-full w-full h-full object-cover"
+                        src={
+                            isPrivateChat
+                                ? chat.members.find((m) => m.userId !== me?.id)
+                                      ?.user.avatarUrl
+                                : chat.avatar
+                        }
+                        alt="avatar2"
+                        className="rounded-full"
                     />
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">

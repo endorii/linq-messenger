@@ -43,6 +43,8 @@ export class UserService {
                 data: {
                     email: userData.email,
                     username: userData.username,
+                    avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${userData.firstName || userData.username}&backgroundType=gradientLinear&backgroundColor=7C3AED,4F46E5,9333EA,8B5CF6,C026D3,FB7185&fontSize=50&scale=75
+`,
                     phone: userData.phone?.trim() === "" ? null : userData.phone?.trim(),
                     firstName: userData.firstName,
                     lastName: userData.lastName?.trim() === "" ? null : userData.lastName?.trim(),

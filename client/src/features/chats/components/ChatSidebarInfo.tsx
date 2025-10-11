@@ -87,9 +87,14 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
             <div className="flex flex-col gap-[20px] items-center p-[20px]">
                 <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full overflow-hidden">
                     <img
-                        src={chat.avatar || "/default-avatar.png"}
-                        alt="avatar"
-                        className="rounded-full w-full h-full object-cover"
+                        src={
+                            isPrivateChat
+                                ? chat.members.find((m) => m.userId !== me?.id)
+                                      ?.user.avatarUrl
+                                : chat.avatar
+                        }
+                        alt="avatar2"
+                        className="rounded-full"
                     />
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">
@@ -167,11 +172,8 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                                     >
                                         <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full overflow-hidden">
                                             <img
-                                                src={
-                                                    member.user?.avatarUrl ||
-                                                    "/default-avatar.png"
-                                                }
-                                                alt="avatar"
+                                                src={member.user.avatarUrl}
+                                                alt="a"
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>

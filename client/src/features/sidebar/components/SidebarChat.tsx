@@ -13,6 +13,7 @@ import SafeLink from "@/shared/ui/links/SafeLink";
 import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
 import { useParams } from "next/navigation";
 import { useSidebarStore } from "@/store/sidebarStore";
+import { useProfile } from "@/features/auth/hooks/useAuth";
 
 interface SidebarChatProps {
     chat: IChat;
@@ -23,6 +24,7 @@ function SidebarChat({ chat }: SidebarChatProps) {
     const chatId = params?.chatSlug;
 
     const { chatName } = useChatEntity(chat);
+    const { data: me } = useProfile();
 
     const { setSelectedChat, setActiveModal } = useSidebarStore();
 
@@ -53,8 +55,14 @@ function SidebarChat({ chat }: SidebarChatProps) {
                         >
                             <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0">
                                 <img
-                                    src={chat.avatar}
-                                    alt="avatar"
+                                    src={
+                                        isPrivateChat
+                                            ? chat.members.find(
+                                                  (m) => m.userId !== me?.id
+                                              )?.user.avatarUrl
+                                            : chat.avatar
+                                    }
+                                    alt="avatar2"
                                     className="rounded-full"
                                 />
                             </div>

@@ -168,9 +168,12 @@ export class ChatsService {
             data: {
                 name: dto.name,
                 description: dto.description,
-                avatar: dto.avatar,
                 type: dto.type,
                 adminId: userId,
+                avatar:
+                    dto.avatar ||
+                    `https://api.dicebear.com/9.x/initials/svg?seed=${dto.name}&backgroundType=gradientLinear&backgroundColor=7C3AED,4F46E5,9333EA,8B5CF6,C026D3,FB7185&fontSize=50&scale=75
+`,
                 messages: {
                     create: [
                         { type: MessageType.SYSTEM, content: `${dto.type} "${dto.name}" created` },

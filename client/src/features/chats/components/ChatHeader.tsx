@@ -28,7 +28,6 @@ function ChatHeader({ chat }: { chat: IChat }) {
         setChatSidebarTab,
         setActiveModal,
         setSelectedUser,
-        setSelectedChat,
     } = useSidebarStore();
 
     const isPrivate = chat.type === ChatEnum.PRIVATE;
@@ -62,21 +61,18 @@ function ChatHeader({ chat }: { chat: IChat }) {
         [ChatEnum.PRIVATE]: {
             label: "Delete chat",
             onClick: () => {
-                setSelectedChat(chat);
                 setActiveModal("deleteChat");
             },
         },
         [ChatEnum.GROUP]: {
             label: "Leave group",
             onClick: () => {
-                setSelectedChat(chat);
                 setActiveModal("deleteChat");
             },
         },
         [ChatEnum.CHANNEL]: {
             label: "Leave channel",
             onClick: () => {
-                setSelectedChat(chat);
                 setActiveModal("deleteChat");
             },
         },
@@ -88,12 +84,19 @@ function ChatHeader({ chat }: { chat: IChat }) {
         <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
             <div
                 className="flex gap-[20px] w-full"
-                onClick={() => setChatSidebarOpened(!chatSidebarOpened)}
+                onClick={() => {
+                    setChatSidebarOpened(!chatSidebarOpened);
+                }}
             >
                 <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
                     <img
-                        src={chat.avatar}
-                        alt="avatar"
+                        src={
+                            isPrivate
+                                ? chat.members.find((m) => m.userId !== me?.id)
+                                      ?.user.avatarUrl
+                                : chat.avatar
+                        }
+                        alt="avatar2"
                         className="rounded-full"
                     />
                 </div>
