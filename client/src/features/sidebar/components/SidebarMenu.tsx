@@ -19,7 +19,6 @@ import {
     OptionsIcon,
     ThemeIcon,
     LogoutIcon,
-    CloseIcon,
     SettingsIcon,
     SearchIcon,
 } from "@/shared/icons";
@@ -40,7 +39,9 @@ function SidebarMenu({ user }: { user: IUser }) {
 
                 <DropdownMenuContent className="w-56 font-semibold">
                     <DropdownMenuItem>
-                        <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full"></div>
+                        <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full">
+                            <img src={user.avatarUrl} alt="avatar" />
+                        </div>
                         <div>{user?.username}</div>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-neutral-700" />

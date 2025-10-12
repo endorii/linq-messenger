@@ -108,10 +108,8 @@ function ChatSlug() {
                                     nextMsg.sender?.id === msg.sender?.id;
 
                                 const sender = msg.sender;
-                                const avatarUrl =
-                                    sender?.avatarUrl ||
-                                    "/images/default-avatar.png";
-                                const username = sender?.username || "Unknown";
+                                const avatarUrl = sender?.avatarUrl;
+                                const username = sender?.username;
 
                                 if (msg.type === "SYSTEM") {
                                     return (
@@ -257,10 +255,13 @@ function ChatSlug() {
                                                 !isSameSenderAsNext && (
                                                     <div className="absolute bottom-0 left-[-40px]">
                                                         <Image
-                                                            src={avatarUrl}
+                                                            src={
+                                                                avatarUrl || ""
+                                                            }
                                                             alt={username}
                                                             width={32}
                                                             height={32}
+                                                            unoptimized
                                                             className="rounded-full object-cover"
                                                         />
                                                     </div>
