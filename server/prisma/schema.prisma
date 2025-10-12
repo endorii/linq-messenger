@@ -12,6 +12,7 @@ model User {
     id         String    @id @default(cuid())
     username   String    @unique
     email      String    @unique
+    biography  String?
     password   String
     phone      String?   @unique
     firstName  String    @map("first_name")

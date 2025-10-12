@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import SidebarContacts from "../SidebarContacts";
-import SidebarContactsMenu from "../SidebarContactsMenu";
-import SidebarContactsPlus from "../SidebarContactsPlus";
+import SidebarContacts from "../contacts/SidebarContacts";
+import SidebarContactsMenu from "../contacts/SidebarContactsMenu";
+import SidebarContactsPlus from "../contacts/SidebarContactsPlus";
 
 function ContactsTab() {
     const [searchValue, setSearchValue] = useState("");

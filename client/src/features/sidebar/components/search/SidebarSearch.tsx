@@ -1,7 +1,6 @@
 "use client";
 
 import { IUser } from "@/shared/interfaces/IUser";
-import { useGlobalSearch } from "../hooks/useSearch";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { IContact } from "@/shared/interfaces/IContact";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -9,6 +8,7 @@ import { IMessage } from "@/shared/interfaces/IMessage";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { highlightMatch } from "@/shared/utils/highlightMatch";
+import { useGlobalSearch } from "../../hooks/useSearch";
 
 function SidebarSearch({ searchValue }: { searchValue: string }) {
     const { data, isLoading } = useGlobalSearch(searchValue);

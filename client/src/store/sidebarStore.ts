@@ -1,6 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { ChatSentType, ChatSidebarTabType, ModalType, SidebarTabType } from "@/shared/types/types";
+import {
+    ChatSentType,
+    ChatSidebarTabType,
+    ModalType,
+    ProfileTabType,
+    SidebarTabType,
+} from "@/shared/types/types";
 import { IFolder } from "@/shared/interfaces/IFolder";
 import { IUser } from "@/shared/interfaces/IUser";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -17,6 +23,7 @@ interface SidebarState {
     selectedMessage: IMessage | null;
     chatSentType: ChatSentType;
     sidebarTab: SidebarTabType;
+    profileTab: ProfileTabType;
 
     setActiveModal: (modal: ModalType | null) => void;
     setSelectedFolder: (folder: IFolder | null) => void;
@@ -27,6 +34,7 @@ interface SidebarState {
     setSelectedMessage: (message: IMessage | null) => void;
     setChatSentType: (type: ChatSentType) => void;
     setSidebarTab: (tab: SidebarTabType) => void;
+    setProfileTab: (tab: ProfileTabType) => void;
 }
 
 export const useSidebarStore = create<SidebarState>()(
@@ -41,7 +49,8 @@ export const useSidebarStore = create<SidebarState>()(
             selectedUser: null,
             selectedMessage: null,
             chatSentType: "sent",
-            sidebarTab: "chats",
+            sidebarTab: "profile",
+            profileTab: "overview",
 
             setActiveModal: (modal) => set({ activeModal: modal }),
             setSelectedFolder: (folder) => set({ selectedFolder: folder }),
@@ -52,6 +61,7 @@ export const useSidebarStore = create<SidebarState>()(
             setSelectedMessage: (message) => set({ selectedMessage: message }),
             setChatSentType: (type) => set({ chatSentType: type }),
             setSidebarTab: (tab) => set({ sidebarTab: tab }),
+            setProfileTab: (tab) => set({ profileTab: tab }),
         }),
         { name: "SidebarStore" }
     )

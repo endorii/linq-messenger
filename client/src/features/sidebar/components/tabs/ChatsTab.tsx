@@ -1,7 +1,7 @@
 "use client";
 
 import { IUser } from "@/shared/interfaces/IUser";
-import SidebarChats from "../SidebarChats";
+import SidebarChats from "../chats/SidebarChats";
 import SidebarDropdownPlus from "../SidebarDropdownPlus";
 import SidebarMenu from "../SidebarMenu";
 

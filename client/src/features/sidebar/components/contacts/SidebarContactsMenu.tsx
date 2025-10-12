@@ -2,7 +2,6 @@
 
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
-import { SidebarTabType } from "@/shared/types/types";
 import { useSidebarStore } from "@/store/sidebarStore";
 
 function SidebarContactsMenu({

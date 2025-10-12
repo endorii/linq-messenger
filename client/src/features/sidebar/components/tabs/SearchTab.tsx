@@ -1,7 +1,7 @@
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { useState } from "react";
-import SidebarSearch from "../SidebarSearch";
-import SidebarSearchMenu from "../SidebarSearchMenu";
+import SidebarSearch from "../search/SidebarSearch";
+import SidebarSearchMenu from "../search/SidebarSearchMenu";
 
 export function SearchTab() {
     const [searchValue, setSearchValue] = useState("");

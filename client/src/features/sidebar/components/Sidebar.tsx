@@ -7,21 +7,20 @@ import { IUser } from "@/shared/interfaces/IUser";
 import { ChatEnum } from "@/shared/enums/enums";
 import ChatsTab from "./tabs/ChatsTab";
 import ContactsTab from "./tabs/ContactsTab";
-import SettingsTab from "./tabs/SettingsTab";
+import ProfileTab from "./tabs/ProfileTab";
 import EditFolder from "../modals/EditFolder";
 import { useSidebarStore } from "@/store/sidebarStore";
 import DeleteChat from "../modals/DeleteChat";
 import { SearchTab } from "./tabs/SearchTab";
 
 function Sidebar({ user }: { user: IUser }) {
-    const { activeModal, setActiveModal, setSelectedChat, sidebarTab } =
-        useSidebarStore();
+    const { activeModal, setActiveModal, sidebarTab } = useSidebarStore();
 
     return (
         <div className="relative bg-neutral-950 h-full flex flex-col">
             {sidebarTab === "chats" && <ChatsTab user={user} />}
             {sidebarTab === "contacts" && <ContactsTab />}
-            {sidebarTab === "settings" && <SettingsTab />}
+            {sidebarTab === "profile" && <ProfileTab />}
             {sidebarTab === "search" && <SearchTab />}
 
             <CreateFolder

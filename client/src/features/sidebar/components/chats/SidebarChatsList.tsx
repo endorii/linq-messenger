@@ -1,9 +1,9 @@
 "use client";
 
-import SidebarChat from "@/features/sidebar/components/SidebarChat";
 import { TabsContent } from "@/shared/components/ui/tabs";
 import { IChat } from "@/shared/interfaces/IChat";
 import { IFolder } from "@/shared/interfaces/IFolder";
+import SidebarChat from "./SidebarChat";
 
 function SidebarChatsList({
     folders,

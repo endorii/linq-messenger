@@ -38,7 +38,7 @@ function SidebarMenu({ user }: { user: IUser }) {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent className="w-56 font-semibold">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSidebarTab("profile")}>
                         <div className="w-[30px] h-[30px] bg-neutral-600 rounded-full">
                             <img src={user.avatarUrl} alt="avatar" />
                         </div>
@@ -54,7 +54,7 @@ function SidebarMenu({ user }: { user: IUser }) {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                         className="group"
-                        onClick={() => setSidebarTab("settings")}
+                        onClick={() => setSidebarTab("profile")}
                     >
                         <SettingsIcon className="stroke-2 stroke-white group-hover:stroke-black fill-none" />
                         <div>Settings</div>
