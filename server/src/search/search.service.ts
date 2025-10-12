@@ -113,6 +113,12 @@ export class SearchService {
                                 },
                             },
                             {
+                                phone: {
+                                    contains: query,
+                                    mode: "insensitive",
+                                },
+                            },
+                            {
                                 email: {
                                     contains: query,
                                     mode: "insensitive",
