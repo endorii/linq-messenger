@@ -1,9 +1,15 @@
 import { ServerResponseWithMessage } from "@/features/auth/interfaces/auth.interfaces";
 import { httpService } from "@/shared/api/httpService";
 import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
+import { IFolderChat } from "@/shared/interfaces/IFolder";
 
 export async function fetchChats(): Promise<IChat[]> {
     const { data } = await httpService.get("/chats");
+    return data;
+}
+
+export async function fetchChatsByFolder(folderId: string): Promise<IChat[]> {
+    const { data } = await httpService.get(`/chats/folder/${folderId}`);
     return data;
 }
 

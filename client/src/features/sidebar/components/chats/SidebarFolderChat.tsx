@@ -4,10 +4,6 @@ import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuSeparator,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
 import { useChatEntity } from "@/shared/hooks/useChatEntity";
@@ -18,16 +14,15 @@ import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLast
 import { useParams } from "next/navigation";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
-import { IFolder } from "@/shared/interfaces/IFolder";
-import { useAddChatToFolder } from "@/features/folders/hooks/useFolders";
+import { useRemoveChatFromFolder } from "@/features/folders/hooks/useFolders";
 import Link from "next/link";
 
-interface SidebarChatProps {
+interface SidebarFolderChatProps {
     chat: IChat;
-    folders: IFolder[] | undefined;
+    folderId: string;
 }
 
-function SidebarChat({ chat, folders }: SidebarChatProps) {
+function SidebarFolderChat({ chat, folderId }: SidebarFolderChatProps) {
     if (!chat) return null;
     const params = useParams();
     const chatId = params?.chatSlug;
@@ -37,7 +32,7 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
 
     const { setSelectedChat, setActiveModal } = useSidebarStore();
 
-    const addChatToFolderMutation = useAddChatToFolder();
+    const removeChatFromFolderMutation = useRemoveChatFromFolder();
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
@@ -52,11 +47,6 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
     const handleContextMenu = () => {
         setSelectedChat(chat);
     };
-
-    const foldersWithNoChat = folders?.filter((folder) => {
-        const chatFolders = chat.folders || [];
-        return !chatFolders.some((cf) => cf.folderId === folder.id);
-    });
 
     return (
         <ContextMenu onOpenChange={(open) => open && handleContextMenu()}>
@@ -116,37 +106,17 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
                     </Link>
                 </ContextMenuItem>
 
-                {folders && folders.length > 0 && (
-                    <ContextMenuSub>
-                        <ContextMenuSubTrigger>
-                            Add to Folder
-                        </ContextMenuSubTrigger>
-                        <ContextMenuSubContent>
-                            {foldersWithNoChat?.length ? (
-                                foldersWithNoChat.map((folder) => (
-                                    <ContextMenuItem
-                                        key={folder.id}
-                                        onClick={() =>
-                                            addChatToFolderMutation.mutateAsync(
-                                                {
-                                                    chatId: chat.id,
-                                                    folderId: folder.id,
-                                                }
-                                            )
-                                        }
-                                    >
-                                        {folder.name}
-                                    </ContextMenuItem>
-                                ))
-                            ) : (
-                                <ContextMenuItem disabled>
-                                    No available folders
-                                </ContextMenuItem>
-                            )}
-                        </ContextMenuSubContent>
-                    </ContextMenuSub>
-                )}
-
+                <ContextMenuItem
+                    variant="destructive"
+                    onClick={() =>
+                        removeChatFromFolderMutation.mutateAsync({
+                            chatId: chat.id,
+                            folderId,
+                        })
+                    }
+                >
+                    Remove From Folder
+                </ContextMenuItem>
                 <ContextMenuItem>Mark</ContextMenuItem>
                 <ContextMenuItem>Pin</ContextMenuItem>
                 <ContextMenuItem>Mute</ContextMenuItem>
@@ -185,4 +155,4 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
     );
 }
 
-export default SidebarChat;
+export default SidebarFolderChat;

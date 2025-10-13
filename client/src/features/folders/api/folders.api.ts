@@ -27,3 +27,19 @@ export async function fetchDeleteChatFolder(
     const { data } = await httpService.delete(`/folders/${folderId}`);
     return data;
 }
+
+export async function fetchAddChatToFolder(
+    chatId: string,
+    folderId: string
+): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.post(`/folders/${folderId}/chats`, { chatId });
+    return data;
+}
+
+export async function removeChatFromFolder(
+    chatId: string,
+    folderId: string
+): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.delete(`/folders/${folderId}/chats/${chatId}`);
+    return data;
+}

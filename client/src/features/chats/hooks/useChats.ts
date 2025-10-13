@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchChat,
     fetchChats,
+    fetchChatsByFolder,
     fetchCreateChat,
     fetchCreatePrivateChat,
     fetchDeleteChat,
@@ -18,6 +19,14 @@ export function useChats() {
         queryKey: ["chats"],
         queryFn: () => fetchChats(),
         retry: 3,
+    });
+}
+
+export function useFolderChats(folderId: string, options?: { enabled?: boolean }) {
+    return useQuery<IChat[], Error>({
+        queryKey: ["chats", "folder", folderId],
+        queryFn: () => fetchChatsByFolder(folderId),
+        enabled: (options?.enabled ?? true) && !!folderId,
     });
 }
 
@@ -83,12 +92,14 @@ export function useUpdateChat() {
 }
 
 export function useLeaveChat() {
+    const router = useRouter();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (chatId: string) => fetchLeaveChat(chatId),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
+            router.push("/");
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;
@@ -98,12 +109,14 @@ export function useLeaveChat() {
 }
 
 export function useDeleteChat() {
+    const router = useRouter();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (chatId: string) => fetchDeleteChat(chatId),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
+            router.push("/");
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;
