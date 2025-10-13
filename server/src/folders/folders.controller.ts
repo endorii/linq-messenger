@@ -4,6 +4,7 @@ import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
 import { CreateFolderDto } from "./dto/create-folder.dto";
 import { UpdateFolderDto } from "./dto/update-folder.dto";
+import { AddChatToFolderDto } from "./dto/add-chat-to-folder.dto";
 
 @Controller("folders")
 @UseGuards(JwtAuthGuard)
@@ -32,5 +33,24 @@ export class FoldersController {
     @Delete(":folderId")
     deleteFolder(@Req() req: AuthenticatedRequest, @Param("folderId") folderId: string) {
         return this.foldersService.deleteFolder(req.user.id, folderId);
+    }
+
+    @Post(":folderId/chats")
+    addChatToFolder(
+        @Req() req: AuthenticatedRequest,
+        @Param("folderId") folderId: string,
+        @Body()
+        addChatToFolderDto: AddChatToFolderDto
+    ) {
+        return this.foldersService.addChatToFolder(req.user.id, folderId, addChatToFolderDto);
+    }
+
+    @Delete(":folderId/chats/:chatId")
+    removeChatFromFolder(
+        @Req() req: AuthenticatedRequest,
+        @Param("folderId") folderId: string,
+        @Param("chatId") chatId: string
+    ) {
+        return this.foldersService.removeChatFromFolder(req.user.id, folderId, chatId);
     }
 }

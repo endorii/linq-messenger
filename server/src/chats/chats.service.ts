@@ -20,6 +20,9 @@ export class ChatsService {
     async ensureMembership(chatId: string, userId: string) {
         const member = await this.prisma.chatMember.findUnique({
             where: { userId_chatId: { userId, chatId } },
+            include: {
+                user: true,
+            },
         });
         if (!member) throw new ForbiddenException("You are not a member of this chat");
         return member;
@@ -69,6 +72,7 @@ export class ChatsService {
                     where: { isRevoked: false, deletedMessages: { none: { userId } } },
                     orderBy: { createdAt: "desc" },
                 },
+                folders: true,
             },
             orderBy: { updatedAt: "desc" },
         });
@@ -78,6 +82,45 @@ export class ChatsService {
 
             return {
                 ...chat,
+                lastMessage,
+            };
+        });
+    }
+
+    async getChatsByFolder(userId: string, folderId: string) {
+        const chats = await this.prisma.folderChat.findMany({
+            where: {
+                folderId,
+                chat: {
+                    isActive: true,
+                    isDeleted: false,
+                    deletedChats: { none: { userId } },
+                    members: { some: { userId, leftAt: null } },
+                },
+            },
+            include: {
+                chat: {
+                    include: {
+                        members: { where: { leftAt: null }, include: { user: true } },
+                        messages: {
+                            where: { isRevoked: false, deletedMessages: { none: { userId } } },
+                            orderBy: { createdAt: "desc" },
+                        },
+                    },
+                },
+            },
+            orderBy: {
+                chat: {
+                    updatedAt: "desc",
+                },
+            },
+        });
+
+        return chats.map((chat) => {
+            const lastMessage = chat.chat.messages[0] || null;
+
+            return {
+                ...chat.chat,
                 lastMessage,
             };
         });
@@ -211,14 +254,14 @@ export class ChatsService {
             if (alreadyHidden) throw new ForbiddenException("Chat already hidden");
 
             await this.prisma.deletedChat.create({ data: { chatId, userId } });
-            await this.prisma.message.create({
-                data: {
-                    chatId,
-                    type: MessageType.SYSTEM,
-                    content: "Chat partner has hidden chat for himself.",
-                    systemData: { userId, action: "hidden" },
-                },
-            });
+            // await this.prisma.message.create({
+            //     data: {
+            //         chatId,
+            //         type: MessageType.SYSTEM,
+            //         content: `${member.user.firstName || member.user.username} has hidden chat for himself.`,
+            //         systemData: { userId, action: "hidden" },
+            //     },
+            // });
             return { message: "Chat hidden" };
         }
 
@@ -255,6 +298,14 @@ export class ChatsService {
         if (chat.adminId !== userId)
             throw new ForbiddenException("Only admin can delete this chat");
         await this.prisma.chat.update({ where: { id: chatId }, data: { isDeleted: true } });
+        await this.prisma.message.updateMany({
+            where: {
+                chatId,
+            },
+            data: {
+                isRevoked: true,
+            },
+        });
         return { message: "Chat deleted" };
     }
 }

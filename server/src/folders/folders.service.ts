@@ -2,6 +2,7 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateFolderDto } from "./dto/create-folder.dto";
 import { UpdateFolderDto } from "./dto/update-folder.dto";
+import { AddChatToFolderDto } from "./dto/add-chat-to-folder.dto";
 
 @Injectable()
 export class FoldersService {
@@ -10,7 +11,18 @@ export class FoldersService {
     async getAllUserFolders(userId: string) {
         return await this.prisma.folder.findMany({
             where: { userId },
-            include: { chats: true },
+            include: {
+                chats: {
+                    include: {
+                        chat: {
+                            include: {
+                                messages: true,
+                                members: { include: { user: true } },
+                            },
+                        },
+                    },
+                },
+            },
         });
     }
 
@@ -81,5 +93,59 @@ export class FoldersService {
         });
 
         return { message: "Folder deleted" };
+    }
+
+    async addChatToFolder(
+        userId: string,
+        folderId: string,
+        addChatToFolderDto: AddChatToFolderDto
+    ) {
+        const folder = await this.prisma.folder.findUnique({
+            where: {
+                id: folderId,
+                userId,
+            },
+        });
+
+        if (!folder) {
+            throw new Error("Folder not found or access denied");
+        }
+
+        await this.prisma.folderChat.create({
+            data: {
+                folderId,
+                chatId: addChatToFolderDto.chatId,
+            },
+        });
+
+        return { message: "Chat successfully added to folder" };
+    }
+
+    async removeChatFromFolder(userId: string, folderId: string, chatId: string) {
+        const folder = await this.prisma.folder.findUnique({
+            where: {
+                id: folderId,
+                userId,
+            },
+        });
+
+        if (!folder) {
+            throw new Error("Folder not found or access denied");
+        }
+
+        const deletedFolderChat = await this.prisma.folderChat.delete({
+            where: {
+                chatId_folderId: {
+                    chatId,
+                    folderId,
+                },
+            },
+        });
+
+        if (!deletedFolderChat) {
+            throw new Error("Chat not found in this folder");
+        }
+
+        return { message: "Chat successfully removed from folder" };
     }
 }

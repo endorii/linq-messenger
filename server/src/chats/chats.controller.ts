@@ -20,6 +20,11 @@ export class ChatsController {
         return this.chatsService.getChats(req.user.id);
     }
 
+    @Get("folder/:folderId")
+    async getChatsByFolder(@Req() req: AuthenticatedRequest, @Param("folderId") folderId: string) {
+        return this.chatsService.getChatsByFolder(req.user.id, folderId);
+    }
+
     @Get(":chatId")
     async getChat(@Req() req: AuthenticatedRequest, @Param("chatId") chatId: string) {
         return this.chatsService.getChat(req.user.id, chatId);
