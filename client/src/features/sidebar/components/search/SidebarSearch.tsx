@@ -2,17 +2,22 @@
 
 import { IUser } from "@/shared/interfaces/IUser";
 import { useSidebarStore } from "@/store/sidebarStore";
-import { IContact } from "@/shared/interfaces/IContact";
 import { IChat } from "@/shared/interfaces/IChat";
 import { IMessage } from "@/shared/interfaces/IMessage";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { highlightMatch } from "@/shared/utils/highlightMatch";
 import { useGlobalSearch } from "../../hooks/useSearch";
+import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
+import { useRouter } from "next/navigation";
 
 function SidebarSearch({ searchValue }: { searchValue: string }) {
-    const { data, isLoading } = useGlobalSearch(searchValue);
+    const { setSidebarTab } = useSidebarStore();
+    const { data: searchData, isLoading } = useGlobalSearch(searchValue);
     const { data: me } = useProfile();
+    const router = useRouter();
+
+    const createPrivateChatMutation = useCreatePrivateChat();
 
     if (!searchValue) {
         return (
@@ -28,9 +33,9 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
     //     );
     // }
 
-    if (!data) return null;
+    if (!searchData) return null;
 
-    const { users, chats, messages } = data;
+    const { users, chats, messages } = searchData;
 
     return (
         <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto">
@@ -43,6 +48,10 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
                         <div
                             key={user.id}
                             className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            onClick={() => {
+                                createPrivateChatMutation.mutateAsync(user.id);
+                                setSidebarTab("chats");
+                            }}
                         >
                             <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                                 {user.avatarUrl && (
@@ -78,6 +87,10 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
                         <div
                             key={chat.id}
                             className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            onClick={() => {
+                                router.push(`/${chat.id}`);
+                                setSidebarTab("chats");
+                            }}
                         >
                             <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                                 {chat.avatar && (
@@ -133,6 +146,14 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
                             <div
                                 key={message.id}
                                 className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                                onClick={() => {
+                                    // функція, яка приймає message.id, по chatId вона шукає чат, якому належить перекидає туди і викликає getChats з параметрами
+
+                                    router.push(
+                                        `/${message.chat.id}?focus=${message.id}`
+                                    );
+                                    setSidebarTab("chats");
+                                }}
                             >
                                 <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                                     {avatar ? (
