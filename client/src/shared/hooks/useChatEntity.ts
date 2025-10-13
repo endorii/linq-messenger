@@ -31,20 +31,17 @@ export function useChatEntity(chat: IChat): {
             return defaultResult;
         }
 
-        // 1. Знаходимо іншого учасника чату
-        const otherMember = chat.members.find((m) => m.userId !== me.id);
+        const otherMember = chat.members?.find((m) => m.userId !== me?.id);
+
         const otherUser = otherMember?.user;
         const otherUserId = otherMember?.userId || null;
 
         if (!otherUser || !otherUserId) {
             return defaultResult;
         }
-
-        // 2. Шукаємо запис контакту
         const contact = contacts?.find((c) => c.contactId === otherUserId);
 
         if (contact) {
-            // Це контакт
             const name = contact.nickname || otherUser.username;
 
             return {
@@ -56,7 +53,6 @@ export function useChatEntity(chat: IChat): {
             };
         }
 
-        // 3. Це не контакт, але користувач знайдений
         const name = otherUser.username;
 
         return {

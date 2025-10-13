@@ -2,7 +2,7 @@ import { MemberRole } from "../types/types";
 import { IMessage } from "./IMessage";
 import { IUser } from "./IUser";
 import { ChatEnum } from "../enums/enums";
-import { IFolder } from "./IFolder";
+import { IFolder, IFolderChat } from "./IFolder";
 
 export interface IChatMember {
     id: string;
@@ -30,7 +30,7 @@ export interface IChat {
     members: IChatMember[];
     messages: IMessage[];
 
-    folders: IFolder[];
+    folders: IFolderChat[];
 
     lastMessageId?: string;
     lastMessage?: IMessage;

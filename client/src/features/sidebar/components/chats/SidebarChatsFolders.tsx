@@ -14,7 +14,6 @@ import { useDeleteFolder } from "@/features/folders/hooks/useFolders";
 
 function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
     const { setActiveModal, setSelectedFolder } = useSidebarStore();
-
     const useDeleteFolderMutation = useDeleteFolder();
 
     return (
@@ -25,13 +24,13 @@ function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
                 folders.map((folder) => (
                     <ContextMenu key={folder.id}>
                         <ContextMenuTrigger>
-                            <TabsTrigger value={folder.name}>
+                            <TabsTrigger value={folder.id}>
                                 {folder.name}
                             </TabsTrigger>
                         </ContextMenuTrigger>
                         <ContextMenuContent className="w-[200px]">
                             <ContextMenuItem
-                                onClick={async () => {
+                                onClick={() => {
                                     setSelectedFolder(folder);
                                     setActiveModal("editFolder");
                                 }}
@@ -40,7 +39,7 @@ function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
                             </ContextMenuItem>
                             <ContextMenuItem
                                 variant="destructive"
-                                onClick={async () => {
+                                onClick={() => {
                                     useDeleteFolderMutation.mutateAsync(
                                         folder.id
                                     );

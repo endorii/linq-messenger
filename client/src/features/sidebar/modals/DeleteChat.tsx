@@ -32,13 +32,13 @@ export default function DeleteChat({ isOpen, onClose }: DeleteChatProps) {
 
     const handleDeleteChat = () => {
         if (!selectedChat) return;
-        deleteChatMutation.mutate(selectedChat.id);
+        deleteChatMutation.mutateAsync(selectedChat.id);
         onClose();
     };
 
     const handleLeaveChat = () => {
         if (!selectedChat) return;
-        leaveChatMutation.mutate(selectedChat.id);
+        leaveChatMutation.mutateAsync(selectedChat.id);
         onClose();
     };
 

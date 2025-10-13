@@ -21,9 +21,8 @@ function SidebarProfileLanguage() {
                 className="flex flex-col gap-2 w-full"
             >
                 {languages.map(({ value, label, description }) => (
-                    <button
+                    <div
                         key={value}
-                        type="button"
                         onClick={() => setSelectedLanguage(value)}
                         className="flex items-center gap-[20px] p-[15px] hover:bg-white/5 cursor-pointer rounded-xl"
                     >
@@ -39,7 +38,7 @@ function SidebarProfileLanguage() {
                                 {description}
                             </div>
                         </div>
-                    </button>
+                    </div>
                 ))}
             </RadioGroup>
         </div>

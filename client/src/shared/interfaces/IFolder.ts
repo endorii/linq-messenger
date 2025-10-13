@@ -9,7 +9,17 @@ export interface IFolder {
     updatedAt: string;
 
     userId: string;
-    chats: IChat[];
+    chats: IFolderChat[];
+}
+
+export interface IFolderChat {
+    id: string;
+    chatId: string;
+    folderId: string;
+    addedAt: string;
+
+    chat: IChat;
+    folder: IFolder;
 }
 
 export interface FolderPayload {
