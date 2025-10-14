@@ -13,6 +13,7 @@ import { useSidebarStore } from "@/store/sidebarStore";
 import DeleteChat from "../modals/DeleteChat";
 import { SearchTab } from "./tabs/SearchTab";
 import MuteChat from "../modals/MuteChat";
+import AddMembersToChat from "../modals/AddMembersToChat";
 
 function Sidebar({ user }: { user: IUser }) {
     const {
@@ -52,7 +53,10 @@ function Sidebar({ user }: { user: IUser }) {
                 isOpen={activeModal === "addContact"}
                 onClose={() => setActiveModal(null)}
             />
-
+            <AddMembersToChat
+                isOpen={activeModal === "addMembers"}
+                onClose={() => setActiveModal(null)}
+            />
             {selectedChat && (
                 <MuteChat
                     isOpen={activeModal === "muteChat"}

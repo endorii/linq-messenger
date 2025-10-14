@@ -54,7 +54,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full relative">
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
                     <button onClick={() => setChatSidebarOpened(false)}>
@@ -221,6 +221,12 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                     </TabsContent>
                 </Tabs>
             </div>
+            <button
+                className="absolute bottom-4 left-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                onClick={() => setActiveModal("addMembers")}
+            >
+                <AddContactIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+            </button>
         </div>
     );
 }
