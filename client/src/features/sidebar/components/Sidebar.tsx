@@ -12,9 +12,16 @@ import EditFolder from "../modals/EditFolder";
 import { useSidebarStore } from "@/store/sidebarStore";
 import DeleteChat from "../modals/DeleteChat";
 import { SearchTab } from "./tabs/SearchTab";
+import MuteChat from "../modals/MuteChat";
 
 function Sidebar({ user }: { user: IUser }) {
-    const { activeModal, setActiveModal, sidebarTab } = useSidebarStore();
+    const {
+        activeModal,
+        setActiveModal,
+        sidebarTab,
+        selectedChat,
+        setSelectedChat,
+    } = useSidebarStore();
 
     return (
         <div className="relative bg-neutral-950 h-full flex flex-col">
@@ -46,12 +53,27 @@ function Sidebar({ user }: { user: IUser }) {
                 onClose={() => setActiveModal(null)}
             />
 
-            <DeleteChat
-                isOpen={activeModal === "deleteChat"}
-                onClose={() => {
-                    setActiveModal(null);
-                }}
-            />
+            {selectedChat && (
+                <MuteChat
+                    isOpen={activeModal === "muteChat"}
+                    onClose={() => {
+                        setActiveModal(null);
+                        setSelectedChat(null);
+                    }}
+                    chat={selectedChat}
+                />
+            )}
+
+            {selectedChat && (
+                <DeleteChat
+                    isOpen={activeModal === "deleteChat"}
+                    onClose={() => {
+                        setActiveModal(null);
+                        setSelectedChat(null);
+                    }}
+                    chat={selectedChat}
+                />
+            )}
         </div>
     );
 }

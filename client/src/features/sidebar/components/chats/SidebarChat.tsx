@@ -17,46 +17,60 @@ import SafeLink from "@/shared/ui/links/SafeLink";
 import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
 import { useParams } from "next/navigation";
 import { useSidebarStore } from "@/store/sidebarStore";
-import { useProfile } from "@/features/auth/hooks/useAuth";
 import { IFolder } from "@/shared/interfaces/IFolder";
-import { useAddChatToFolder } from "@/features/folders/hooks/useFolders";
+import {
+    useAddChatToFolder,
+    useRemoveChatFromFolder,
+} from "@/features/folders/hooks/useFolders";
 import Link from "next/link";
+import {
+    useToggleMarkChat,
+    useToggleMuteChat,
+} from "@/features/chats/hooks/useChatMembers";
+import { MuteIcon } from "@/shared/icons";
+import dayjs from "dayjs";
 
 interface SidebarChatProps {
     chat: IChat;
-    folders: IFolder[] | undefined;
+    folders?: IFolder[];
+    folderId?: string;
 }
 
-function SidebarChat({ chat, folders }: SidebarChatProps) {
+function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     if (!chat) return null;
     const params = useParams();
     const chatId = params?.chatSlug;
 
-    const { chatName } = useChatEntity(chat);
-    const { data: me } = useProfile();
-
+    const { chatName, otherMember, meMember } = useChatEntity(chat);
     const { setSelectedChat, setActiveModal } = useSidebarStore();
 
     const addChatToFolderMutation = useAddChatToFolder();
+    const removeChatFromFolderMutation = useRemoveChatFromFolder();
+    const toggleMarkChatMutation = useToggleMarkChat();
+    const toggleMuteMutation = useToggleMuteChat();
+
+    if (meMember?.muteUntil && dayjs(meMember.muteUntil).isBefore(dayjs())) {
+        meMember.isMuted = false;
+        meMember.muteUntil = null;
+
+        toggleMuteMutation.mutateAsync({
+            chatId: chat.id,
+            updateChatMemberPayload: {
+                isMuted: false,
+                muteUntil: null,
+            },
+        });
+    }
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
-    const handleDeleteModal = () => {
-        setActiveModal("deleteChat");
-    };
+    const handleDeleteModal = () => setActiveModal("deleteChat");
+    const handleBlockUser = () => console.log(`Block user in chat: ${chat.id}`);
+    const handleContextMenu = () => setSelectedChat(chat);
 
-    const handleBlockUser = () => {
-        console.log(`Block user in chat: ${chat.id}`);
-    };
-
-    const handleContextMenu = () => {
-        setSelectedChat(chat);
-    };
-
-    const foldersWithNoChat = folders?.filter((folder) => {
-        const chatFolders = chat.folders || [];
-        return !chatFolders.some((cf) => cf.folderId === folder.id);
-    });
+    const foldersWithNoChat = folders?.filter(
+        (f) => !chat.folders?.some((cf) => cf.folderId === f.id)
+    );
 
     return (
         <ContextMenu onOpenChange={(open) => open && handleContextMenu()}>
@@ -73,20 +87,21 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
                             <img
                                 src={
                                     isPrivateChat
-                                        ? chat.members.find(
-                                              (m) => m.userId !== me?.id
-                                          )?.user.avatarUrl
+                                        ? otherMember?.user?.avatarUrl
                                         : chat.avatar
                                 }
-                                alt="avatar2"
+                                alt="avatar"
                                 className="rounded-full w-full h-full object-cover"
                             />
                         </div>
 
                         <div className="flex flex-col justify-between flex-1 min-w-0">
-                            <div className="flex justify-between gap-[2px]">
-                                <div className="font-semibold truncate">
-                                    {chatName}
+                            <div className="flex justify-between gap-[5px]">
+                                <div className="flex gap-[5px] font-semibold truncate items-center">
+                                    <div className="truncate">{chatName}</div>
+                                    {meMember?.isMuted && (
+                                        <MuteIcon className="w-[15px] fill-neutral-500 stroke-2 stroke-neutral-500 flex-shrink-0 mb-[2px]" />
+                                    )}
                                 </div>
                                 <div className="text-xs text-neutral-400">
                                     {formatSidebarLastMessageDateInChat(
@@ -95,14 +110,31 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
                                 </div>
                             </div>
 
-                            <div
-                                className={`font-base truncate ${
-                                    chatId === chat.id
-                                        ? "text-white"
-                                        : "text-neutral-400"
-                                }`}
-                            >
-                                {chat.lastMessage?.content ?? ""}
+                            <div className="flex gap-[10px] items-center justify-between">
+                                <div
+                                    className={`font-base truncate ${
+                                        chatId === chat.id
+                                            ? "text-white"
+                                            : "text-neutral-400"
+                                    }`}
+                                >
+                                    {chat.lastMessage?.content ?? ""}
+                                </div>
+                                {meMember?.isMarked ? (
+                                    <div
+                                        className={`min-w-[23px] h-[23px] mb-[2px] flex-shrink-0 ${
+                                            meMember.isMuted
+                                                ? "bg-neutral-500"
+                                                : "bg-purple-gradient"
+                                        } rounded-full text-xs flex items-center justify-center px-[3px]`}
+                                    >
+                                        <div className="mt-[1px] mr-[1px] font-semibold">
+                                            {/* Якщо більше 999 то ставити 999+ */}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
                     </div>
@@ -116,41 +148,85 @@ function SidebarChat({ chat, folders }: SidebarChatProps) {
                     </Link>
                 </ContextMenuItem>
 
-                {folders && folders.length > 0 && (
-                    <ContextMenuSub>
-                        <ContextMenuSubTrigger>
-                            Add to Folder
-                        </ContextMenuSubTrigger>
-                        <ContextMenuSubContent>
-                            {foldersWithNoChat?.length ? (
-                                foldersWithNoChat.map((folder) => (
-                                    <ContextMenuItem
-                                        key={folder.id}
-                                        onClick={() =>
-                                            addChatToFolderMutation.mutateAsync(
-                                                {
-                                                    chatId: chat.id,
-                                                    folderId: folder.id,
-                                                }
-                                            )
-                                        }
-                                    >
-                                        {folder.name}
+                {/* Якщо в папці */}
+                {folderId ? (
+                    <ContextMenuItem
+                        variant="destructive"
+                        onClick={() =>
+                            removeChatFromFolderMutation.mutateAsync({
+                                chatId: chat.id,
+                                folderId,
+                            })
+                        }
+                    >
+                        Remove From Folder
+                    </ContextMenuItem>
+                ) : (
+                    folders &&
+                    folders.length > 0 && (
+                        <ContextMenuSub>
+                            <ContextMenuSubTrigger>
+                                Add to Folder
+                            </ContextMenuSubTrigger>
+                            <ContextMenuSubContent>
+                                {foldersWithNoChat?.length ? (
+                                    foldersWithNoChat.map((folder) => (
+                                        <ContextMenuItem
+                                            key={folder.id}
+                                            onClick={() =>
+                                                addChatToFolderMutation.mutateAsync(
+                                                    {
+                                                        chatId: chat.id,
+                                                        folderId: folder.id,
+                                                    }
+                                                )
+                                            }
+                                        >
+                                            {folder.name}
+                                        </ContextMenuItem>
+                                    ))
+                                ) : (
+                                    <ContextMenuItem disabled>
+                                        No available folders
                                     </ContextMenuItem>
-                                ))
-                            ) : (
-                                <ContextMenuItem disabled>
-                                    No available folders
-                                </ContextMenuItem>
-                            )}
-                        </ContextMenuSubContent>
-                    </ContextMenuSub>
+                                )}
+                            </ContextMenuSubContent>
+                        </ContextMenuSub>
+                    )
                 )}
 
-                <ContextMenuItem>Mark</ContextMenuItem>
-                <ContextMenuItem>Pin</ContextMenuItem>
-                <ContextMenuItem>Mute</ContextMenuItem>
-                {/* <ContextMenuItem>Report</ContextMenuItem> */}
+                <ContextMenuItem
+                    onClick={() =>
+                        toggleMarkChatMutation.mutateAsync({
+                            chatId: chat.id,
+                            updateChatMemberPayload: {
+                                isMarked: !meMember?.isMarked,
+                            },
+                        })
+                    }
+                >
+                    {meMember?.isMarked ? "Unmark" : "Mark"}
+                </ContextMenuItem>
+
+                {meMember?.isMuted ? (
+                    <ContextMenuItem
+                        onClick={() =>
+                            toggleMuteMutation.mutateAsync({
+                                chatId: chat.id,
+                                updateChatMemberPayload: {
+                                    isMuted: false,
+                                    muteUntil: null,
+                                },
+                            })
+                        }
+                    >
+                        Unmute
+                    </ContextMenuItem>
+                ) : (
+                    <ContextMenuItem onClick={() => setActiveModal("muteChat")}>
+                        Mute
+                    </ContextMenuItem>
+                )}
 
                 {isPrivateChat && (
                     <ContextMenuItem onClick={handleBlockUser}>

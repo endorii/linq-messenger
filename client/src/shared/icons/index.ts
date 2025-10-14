@@ -29,3 +29,4 @@ export { default as MessageIcon } from "./MessageIcon";
 export { default as AtSignIcon } from "./AtSignIcon";
 export { default as GlobeIcon } from "./GlobeIcon";
 export { default as LockIcon } from "./LockIcon";
+export { default as MuteIcon } from "./MuteIcon";

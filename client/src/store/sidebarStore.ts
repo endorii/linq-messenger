@@ -18,7 +18,6 @@ interface SidebarState {
     selectedChat: IChat | null;
     chatSidebarOpened: boolean;
     chatSidebarTab: ChatSidebarTabType;
-    // activeSidebarFolder: string;
     selectedUser: IUser | null;
     selectedMessage: IMessage | null;
     chatSentType: ChatSentType;
@@ -29,7 +28,6 @@ interface SidebarState {
     setSelectedFolder: (folder: IFolder | null) => void;
     setSelectedChat: (chat: IChat | null) => void;
     setChatSidebarOpened: (state: boolean) => void;
-    // setActiveSidebarFolder: (activeFolder: string) => void;
     setChatSidebarTab: (tab: ChatSidebarTabType) => void;
     setSelectedUser: (user: IUser | null) => void;
     setSelectedMessage: (message: IMessage | null) => void;
@@ -45,7 +43,6 @@ export const useSidebarStore = create<SidebarState>()(
             selectedFolder: null,
             chatSidebarOpened: false,
             chatSidebarTab: "info",
-            activeSidebarFolder: "allChats",
             selectedChat: null,
             selectedUser: null,
             selectedMessage: null,
@@ -58,7 +55,6 @@ export const useSidebarStore = create<SidebarState>()(
             setSelectedChat: (chat) => set({ selectedChat: chat }),
             setChatSidebarOpened: (state) => set({ chatSidebarOpened: state }),
             setChatSidebarTab: (tab) => set({ chatSidebarTab: tab }),
-            // setActiveSidebarFolder: (activeFolder) => set({ activeSidebarFolder: activeFolder }),
             setSelectedUser: (user) => set({ selectedUser: user }),
             setSelectedMessage: (message) => set({ selectedMessage: message }),
             setChatSentType: (type) => set({ chatSentType: type }),

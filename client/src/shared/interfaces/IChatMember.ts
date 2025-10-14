@@ -9,6 +9,11 @@ export interface IChatMember {
     role: MemberRole;
     joinedAt: Date;
     lastReadAt: Date;
-    user: IUser;
-    chat: IChat;
+
+    isMarked: boolean;
+    isMuted: boolean;
+    muteUntil: Date | null;
+
+    user?: IUser;
+    chat?: IChat;
 }

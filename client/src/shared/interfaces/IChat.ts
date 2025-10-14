@@ -2,17 +2,8 @@ import { MemberRole } from "../types/types";
 import { IMessage } from "./IMessage";
 import { IUser } from "./IUser";
 import { ChatEnum } from "../enums/enums";
-import { IFolder, IFolderChat } from "./IFolder";
-
-export interface IChatMember {
-    id: string;
-    userId: string;
-    chatId: string;
-    role: MemberRole;
-    joinedAt: string;
-    lastReadAt: string;
-    user: IUser;
-}
+import { IFolderChat } from "./IFolder";
+import { IChatMember } from "./IChatMember";
 
 export interface IChat {
     id: string;

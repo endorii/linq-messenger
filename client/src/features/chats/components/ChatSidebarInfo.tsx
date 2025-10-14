@@ -22,9 +22,11 @@ import { Switch } from "@/shared/components/ui/switch";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import OwnerIcon from "@/shared/icons/OwnerIcon";
+import NotificationSwitch from "./NotificationSwitch";
 
 function ChatSidebarInfo({ chat }: { chat: IChat }) {
-    const { entity, chatName, isContact, otherUserId } = useChatEntity(chat);
+    const { entity, chatName, isContact, otherUserId, meMember } =
+        useChatEntity(chat);
     const { data: me } = useProfile();
 
     const {
@@ -89,8 +91,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                     <img
                         src={
                             isPrivateChat
-                                ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user.avatarUrl
+                                ? otherMember?.user?.avatarUrl
                                 : chat.avatar
                         }
                         alt="avatar2"
@@ -136,16 +137,11 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         </div>
                     </div>
                 ) : null}
-                <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
-                    <div className="flex gap-[30px] items-center">
-                        <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
-                        <div>Notifications</div>
-                    </div>
-                    <Switch className="cursor-pointer" />
-                </div>
+                {meMember && (
+                    <NotificationSwitch chatId={chat.id} meMember={meMember} />
+                )}
             </div>
 
-            {/* ... (Секція Tabs) ... */}
             <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                 <Tabs
                     defaultValue={canViewMembers ? "members" : "media"}
@@ -172,7 +168,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                                     >
                                         <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full overflow-hidden">
                                             <img
-                                                src={member.user.avatarUrl}
+                                                src={member.user?.avatarUrl}
                                                 alt="a"
                                                 className="w-full h-full object-cover"
                                             />
@@ -196,7 +192,6 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         </TabsContent>
                     )}
 
-                    {/* ... (Інші TabsContent) ... */}
                     <TabsContent value="media" className="h-full">
                         <div className="flex flex-wrap w-full">
                             {/* {Array.from({ length: 9 }).map((_, i) => (

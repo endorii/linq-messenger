@@ -9,17 +9,19 @@ import {
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { ChatEnum } from "@/shared/enums/enums";
-import { OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
+import { MuteIcon, OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useEffect } from "react";
+import { useToggleMuteChat } from "../hooks/useChatMembers";
 
 function ChatHeader({ chat }: { chat: IChat }) {
-    const { entity, chatName, isContact, contactId, otherUserId } =
+    const { entity, chatName, isContact, contactId, otherUserId, meMember } =
         useChatEntity(chat);
 
     const { data: me } = useProfile();
+    const toggleMuteChatMutation = useToggleMuteChat();
 
     const {
         chatSidebarOpened,
@@ -91,17 +93,19 @@ function ChatHeader({ chat }: { chat: IChat }) {
                 <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
                     <img
                         src={
-                            isPrivate
-                                ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user.avatarUrl
-                                : chat.avatar
+                            isPrivate ? meMember?.user?.avatarUrl : chat.avatar
                         }
                         alt="avatar2"
                         className="rounded-full"
                     />
                 </div>
                 <div>
-                    <div className="font-semibold">{chatName}</div>
+                    <div className="flex gap-[5px] items-center">
+                        <div className="font-semibold">{chatName}</div>
+                        {meMember?.isMuted && (
+                            <MuteIcon className="w-[15px] fill-neutral-500 stroke-2 stroke-neutral-500 flex-shrink-0 mb-[2px]" />
+                        )}
+                    </div>
                     <div className="text-sm text-neutral-400">
                         {isPrivate
                             ? "last seen recently"
@@ -152,8 +156,30 @@ function ChatHeader({ chat }: { chat: IChat }) {
                                 <DropdownMenuSeparator />
                             </>
                         )}
+                        {meMember?.isMuted ? (
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    toggleMuteChatMutation.mutateAsync({
+                                        chatId: chat.id,
+                                        updateChatMemberPayload: {
+                                            isMuted: false,
+                                            muteUntil: null,
+                                        },
+                                    });
+                                }}
+                            >
+                                Unmute
+                            </DropdownMenuItem>
+                        ) : (
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setActiveModal("muteChat");
+                                }}
+                            >
+                                Mute
+                            </DropdownMenuItem>
+                        )}
 
-                        <DropdownMenuItem>Mute</DropdownMenuItem>
                         <DropdownMenuItem>Select messages</DropdownMenuItem>
 
                         {destructiveAction && (

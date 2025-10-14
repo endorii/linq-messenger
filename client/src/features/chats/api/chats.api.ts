@@ -1,7 +1,6 @@
 import { ServerResponseWithMessage } from "@/features/auth/interfaces/auth.interfaces";
 import { httpService } from "@/shared/api/httpService";
 import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
-import { IFolderChat } from "@/shared/interfaces/IFolder";
 
 export async function fetchChats(): Promise<IChat[]> {
     const { data } = await httpService.get("/chats");
@@ -36,8 +35,6 @@ export async function fetchUpdateChat(
     chatId: string,
     updateChatPayload: Partial<ChatPayload>
 ): Promise<ServerResponseWithMessage<IChat>> {
-    console.log("data to sent", updateChatPayload);
-
     const { data } = await httpService.patch(`/chats/${chatId}`, updateChatPayload);
     return data;
 }
