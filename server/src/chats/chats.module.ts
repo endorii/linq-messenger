@@ -3,8 +3,10 @@ import { ChatsService } from "./chats.service";
 import { ChatsController } from "./chats.controller";
 import { PrismaService } from "src/prisma/prisma.service";
 import { MessagesService } from "src/messages/messages.service";
+import { ChatMembersModule } from "src/chat-members/chat-members.module";
 
 @Module({
+    imports: [ChatMembersModule],
     controllers: [ChatsController],
     providers: [ChatsService, PrismaService, MessagesService],
 })

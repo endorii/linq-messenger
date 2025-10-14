@@ -152,6 +152,8 @@ model ChatMember {
     joinedAt   DateTime   @default(now())
     lastReadAt DateTime   @default(now())
 
+    isMarked Boolean @default(false) @map("is_marked")
+
     isMuted     Boolean   @default(false) @map("is_muted")
     muteUntil   DateTime? @map("mute_until")
     pinnedOrder Int?      @map("pinned_order")

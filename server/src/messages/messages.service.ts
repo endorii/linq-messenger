@@ -1,19 +1,19 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateMessageDto } from "./dto/create-message.dto";
-import { ChatsService } from "src/chats/chats.service";
 import { UpdateMessageDto } from "./dto/update-message.dto";
 import { ChatType } from "generated/prisma";
+import { ChatMembersService } from "src/chat-members/chat-members.service";
 
 @Injectable()
 export class MessagesService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly chatsService: ChatsService
+        private readonly chatsMembersService: ChatMembersService
     ) {}
 
     async getChatMessages(userId: string, chatId: string) {
-        await this.chatsService.ensureMembership(chatId, userId);
+        await this.chatsMembersService.ensureMembership(chatId, userId);
 
         const messages = await this.prisma.message.findMany({
             where: {

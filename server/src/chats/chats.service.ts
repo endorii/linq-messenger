@@ -3,10 +3,14 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
 import { ChatType, MemberRole, MessageType } from "generated/prisma";
 import { UpdateChatDto } from "./dto/update-chat.dto";
+import { ChatMembersService } from "src/chat-members/chat-members.service";
 
 @Injectable()
 export class ChatsService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly chatMembersService: ChatMembersService
+    ) {}
 
     private async findExistingChat(chatId: string, includeMembers = true) {
         const chat = await this.prisma.chat.findUnique({
@@ -15,17 +19,6 @@ export class ChatsService {
         });
         if (!chat) throw new NotFoundException("Chat not found");
         return chat;
-    }
-
-    async ensureMembership(chatId: string, userId: string) {
-        const member = await this.prisma.chatMember.findUnique({
-            where: { userId_chatId: { userId, chatId } },
-            include: {
-                user: true,
-            },
-        });
-        if (!member) throw new ForbiddenException("You are not a member of this chat");
-        return member;
     }
 
     private async handleOwnerLeaving(chatId: string, ownerId: string) {
@@ -245,7 +238,7 @@ export class ChatsService {
 
     async leaveChat(userId: string, chatId: string) {
         const chat = await this.findExistingChat(chatId);
-        const member = await this.ensureMembership(chatId, userId);
+        const member = await this.chatMembersService.ensureMembership(chatId, userId);
 
         if (chat.type === ChatType.PRIVATE) {
             const alreadyHidden = await this.prisma.deletedChat.findUnique({
@@ -291,7 +284,7 @@ export class ChatsService {
     async deleteChat(userId: string, chatId: string) {
         const chat = await this.findExistingChat(chatId);
         if (chat.type === ChatType.PRIVATE) {
-            await this.ensureMembership(chatId, userId);
+            await this.chatMembersService.ensureMembership(chatId, userId);
             await this.prisma.chat.update({ where: { id: chatId }, data: { isDeleted: true } });
             return { message: "Private chat deleted" };
         }

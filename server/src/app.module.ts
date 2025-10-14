@@ -8,6 +8,7 @@ import { FoldersModule } from './folders/folders.module';
 import { MessagesModule } from './messages/messages.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { SearchModule } from './search/search.module';
+import { ChatMembersModule } from './chat-members/chat-members.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { SearchModule } from './search/search.module';
         MessagesModule,
         ContactsModule,
         SearchModule,
+        ChatMembersModule,
     ],
 })
 export class AppModule {}
