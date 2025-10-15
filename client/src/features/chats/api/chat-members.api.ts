@@ -24,3 +24,11 @@ export async function fetchToggleMuteChat(
     );
     return data;
 }
+
+export async function fetchAddMembersToChat(
+    chatId: string,
+    newMembers: string[]
+): Promise<ServerResponseWithMessage> {
+    const { data } = await httpService.post(`/chat-members/${chatId}`, { memberIds: newMembers });
+    return data;
+}

@@ -1,7 +1,13 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { UpdateChatMemberDto } from "./dto/update-chat-member.dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as dayjs from "dayjs";
+import { AddNewMembersDto } from "./dto/add-new-members.dto";
 
 @Injectable()
 export class ChatMembersService {
@@ -97,5 +103,32 @@ export class ChatMembersService {
             message: `Chat successfully ${updateChatMemberDto.isMuted ? `muted ${formattedDate ? `until ${formattedDate}` : ""}` : "unmuted"} `,
             data: updated,
         };
+    }
+
+    async addMembersToChat(userId: string, chatId: string, addNewMembers: AddNewMembersDto) {
+        const chat = await this.prisma.chat.findFirst({
+            where: {
+                id: chatId,
+                members: {
+                    some: {
+                        userId,
+                    },
+                },
+            },
+        });
+
+        if (!chat) throw new ConflictException("Chat not found or you not member of this chat");
+
+        const data = addNewMembers.memberIds.map((id) => ({
+            userId: id,
+            chatId,
+        }));
+
+        await this.prisma.chatMember.createMany({
+            data,
+            skipDuplicates: true,
+        });
+
+        return { message: `Users successfully added to chat ${chat?.name}` };
     }
 }

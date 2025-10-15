@@ -40,7 +40,8 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const isAdmin = chat.adminId === me?.id;
-    const canViewMembers = !isChannel || chat.members.length < 50 || isAdmin;
+    const canViewMembers =
+        !isChannel || (!isChannel && chat.members.length < 50) || isAdmin;
 
     const otherMember = isPrivateChat
         ? chat.members.find((m) => m.userId === otherUserId)
@@ -54,7 +55,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     };
 
     return (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
                     <button onClick={() => setChatSidebarOpened(false)}>
@@ -142,7 +143,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                 )}
             </div>
 
-            <div className="flex-1 flex flex-col px-[10px] py-[5px]">
+            <div className="flex-1 flex flex-col px-[10px] py-[5px] overflow-y-auto">
                 <Tabs
                     defaultValue={canViewMembers ? "members" : "media"}
                     className="flex-1 flex flex-col"
@@ -220,13 +221,15 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         <div className="flex flex-wrap w-full">music</div>
                     </TabsContent>
                 </Tabs>
+                {!isPrivateChat && (
+                    <button
+                        className="absolute bottom-4 left-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                        onClick={() => setActiveModal("addMembers")}
+                    >
+                        <AddContactIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                    </button>
+                )}
             </div>
-            <button
-                className="absolute bottom-4 left-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
-                onClick={() => setActiveModal("addMembers")}
-            >
-                <AddContactIcon className="w-[30px] stroke-white stroke-2 fill-none" />
-            </button>
         </div>
     );
 }

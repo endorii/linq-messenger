@@ -42,7 +42,7 @@ function ChatSlug() {
     if (isLoading) return <div>Loading...</div>;
 
     const isAdmin = chat?.members.some(
-        (member) => member.user.id === me?.id && member.role === "ADMIN"
+        (member) => member.user?.id === me?.id && member.role === "ADMIN"
     );
     const isChannel = chat?.type === ChatEnum.CHANNEL;
 
@@ -252,7 +252,9 @@ function ChatSlug() {
                                             </ContextMenu>
 
                                             {!msg.isMine &&
-                                                !isSameSenderAsNext && (
+                                                !isSameSenderAsNext &&
+                                                chat?.type !==
+                                                    ChatEnum.CHANNEL && (
                                                     <div className="absolute bottom-0 left-[-40px]">
                                                         <Image
                                                             src={

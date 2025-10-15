@@ -2,7 +2,11 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { IChatMember } from "@/shared/interfaces/IChatMember";
-import { fetchToggleMarkChat, fetchToggleMuteChat } from "../api/chat-members.api";
+import {
+    fetchAddMembersToChat,
+    fetchToggleMarkChat,
+    fetchToggleMuteChat,
+} from "../api/chat-members.api";
 
 export function useToggleMarkChat() {
     const queryClient = useQueryClient();
@@ -37,6 +41,22 @@ export function useToggleMuteChat() {
         }) => fetchToggleMuteChat(chatId, updateChatMemberPayload),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
+            toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useAddMembersToChat() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatId, newMembers }: { chatId: string; newMembers: string[] }) =>
+            fetchAddMembersToChat(chatId, newMembers),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             toast.success(data.message);
         },
         onError: (error: AxiosError<any>) => {

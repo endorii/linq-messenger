@@ -11,7 +11,7 @@ function ChatSidebar({ chat }: { chat: IChat }) {
 
     return (
         <div
-            className={`overflow-y-auto bg-neutral-950 border-l border-neutral-800 text-white transition-all duration-400 ease-in-out ${
+            className={`overflow-y-auto bg-neutral-950 border-l border-neutral-800 text-white transition-all duration-400 ease-in-out relative ${
                 chatSidebarOpened ? "w-[450px]" : "w-0 border-none"
             }`}
         >
