@@ -1,9 +1,14 @@
+"use client";
+
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { IUser } from "@/shared/interfaces/IUser";
 import { useForm } from "react-hook-form";
+import { IUser } from "@/shared/interfaces/IUser";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import { useUniqueUsername, useUpdateUser } from "@/shared/hooks/useUsers";
+import { CheckIcon } from "@/shared/icons";
 
 function SidebarEditProfile() {
     const { data: me } = useProfile();
@@ -11,8 +16,8 @@ function SidebarEditProfile() {
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
+        watch,
     } = useForm<Partial<IUser>>({
         defaultValues: {
             firstName: me?.firstName || "",
@@ -23,9 +28,31 @@ function SidebarEditProfile() {
         },
     });
 
+    const watchFields = watch();
+    const username = watch("username") || "";
+    const debouncedUsername = useDebounce(username, 500);
+
+    const { data: usernameCheck, isLoading: checking } = useUniqueUsername(
+        debouncedUsername && debouncedUsername !== me?.username
+            ? debouncedUsername
+            : ""
+    );
+
+    const usernameAvailable = usernameCheck?.available ?? true;
+    const updateUserMutation = useUpdateUser();
+
+    const isFormChanged = Object.keys(watchFields).some(
+        (key) => watchFields[key as keyof IUser] !== me?.[key as keyof IUser]
+    );
+
     const onSubmit = (data: Partial<IUser>) => {
-        console.log("Submitted data:", data);
-        // тут зробити update профілю
+        updateUserMutation.mutateAsync({
+            username: data.username,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phone: data.phone,
+            biography: data.biography,
+        });
     };
 
     return (
@@ -38,6 +65,7 @@ function SidebarEditProfile() {
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col gap-[20px] p-[15px]"
             >
+                {/* BASIC INFO */}
                 <div className="flex flex-col gap-[15px]">
                     <div className="flex flex-col gap-[7px]">
                         <Label>First Name*</Label>
@@ -46,6 +74,11 @@ function SidebarEditProfile() {
                             placeholder="First Name (Required)"
                             {...register("firstName", {
                                 required: "First name is required",
+                                minLength: {
+                                    value: 2,
+                                    message:
+                                        "First name must be at least 2 characters long",
+                                },
                             })}
                         />
                         {errors.firstName && (
@@ -93,6 +126,7 @@ function SidebarEditProfile() {
 
                 <hr className="border-t border-neutral-800" />
 
+                {/* USERNAME FIELD */}
                 <div className="flex flex-col gap-[7px]">
                     <Label>Username*</Label>
                     <Input
@@ -101,9 +135,9 @@ function SidebarEditProfile() {
                         {...register("username", {
                             required: "Username is required",
                             minLength: {
-                                value: 5,
+                                value: 3,
                                 message:
-                                    "Username must be at least 5 characters long",
+                                    "Username must be at least 3 characters long",
                             },
                             pattern: {
                                 value: /^[a-zA-Z0-9_]+$/,
@@ -112,12 +146,21 @@ function SidebarEditProfile() {
                             },
                         })}
                     />
-                    {errors.username && (
-                        <p className="text-red-500 text-sm">
-                            {errors.username.message}
+                    {checking && (
+                        <p className="text-blue-400 text-sm">
+                            Checking availability...
                         </p>
                     )}
-
+                    {!checking && username && !usernameAvailable && (
+                        <p className="text-red-500 text-sm">
+                            Username "{username}" is already taken
+                        </p>
+                    )}
+                    {!checking && username && usernameAvailable && (
+                        <p className="text-green-500 text-sm">
+                            Username "{username}" is available
+                        </p>
+                    )}
                     <div className="text-sm flex flex-col gap-[10px] text-neutral-400">
                         <div>
                             You can choose a username on <b>LINQ</b>. If you do,
@@ -132,18 +175,21 @@ function SidebarEditProfile() {
                             <div>This link opens a chat with you:</div>
                             <div>
                                 https://linq.com/
-                                <b>{me?.username || "username"}</b>
+                                <b>{username || "username"}</b>
                             </div>
                         </div>
                     </div>
+                    ;
                 </div>
 
-                <button
-                    type="submit"
-                    className="bg-primary text-white rounded-xl h-[43px] mt-[10px]"
-                >
-                    Save Changes
-                </button>
+                {isFormChanged && (
+                    <button
+                        className="absolute bottom-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                        // onClick={() => setActiveModal("addContact")}
+                    >
+                        <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                    </button>
+                )}
             </form>
         </div>
     );

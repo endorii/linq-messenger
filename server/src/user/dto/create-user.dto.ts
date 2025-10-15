@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, Matches, ValidateIf } from "class-validator";
+import { IsEmail, IsString, MinLength, Matches, ValidateIf, IsOptional } from "class-validator";
 
 export class CreateUserDto {
     @IsEmail({}, { message: "Invalid email format" })
@@ -13,6 +13,10 @@ export class CreateUserDto {
         message: "Phone number must be valid",
     })
     phone?: string | null;
+
+    @IsString()
+    @IsOptional()
+    biography?: string;
 
     @IsString()
     @MinLength(7, { message: "Password must be at least 7 characters long" })
