@@ -30,20 +30,19 @@ model User {
     tokens Token[]
 
     messages          Message[]
+    forwardedMessages Message[]         @relation("ForwardedBy")
     messageReactions  MessageReaction[]
     messagesRead      MessageRead[]
-    forwardedMessages Message[]         @relation("ForwardedMessages")
 
-    chatMembers ChatMember[]
-
-    chatsWhereIsAdmin Chat[]   @relation("ChatWhereIsAdmin")
+    chatMembers       ChatMember[]
+    chatsWhereIsAdmin Chat[]       @relation("ChatWhereIsAdmin")
     folders           Folder[]
-
-    contacts  Contact[] @relation("UserContacts")
-    contactOf Contact[] @relation("ContactUser")
+    contacts          Contact[]    @relation("UserContacts")
+    contactOf         Contact[]    @relation("ContactUser")
 
     deletedMessages DeletedMessage[]
     deletedChats    DeletedChat[]
+    pinnedMessages  PinnedMessage[]
 
     @@map("users")
 }
@@ -92,12 +91,10 @@ model Chat {
     members     ChatMember[]
     messages    Message[]
 
-    pinnedMessageId String?  @map("pinned_message_id")
-    pinnedMessage   Message? @relation("PinnedMessage", fields: [pinnedMessageId], references: [id])
-
     folders FolderChat[]
 
-    deletedChats DeletedChat[]
+    deletedChats   DeletedChat[]
+    pinnedMessages PinnedMessage[]
 
     @@map("chats")
 }
@@ -182,25 +179,39 @@ model Message {
 
     senderId String?
     sender   User?   @relation(fields: [senderId], references: [id])
+    chatId   String
+    chat     Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-    chatId String
-    chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    forwardedMessageId String?   @map("forwarded_message_id")
+    forwardedMessage   Message?  @relation("ForwardedMessage", fields: [forwardedMessageId], references: [id])
+    forwardedCopies    Message[] @relation("ForwardedMessage")
 
-    forwardedFromId String? @map("forwarded_from_id")
-    forwardedFrom   User?   @relation("ForwardedMessages", fields: [forwardedFromId], references: [id])
-
-    pinnedInChats Chat[] @relation("PinnedMessage")
+    forwardedById String? @map("forwarded_by_id")
+    forwardedBy   User?   @relation("ForwardedBy", fields: [forwardedById], references: [id])
 
     attachments     Attachment[]
     reactions       MessageReaction[]
     messagesRead    MessageRead[]
     deletedMessages DeletedMessage[]
+    pinnedMessages  PinnedMessage[]
 
     @@index([chatId])
     @@index([chatId, createdAt])
     @@index([chatId, isRevoked])
     @@index([senderId])
     @@map("messages")
+}
+
+model PinnedMessage {
+    id        String   @id @default(uuid())
+    chatId    String
+    messageId String
+    userId    String
+    createdAt DateTime @default(now())
+
+    chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model DeletedMessage {
