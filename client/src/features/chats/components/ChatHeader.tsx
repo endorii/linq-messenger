@@ -17,8 +17,15 @@ import { useEffect } from "react";
 import { useToggleMuteChat } from "../hooks/useChatMembers";
 
 function ChatHeader({ chat }: { chat: IChat }) {
-    const { entity, chatName, isContact, contactId, otherUserId, meMember } =
-        useChatEntity(chat);
+    const {
+        entity,
+        chatName,
+        isContact,
+        contactId,
+        otherUserId,
+        meMember,
+        otherMember,
+    } = useChatEntity(chat);
 
     const { data: me } = useProfile();
     const toggleMuteChatMutation = useToggleMuteChat();
@@ -93,9 +100,11 @@ function ChatHeader({ chat }: { chat: IChat }) {
                 <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
                     <img
                         src={
-                            isPrivate ? meMember?.user?.avatarUrl : chat.avatar
+                            isPrivate
+                                ? otherMember?.user?.avatarUrl
+                                : chat.avatar
                         }
-                        alt="avatar2"
+                        alt="avatar"
                         className="rounded-full"
                     />
                 </div>

@@ -23,6 +23,7 @@ interface SidebarState {
     chatSentType: ChatSentType;
     sidebarTab: SidebarTabType;
     profileTab: ProfileTabType;
+    messageForEdit: IMessage | null;
 
     setActiveModal: (modal: ModalType | null) => void;
     setSelectedFolder: (folder: IFolder | null) => void;
@@ -34,6 +35,7 @@ interface SidebarState {
     setChatSentType: (type: ChatSentType) => void;
     setSidebarTab: (tab: SidebarTabType) => void;
     setProfileTab: (tab: ProfileTabType) => void;
+    setMessageForEdit: (message: IMessage | null) => void;
 }
 
 export const useSidebarStore = create<SidebarState>()(
@@ -49,6 +51,7 @@ export const useSidebarStore = create<SidebarState>()(
             chatSentType: "sent",
             sidebarTab: "chats",
             profileTab: "overview",
+            messageForEdit: null,
 
             setActiveModal: (modal) => set({ activeModal: modal }),
             setSelectedFolder: (folder) => set({ selectedFolder: folder }),
@@ -60,6 +63,7 @@ export const useSidebarStore = create<SidebarState>()(
             setChatSentType: (type) => set({ chatSentType: type }),
             setSidebarTab: (tab) => set({ sidebarTab: tab }),
             setProfileTab: (tab) => set({ profileTab: tab }),
+            setMessageForEdit: (message) => set({ messageForEdit: message }),
         }),
         { name: "SidebarStore" }
     )

@@ -10,6 +10,7 @@ import {
     ResizablePanelGroup,
 } from "@/shared/components/ui/resizable";
 import { LinqIcon } from "@/shared/icons";
+import useEscapeKeyNavigate from "@/shared/hooks/useEscapeKeyNavigate";
 
 export default function MessengerLayout({
     children,
@@ -17,6 +18,8 @@ export default function MessengerLayout({
     children: React.ReactNode;
 }) {
     const router = useRouter();
+
+    useEscapeKeyNavigate();
     const { data: user, isLoading } = useProfile();
 
     useEffect(() => {

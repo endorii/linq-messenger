@@ -31,32 +31,28 @@ function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
 
     const createMessageMutation = useCreateMessage();
-    const {
-        chatSentType,
-        selectedMessage,
-        setSelectedMessage,
-        setChatSentType,
-    } = useSidebarStore();
+    const { chatSentType, messageForEdit, setChatSentType, setMessageForEdit } =
+        useSidebarStore();
 
     const updateMessageMutation = useUpdateMessage();
 
     useEffect(() => {
-        if (chatSentType === "edit" && selectedMessage) {
-            setInputValue(selectedMessage.content);
+        if (chatSentType === "edit" && messageForEdit) {
+            setInputValue(messageForEdit.content);
         }
-    }, [chatSentType, selectedMessage]);
+    }, [chatSentType, messageForEdit]);
 
     const handleSend = (value: string) => {
         if (!value.trim()) return;
 
-        if (chatSentType === "edit" && selectedMessage) {
+        if (chatSentType === "edit" && messageForEdit) {
             updateMessageMutation.mutateAsync({
                 chatId,
-                messageId: selectedMessage.id,
+                messageId: messageForEdit.id,
                 messagePayload: { content: value },
             });
             setChatSentType("sent");
-            setSelectedMessage(null);
+            setMessageForEdit(null);
         } else {
             createMessageMutation.mutateAsync({
                 chatId,
@@ -95,13 +91,13 @@ function ChatSentData({ chatId }: ChatSentDataProps) {
                                     Edit message
                                 </div>
                                 <div className="text-sm">
-                                    {selectedMessage?.content}
+                                    {messageForEdit?.content}
                                 </div>
                             </div>
                             <button
                                 onClick={() => {
                                     setInputValue("");
-                                    setSelectedMessage(null);
+                                    setMessageForEdit(null);
                                     setChatSentType("sent");
                                 }}
                             >

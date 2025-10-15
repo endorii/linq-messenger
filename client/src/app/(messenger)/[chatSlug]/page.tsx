@@ -19,6 +19,7 @@ import {
 } from "@/shared/components/ui/context-menu";
 import Image from "next/image";
 import { useSidebarStore } from "@/store/sidebarStore";
+import { toast } from "sonner";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -27,14 +28,28 @@ function ChatSlug() {
     const { data: me } = useProfile();
     const useCreateMessageMutation = useCreateMessage();
 
-    const { setSelectedMessage, setChatSentType, setActiveModal } =
-        useSidebarStore();
+    const {
+        setSelectedMessage,
+        setChatSentType,
+        setActiveModal,
+        setMessageForEdit,
+    } = useSidebarStore();
 
     const handleSend = (msg: string) => {
         useCreateMessageMutation.mutateAsync({
             chatId,
             messagePayload: { content: msg },
         });
+    };
+
+    const handleCopy = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            toast.success("Copied!");
+        } catch (err) {
+            toast.error("Failed to copy");
+            console.error(err);
+        }
     };
 
     const messagesForEmptyChat = ["Hi👋", "Welcome", ":)"];
@@ -211,6 +226,9 @@ function ChatSlug() {
                                                     {msg.isMine && (
                                                         <ContextMenuItem
                                                             onClick={() => {
+                                                                setMessageForEdit(
+                                                                    msg
+                                                                );
                                                                 setChatSentType(
                                                                     "edit"
                                                                 );
@@ -219,7 +237,13 @@ function ChatSlug() {
                                                             Edit
                                                         </ContextMenuItem>
                                                     )}
-                                                    <ContextMenuItem>
+                                                    <ContextMenuItem
+                                                        onClick={() => {
+                                                            handleCopy(
+                                                                msg.content
+                                                            );
+                                                        }}
+                                                    >
                                                         Copy
                                                     </ContextMenuItem>
                                                     <ContextMenuItem>
