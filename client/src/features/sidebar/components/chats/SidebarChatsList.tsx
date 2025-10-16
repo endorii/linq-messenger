@@ -16,16 +16,14 @@ function SidebarChatsList({ folders, activeTab }: SidebarChatsListProps) {
     const { data: chats, isPending: isChatsPending } = useChats();
 
     const sortedChats = useMemo(() => {
-        const filtered = chats?.filter((chat) => chat.messages?.length > 0);
-        return filtered
-            ?.map((chat) => ({
-                ...chat,
-                lastMessageDate: chat.messages?.[0]?.createdAt ?? 0,
-            }))
+        if (!chats) return [];
+
+        return chats
+            .filter((chat) => chat.lastMessage)
             .sort(
                 (a, b) =>
-                    new Date(b.lastMessageDate).getTime() -
-                    new Date(a.lastMessageDate).getTime()
+                    new Date(b.lastMessage?.createdAt ?? 0).getTime() -
+                    new Date(a.lastMessage?.createdAt ?? 0).getTime()
             );
     }, [chats]);
 

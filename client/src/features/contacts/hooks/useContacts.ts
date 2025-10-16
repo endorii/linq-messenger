@@ -31,13 +31,16 @@ export function useUpdateContact() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: ({
+            chatId,
             contactId,
             updateContactPayload,
         }: {
+            chatId: string;
             contactId: string;
             updateContactPayload: Partial<ContactPayload>;
         }) => fetchUpdateContact(contactId, updateContactPayload),
-        onSuccess: (data) => {
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
         },

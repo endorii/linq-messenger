@@ -8,8 +8,8 @@ import { CloseIcon } from "@/shared/icons";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useDeleteChat, useLeaveChat } from "@/features/chats/hooks/useChats";
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { IChat } from "@/shared/interfaces/IChat";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 
 interface DeleteChatProps {
     isOpen: boolean;
@@ -18,7 +18,7 @@ interface DeleteChatProps {
 }
 
 export default function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
-    const { otherMember } = useChatEntity(chat);
+    const { otherMember } = usePrivateChat(chat);
     const { data: me } = useProfile();
 
     const leaveChatMutation = useLeaveChat();

@@ -5,7 +5,6 @@ import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { createPortal } from "react-dom";
 import { useToggleMuteChat } from "@/features/chats/hooks/useChatMembers";
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
 import { Label } from "@/shared/components/ui/label";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import dayjs from "dayjs";
 import { IChat } from "@/shared/interfaces/IChat";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useSelectionStore } from "@/store";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -36,9 +36,10 @@ export default function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
     const handleClose = () => onClose();
 
     const { selectedChat } = useSelectionStore();
-    const { meMember, otherMember } = useChatEntity(selectedChat!);
 
-    if (!selectedChat || !meMember) return null;
+    if (!selectedChat) return null;
+
+    const { otherMember, isPrivate, contact } = usePrivateChat(selectedChat);
 
     const toggleMuteMutation = useToggleMuteChat();
 
@@ -68,8 +69,8 @@ export default function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
             onClose={onClose}
             modalTitle={`Mute Chat "${
                 selectedChat.name ||
-                (selectedChat.type === ChatEnum.PRIVATE &&
-                    otherMember?.user?.username)
+                (isPrivate && contact?.nickname) ||
+                otherMember?.user?.username
             }"`}
         >
             <div className="flex flex-col gap-[15px]">

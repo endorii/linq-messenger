@@ -1,6 +1,5 @@
 "use client";
 
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,20 +16,9 @@ import { useToggleMuteChat } from "../hooks/useChatMembers";
 import { Button } from "@/shared/components/ui/button";
 import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
 import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 
 function ChatHeader({ chat }: { chat: IChat }) {
-    const {
-        entity,
-        chatName,
-        isContact,
-        contactId,
-        otherUserId,
-        meMember,
-        otherMember,
-    } = useChatEntity(chat);
-
-    console.log(otherMember?.userId);
-
     const { data: me } = useProfile();
     const toggleMuteChatMutation = useToggleMuteChat();
 
@@ -43,7 +31,7 @@ function ChatHeader({ chat }: { chat: IChat }) {
         setChatSidebarTab,
     } = useChatSidebarStore();
 
-    const isPrivate = chat.type === ChatEnum.PRIVATE;
+    const { isPrivate, meMember, otherMember, chatName } = usePrivateChat(chat);
 
     useEffect(() => {
         if (isPrivate && chatSidebarTab === "editChat") {
@@ -52,8 +40,8 @@ function ChatHeader({ chat }: { chat: IChat }) {
     }, [isPrivate, chatSidebarTab, setChatSidebarTab]);
 
     const handleAddContact = async () => {
-        if (otherUserId && "username" in entity) {
-            setSelectedUser(entity);
+        if (otherMember?.user) {
+            setSelectedUser(otherMember?.user);
             setActiveModal("addContact");
         }
     };
@@ -61,24 +49,26 @@ function ChatHeader({ chat }: { chat: IChat }) {
     const toggleBlockUserMutation = useToggleBlockUser();
 
     const handleBlockUser = async () => {
-        if (!otherMember) return;
+        if (!otherMember?.user) return;
         toggleBlockUserMutation.mutateAsync({
             chatId: chat.id,
             blockUserPayload: {
-                userIdBlock: otherMember?.userId,
+                userIdBlock: otherMember?.user.id,
             },
         });
     };
 
     const handleEditContact = async () => {
-        if (contactId) {
+        if (chat.privateChat?.contact) {
             setChatSidebarTab("editContact");
             setChatSidebarOpened(true);
         }
     };
 
-    const contactActionLabel = isContact ? "Edit contact" : "Add contact";
-    const contactActionHandler = isContact
+    const contactActionLabel = chat.privateChat?.contact
+        ? "Edit contact"
+        : "Add contact";
+    const contactActionHandler = chat.privateChat?.contact
         ? handleEditContact
         : handleAddContact;
 
@@ -134,6 +124,8 @@ function ChatHeader({ chat }: { chat: IChat }) {
                     <div className="text-sm text-neutral-400">
                         {isPrivate && chat.blockingInfo?.isBlockedByOther
                             ? "for a long time"
+                            : isPrivate && chat.blockingInfo?.isBlocked
+                            ? "blocked user"
                             : isPrivate
                             ? "last seen recently"
                             : `${chat.members?.length || 0} members`}
@@ -171,18 +163,16 @@ function ChatHeader({ chat }: { chat: IChat }) {
                             </DropdownMenuItem>
                         )}
 
-                        {!isPrivate &&
-                            "adminId" in entity &&
-                            entity.adminId === me?.id && (
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        setChatSidebarOpened(true);
-                                        setChatSidebarTab("editChat");
-                                    }}
-                                >
-                                    Edit
-                                </DropdownMenuItem>
-                            )}
+                        {!isPrivate && chat.adminId === me?.id && (
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    setChatSidebarOpened(true);
+                                    setChatSidebarTab("editChat");
+                                }}
+                            >
+                                Edit
+                            </DropdownMenuItem>
+                        )}
 
                         {chat.type === ChatEnum.PRIVATE && (
                             <>

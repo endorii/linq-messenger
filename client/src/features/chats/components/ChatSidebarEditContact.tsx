@@ -1,11 +1,9 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Switch } from "@/shared/components/ui/switch";
-import { IContact } from "@/shared/interfaces/IContact";
 import {
     CloseIcon,
     NotifcationIcon,
@@ -17,30 +15,21 @@ import {
     useDeleteContact,
     useUpdateContact,
 } from "@/features/contacts/hooks/useContacts";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import { ChatEnum } from "@/shared/enums/enums";
 import { useChatSidebarStore } from "@/store";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 
 function ChatSidebarEditContact({ chat }: { chat: IChat }) {
-    const { entity, chatName, isContact, contactId, otherUserId } =
-        useChatEntity(chat);
-
     const useUpdateContactMutation = useUpdateContact();
     const useDeleteContactMutation = useDeleteContact();
 
     const { setChatSidebarTab } = useChatSidebarStore();
 
-    const { data: me } = useProfile();
-    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
+    const { isPrivate, otherMember, contact } = usePrivateChat(chat);
 
-    const currentContact = isContact ? (entity as IContact) : null;
-
-    if (!currentContact || !contactId || !otherUserId) {
+    if (!contact) {
         setChatSidebarTab("info");
         return null;
     }
-
-    const initialNickname = currentContact.nickname || "";
 
     const {
         handleSubmit,
@@ -48,37 +37,31 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
         formState: { errors, isDirty },
     } = useForm<{ customContactName: string }>({
         defaultValues: {
-            customContactName: initialNickname,
+            customContactName: contact.nickname || "",
         },
     });
 
     const onSubmit = (data: { customContactName: string }) => {
-        try {
-            const newNickname = data.customContactName.trim();
+        if (!contact) return;
+        const newNickname = data.customContactName.trim();
 
-            console.log(entity);
-
-            useUpdateContactMutation.mutateAsync({
-                contactId,
-                updateContactPayload: {
-                    nickname: newNickname,
-                },
-            });
-        } catch (error: any) {
-            console.log(error);
-        }
+        useUpdateContactMutation.mutateAsync({
+            chatId: chat.id,
+            contactId: contact.contactId,
+            updateContactPayload: {
+                nickname: newNickname,
+            },
+        });
     };
 
     const handleDeleteContact = () => {
         try {
-            useDeleteContactMutation.mutateAsync(contactId);
+            useDeleteContactMutation.mutateAsync(contact.id);
             setChatSidebarTab("info");
         } catch (error: any) {
             console.log(error);
         }
     };
-
-    const displayContactName = chatName;
 
     return (
         <div className="relative flex flex-col h-full">
@@ -97,9 +80,8 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
                 <div className="w-[120px] h-[120px] bg-neutral-600 rounded-full overflow-hidden">
                     <img
                         src={
-                            isPrivateChat
-                                ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user?.avatarUrl
+                            isPrivate
+                                ? otherMember?.user?.avatarUrl
                                 : chat.avatar
                         }
                         alt="avatar2"
@@ -108,7 +90,7 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">
                     <div className="text-xl font-semibold">
-                        {displayContactName}
+                        {contact.user?.username}
                     </div>
                 </div>
             </div>

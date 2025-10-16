@@ -4,6 +4,7 @@ import { CreateChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
 import { ChatType, MemberRole, MessageType } from "generated/prisma";
 import { UpdateChatDto } from "./dto/update-chat.dto";
 import { ChatMembersService } from "src/chat-members/chat-members.service";
+import { IEnrichedChat } from "./interfaces/interfaces";
 
 @Injectable()
 export class ChatsService {
@@ -80,6 +81,69 @@ export class ChatsService {
         });
     }
 
+    async getChat(userId: string, chatId: string) {
+        const chat = await this.prisma.chat.findFirst({
+            where: {
+                id: chatId,
+                isActive: true,
+                isDeleted: false,
+                deletedChats: { none: { userId } },
+                members: { some: { userId, leftAt: null } },
+            },
+            include: {
+                members: {
+                    where: { leftAt: null },
+                    include: { user: true },
+                },
+            },
+        });
+
+        if (!chat) throw new NotFoundException("Chat not found or access denied");
+
+        const meMember = chat.members.find((m) => m.userId === userId) || null;
+        const otherMembers = chat.members.filter((m) => m.userId !== userId);
+        const otherMember = otherMembers[0] || null;
+
+        const enrichedChat: IEnrichedChat = {
+            ...chat,
+            privateChat: null,
+            blockingInfo: {
+                isBlocked: false,
+                isBlockedByOther: false,
+                interlocutorId: null,
+            },
+        };
+
+        if (chat.type === "PRIVATE" && meMember && otherMember) {
+            const contact = await this.prisma.contact.findFirst({
+                where: { userId, contactId: otherMember.userId },
+            });
+
+            const currentUser = await this.prisma.user.findUnique({
+                where: { id: userId },
+                include: { blockedUsers: true, blockedByUsers: true },
+            });
+
+            enrichedChat.privateChat = {
+                meMember,
+                otherMember,
+                contact: contact || null,
+            };
+
+            enrichedChat.blockingInfo = {
+                isBlocked: !!currentUser?.blockedUsers.some(
+                    (b) => b.blockedId === otherMember.userId
+                ),
+                isBlockedByOther: !!currentUser?.blockedByUsers.some(
+                    (b) => b.blockerId === otherMember.userId
+                ),
+                interlocutorId: otherMember.userId,
+            };
+        }
+
+        return enrichedChat;
+    }
+
     async getChatsByFolder(userId: string, folderId: string) {
         const chats = await this.prisma.folderChat.findMany({
             where: {
@@ -117,69 +181,6 @@ export class ChatsService {
                 lastMessage,
             };
         });
-    }
-
-    async getChat(userId: string, chatId: string) {
-        const chat = await this.prisma.chat.findFirst({
-            where: {
-                id: chatId,
-                isActive: true,
-                isDeleted: false,
-                deletedChats: { none: { userId } },
-                members: { some: { userId, leftAt: null } },
-            },
-            include: {
-                members: {
-                    where: { leftAt: null },
-                    include: { user: true },
-                },
-            },
-        });
-
-        if (!chat) throw new NotFoundException("Chat not found or access denied");
-
-        // Для приватних чатів отримуємо інформацію про блокування
-
-        if (chat.type === "PRIVATE") {
-            let blockingInfo: {
-                isBlocked: boolean;
-                isBlockedByOther: boolean;
-                interlocutorId: string;
-            } | null = null;
-
-            const currentUser = await this.prisma.user.findUnique({
-                where: { id: userId },
-                include: {
-                    blockedUsers: true,
-                    blockedByUsers: true,
-                },
-            });
-
-            const interlocutor = chat.members.find((m) => m.userId !== userId);
-
-            if (interlocutor && currentUser) {
-                const isBlocked = currentUser.blockedUsers.some(
-                    (b) => b.blockedId === interlocutor.userId
-                );
-
-                const isBlockedByOther = currentUser.blockedByUsers.some(
-                    (b) => b.blockerId === interlocutor.userId
-                );
-
-                blockingInfo = {
-                    isBlocked,
-                    isBlockedByOther,
-                    interlocutorId: interlocutor.userId,
-                };
-            }
-
-            return {
-                ...chat,
-                blockingInfo,
-            };
-        }
-
-        return chat;
     }
 
     async createPrivateChat(userId: string, { otherUserId }: CreatePrivateChatDto) {

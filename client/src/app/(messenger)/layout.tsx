@@ -43,12 +43,12 @@ export default function MessengerLayout({
     return (
         <div className="flex w-screen h-screen bg-neutral-900 text-white">
             <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel minSize={15} maxSize={30}>
+                <ResizablePanel minSize={20} maxSize={30} defaultSize={20}>
                     <Sidebar user={user} />
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel
-                    defaultSize={80}
+                    defaultSize={70}
                     className="bg-[url('https://i.pinimg.com/736x/a4/a4/61/a4a461c572891b4bf1f2e6af3d127428.jpg')]"
                 >
                     {children}

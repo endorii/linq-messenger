@@ -4,6 +4,7 @@ import { IUser } from "./IUser";
 import { ChatEnum } from "../enums/enums";
 import { IFolderChat } from "./IFolder";
 import { IChatMember } from "./IChatMember";
+import { IContact } from "./IContact";
 
 export interface IChat {
     id: string;
@@ -27,12 +28,19 @@ export interface IChat {
     lastMessage?: IMessage;
 
     blockingInfo?: BlockInfo;
+    privateChat?: IPrivateChatData | null;
 }
 
 interface BlockInfo {
     isBlocked: boolean;
     isBlockedByOther: boolean;
     interlocutorId: string;
+}
+
+export interface IPrivateChatData {
+    meMember: IChatMember;
+    otherMember: IChatMember;
+    contact: IContact | null;
 }
 
 export interface ChatPayload {

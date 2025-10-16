@@ -1,6 +1,4 @@
 "use client";
-
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import {
     Tabs,
     TabsContent,
@@ -14,7 +12,6 @@ import {
     EditIcon,
     InfoIcon,
     LinkIcon,
-    NotifcationIcon,
 } from "@/shared/icons";
 import AddContactIcon from "@/shared/icons/AddContactIcon";
 import { IChat } from "@/shared/interfaces/IChat";
@@ -22,10 +19,11 @@ import { useProfile } from "@/features/auth/hooks/useAuth";
 import OwnerIcon from "@/shared/icons/OwnerIcon";
 import NotificationSwitch from "./NotificationSwitch";
 import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 
 function ChatSidebarInfo({ chat }: { chat: IChat }) {
-    const { entity, chatName, isContact, otherUserId, meMember } =
-        useChatEntity(chat);
+    const { meMember, otherMember, contact, chatName } = usePrivateChat(chat);
+
     const { data: me } = useProfile();
 
     const { setActiveModal } = useModalStore();
@@ -36,16 +34,13 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const isAdmin = chat.adminId === me?.id;
+
     const canViewMembers =
         !isChannel || (!isChannel && chat.members.length < 50) || isAdmin;
 
-    const otherMember = isPrivateChat
-        ? chat.members.find((m) => m.userId === otherUserId)
-        : null;
-
     const handleAddContact = () => {
-        if (otherUserId && "username" in entity) {
-            setSelectedUser(entity);
+        if (otherMember?.user) {
+            setSelectedUser(otherMember.user);
             setActiveModal("addContact");
         }
     };
@@ -68,7 +63,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                     </div>
                 </div>
 
-                {isPrivateChat && isContact ? (
+                {isPrivateChat && contact ? (
                     <button
                         onClick={() => {
                             setChatSidebarTab("editContact");

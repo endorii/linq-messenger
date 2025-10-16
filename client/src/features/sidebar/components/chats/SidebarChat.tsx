@@ -4,13 +4,11 @@ import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuSeparator,
     ContextMenuSub,
     ContextMenuSubContent,
     ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { ChatEnum } from "@/shared/enums/enums";
 import { IChat } from "@/shared/interfaces/IChat";
 import SafeLink from "@/shared/ui/links/SafeLink";
@@ -28,8 +26,10 @@ import {
 } from "@/features/chats/hooks/useChatMembers";
 import { MuteIcon } from "@/shared/icons";
 import dayjs from "dayjs";
-import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
 import { useModalStore, useSelectionStore } from "@/store";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { useContacts } from "@/features/contacts/hooks/useContacts";
+import { useMemo } from "react";
 
 interface SidebarChatProps {
     chat: IChat;
@@ -42,30 +42,46 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const params = useParams();
     const chatId = params?.chatSlug;
 
-    const { chatName, otherMember, meMember } = useChatEntity(chat);
     const { setActiveModal } = useModalStore();
     const { setSelectedChat } = useSelectionStore();
+
+    const { data: me } = useProfile();
+    const { data: contacts } = useContacts();
 
     const addChatToFolderMutation = useAddChatToFolder();
     const removeChatFromFolderMutation = useRemoveChatFromFolder();
     const toggleMarkChatMutation = useToggleMarkChat();
     const toggleMuteMutation = useToggleMuteChat();
 
-    const toggleBlockUserMutation = useToggleBlockUser();
+    const isPrivate = chat.type === ChatEnum.PRIVATE;
+    const meMember = chat.members.find((m) => m.userId === me?.id);
+    const otherMember = isPrivate
+        ? chat.members.find((m) => m.userId !== me?.id)
+        : null;
 
-    const handleBlockUser = async () => {
-        if (!otherMember) return;
-        toggleBlockUserMutation.mutateAsync({
-            chatId: chat.id,
-            blockUserPayload: {
-                userIdBlock: otherMember?.userId,
-            },
-        });
-    };
+    const chatName = useMemo(() => {
+        if (!isPrivate) return chat.name || "Unnamed Chat";
+        if (!otherMember) return "Private Chat";
+
+        if (contacts && contacts.length > 0) {
+            const contact = contacts.find(
+                (c) => c.contactId === otherMember.userId
+            );
+
+            if (contact) return contact.nickname || "Private Chat";
+        }
+
+        return (
+            otherMember.user?.firstName ||
+            otherMember.user?.username ||
+            "Private Chat"
+        );
+    }, [isPrivate, otherMember, contacts, chat.name]);
+
     const handleDeleteModal = () => setActiveModal("deleteChat");
     const handleContextMenu = () => setSelectedChat(chat);
 
-    if (meMember?.muteUntil && dayjs(meMember.muteUntil).isBefore(dayjs())) {
+    if (meMember?.muteUntil && dayjs(meMember?.muteUntil).isBefore(dayjs())) {
         meMember.isMuted = false;
         meMember.muteUntil = null;
 
@@ -77,8 +93,6 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
             },
         });
     }
-
-    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
     const foldersWithNoChat = folders?.filter(
         (f) => !chat.folders?.some((cf) => cf.folderId === f.id)
@@ -98,7 +112,7 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                         <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                             <img
                                 src={
-                                    isPrivateChat
+                                    isPrivate
                                         ? otherMember?.user?.avatarUrl
                                         : chat.avatar
                                 }
@@ -160,7 +174,6 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                     </Link>
                 </ContextMenuItem>
 
-                {/* Якщо в папці */}
                 {folderId ? (
                     <ContextMenuItem
                         variant="destructive"
@@ -237,14 +250,6 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                 ) : (
                     <ContextMenuItem onClick={() => setActiveModal("muteChat")}>
                         Mute
-                    </ContextMenuItem>
-                )}
-
-                {isPrivateChat && (
-                    <ContextMenuItem onClick={handleBlockUser}>
-                        {chat.blockingInfo?.isBlocked
-                            ? "Unblock User"
-                            : " Block User"}
                     </ContextMenuItem>
                 )}
 
