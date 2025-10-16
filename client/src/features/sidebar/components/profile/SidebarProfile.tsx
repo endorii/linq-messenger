@@ -7,12 +7,12 @@ import {
     NotifcationIcon,
     PhoneIcon,
 } from "@/shared/icons";
+import { useNavigationStore } from "@/store";
 import Image from "next/image";
-import { useSidebarStore } from "@/store/sidebarStore";
 
 function SidebarProfile() {
     const { data: me, isPending: isMeLoading } = useProfile();
-    const { setProfileTab } = useSidebarStore();
+    const { setProfileTab } = useNavigationStore();
 
     if (isMeLoading) {
         return (

@@ -1,9 +1,9 @@
+import { useNavigationStore } from "@/store";
 import SidebarProfileLanguage from "../language/SidebarProfileLanguage";
 import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
-import { useSidebarStore } from "@/store/sidebarStore";
 
 function SidebarProfileLanguageTab() {
-    const { setProfileTab } = useSidebarStore();
+    const { setProfileTab } = useNavigationStore();
     return (
         <>
             <SharedSidebarMenu

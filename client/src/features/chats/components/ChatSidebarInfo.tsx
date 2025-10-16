@@ -18,23 +18,19 @@ import {
 } from "@/shared/icons";
 import AddContactIcon from "@/shared/icons/AddContactIcon";
 import { IChat } from "@/shared/interfaces/IChat";
-import { Switch } from "@/shared/components/ui/switch";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import OwnerIcon from "@/shared/icons/OwnerIcon";
 import NotificationSwitch from "./NotificationSwitch";
+import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
 
 function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, otherUserId, meMember } =
         useChatEntity(chat);
     const { data: me } = useProfile();
 
-    const {
-        setChatSidebarOpened,
-        setChatSidebarTab,
-        setActiveModal,
-        setSelectedUser,
-    } = useSidebarStore();
+    const { setActiveModal } = useModalStore();
+    const { setSelectedUser } = useSelectionStore();
+    const { setChatSidebarOpened, setChatSidebarTab } = useChatSidebarStore();
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
     const isGroupChat = chat.type === ChatEnum.GROUP;

@@ -17,9 +17,9 @@ import {
     useDeleteContact,
     useUpdateContact,
 } from "@/features/contacts/hooks/useContacts";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { ChatEnum } from "@/shared/enums/enums";
+import { useChatSidebarStore } from "@/store";
 
 function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const { entity, chatName, isContact, contactId, otherUserId } =
@@ -28,7 +28,7 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
     const useUpdateContactMutation = useUpdateContact();
     const useDeleteContactMutation = useDeleteContact();
 
-    const { setChatSidebarTab } = useSidebarStore();
+    const { setChatSidebarTab } = useChatSidebarStore();
 
     const { data: me } = useProfile();
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
@@ -99,7 +99,7 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
                         src={
                             isPrivateChat
                                 ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user.avatarUrl
+                                      ?.user?.avatarUrl
                                 : chat.avatar
                         }
                         alt="avatar2"

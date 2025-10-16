@@ -16,7 +16,6 @@ import { IChat } from "@/shared/interfaces/IChat";
 import SafeLink from "@/shared/ui/links/SafeLink";
 import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
 import { useParams } from "next/navigation";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { IFolder } from "@/shared/interfaces/IFolder";
 import {
     useAddChatToFolder,
@@ -30,6 +29,7 @@ import {
 import { MuteIcon } from "@/shared/icons";
 import dayjs from "dayjs";
 import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
+import { useModalStore, useSelectionStore } from "@/store";
 
 interface SidebarChatProps {
     chat: IChat;
@@ -43,7 +43,8 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const chatId = params?.chatSlug;
 
     const { chatName, otherMember, meMember } = useChatEntity(chat);
-    const { setSelectedChat, setActiveModal } = useSidebarStore();
+    const { setActiveModal } = useModalStore();
+    const { setSelectedChat } = useSelectionStore();
 
     const addChatToFolderMutation = useAddChatToFolder();
     const removeChatFromFolderMutation = useRemoveChatFromFolder();

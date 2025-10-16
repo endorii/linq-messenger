@@ -21,7 +21,7 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import ChatTextarea from "./ChatTextarea";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useChatInputStore } from "@/store";
 
 interface ChatSentDataProps {
     chatId: string;
@@ -31,8 +31,9 @@ function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
 
     const createMessageMutation = useCreateMessage();
+
     const { chatSentType, messageForEdit, setChatSentType, setMessageForEdit } =
-        useSidebarStore();
+        useChatInputStore();
 
     const updateMessageMutation = useUpdateMessage();
 

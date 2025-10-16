@@ -3,11 +3,11 @@
 import { IChat } from "@/shared/interfaces/IChat";
 import ChatSidebarInfo from "./ChatSidebarInfo";
 import ChatSidebarEditContact from "./ChatSidebarEditContact";
-import { useSidebarStore } from "@/store/sidebarStore";
 import ChatSidebarEditChat from "./ChatSidebarEditChat";
+import { useChatSidebarStore } from "@/store";
 
 function ChatSidebar({ chat }: { chat: IChat }) {
-    const { chatSidebarOpened, chatSidebarTab } = useSidebarStore();
+    const { chatSidebarOpened, chatSidebarTab } = useChatSidebarStore();
 
     return (
         <div

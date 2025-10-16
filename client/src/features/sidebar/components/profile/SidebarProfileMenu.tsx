@@ -6,10 +6,10 @@ import {
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { BackIcon, EditIcon, OptionsIcon } from "@/shared/icons";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useNavigationStore } from "@/store";
 
 function SidebarSettingsMenu() {
-    const { setSidebarTab, setProfileTab } = useSidebarStore();
+    const { setSidebarTab, setProfileTab } = useNavigationStore();
 
     const logoutUserMutation = useLogoutUser();
 

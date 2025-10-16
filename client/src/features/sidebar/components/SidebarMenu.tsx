@@ -23,11 +23,11 @@ import {
     SearchIcon,
 } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces/IUser";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useNavigationStore } from "@/store";
 
 function SidebarMenu({ user }: { user: IUser }) {
     const useLogoutUserMutation = useLogoutUser();
-    const { setSidebarTab } = useSidebarStore();
+    const { setSidebarTab } = useNavigationStore();
     return (
         <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <DropdownMenu>

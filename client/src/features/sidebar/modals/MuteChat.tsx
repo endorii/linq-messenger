@@ -4,7 +4,6 @@ import { Button } from "@/shared/components/ui/button";
 import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { createPortal } from "react-dom";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useToggleMuteChat } from "@/features/chats/hooks/useChatMembers";
 import { useChatEntity } from "@/shared/hooks/useChatEntity";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
@@ -13,6 +12,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { IChat } from "@/shared/interfaces/IChat";
 import { ChatEnum } from "@/shared/enums/enums";
+import { useSelectionStore } from "@/store";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -35,7 +35,7 @@ export default function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
     const [selectedOption, setSelectedOption] = useState<number>(0);
     const handleClose = () => onClose();
 
-    const { selectedChat } = useSidebarStore();
+    const { selectedChat } = useSelectionStore();
     const { meMember, otherMember } = useChatEntity(selectedChat!);
 
     if (!selectedChat || !meMember) return null;

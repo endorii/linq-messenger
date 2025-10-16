@@ -2,11 +2,12 @@
 
 import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useNavigationStore } from "@/store";
 
 function SidebarContacts({ searchValue }: { searchValue: string }) {
     const { data: contacts, isPending: isContactsPending } = useContacts();
-    const { setSidebarTab } = useSidebarStore();
+
+    const { setSidebarTab } = useNavigationStore();
     const useGetOrCreatePrivateChatMutation = useCreatePrivateChat();
 
     if (isContactsPending) return <div>Завантаження...</div>;

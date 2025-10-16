@@ -2,7 +2,7 @@
 
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useNavigationStore } from "@/store";
 
 function SidebarContactsMenu({
     searchValue,
@@ -11,7 +11,7 @@ function SidebarContactsMenu({
     searchValue: string;
     setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }) {
-    const { setSidebarTab } = useSidebarStore();
+    const { setSidebarTab } = useNavigationStore();
     return (
         <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <button onClick={() => setSidebarTab("chats")}>

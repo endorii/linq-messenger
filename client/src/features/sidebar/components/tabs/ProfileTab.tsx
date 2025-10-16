@@ -1,14 +1,14 @@
 "use client";
-import { useSidebarStore } from "@/store/sidebarStore";
 import SidebarProfile from "../profile/SidebarProfile";
 import SidebarProfileMenu from "../profile/SidebarProfileMenu";
 import SidebarProfileNotificationsTab from "../profile/tabs/SidebarProfileNotificationsTab";
 import SidebarProfilePrivacyTab from "../profile/tabs/SidebarProfilePrivacyTab";
 import SidebarProfileLanguageTab from "../profile/tabs/SidebarProfileLanguageTab";
 import SidebarEditProfileTab from "../profile/tabs/SidebarEditProfileTab";
+import { useNavigationStore } from "@/store";
 
 function ProfileTab() {
-    const { profileTab } = useSidebarStore();
+    const { profileTab } = useNavigationStore();
 
     return (
         <>

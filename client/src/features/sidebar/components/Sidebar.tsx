@@ -9,20 +9,16 @@ import ChatsTab from "./tabs/ChatsTab";
 import ContactsTab from "./tabs/ContactsTab";
 import ProfileTab from "./tabs/ProfileTab";
 import EditFolder from "../modals/EditFolder";
-import { useSidebarStore } from "@/store/sidebarStore";
 import DeleteChat from "../modals/DeleteChat";
 import { SearchTab } from "./tabs/SearchTab";
 import MuteChat from "../modals/MuteChat";
 import AddMembersToChat from "../modals/AddMembersToChat";
+import { useModalStore, useSelectionStore, useNavigationStore } from "@/store";
 
 function Sidebar({ user }: { user: IUser }) {
-    const {
-        activeModal,
-        setActiveModal,
-        sidebarTab,
-        selectedChat,
-        setSelectedChat,
-    } = useSidebarStore();
+    const { activeModal, setActiveModal } = useModalStore();
+    const { selectedChat, setSelectedChat } = useSelectionStore();
+    const { sidebarTab } = useNavigationStore();
 
     return (
         <div className="relative bg-neutral-950 h-full flex flex-col">

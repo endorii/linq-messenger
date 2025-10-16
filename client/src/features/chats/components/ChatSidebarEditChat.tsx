@@ -11,10 +11,11 @@ import {
     TrashIcon,
 } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
-import { useSidebarStore } from "@/store/sidebarStore";
+
 import { useUpdateChat } from "../hooks/useChats";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { ChatEnum } from "@/shared/enums/enums";
+import { useModalStore, useChatSidebarStore } from "@/store";
 
 interface FormData {
     name: string;
@@ -23,8 +24,10 @@ interface FormData {
 
 function ChatSidebarEditChat({ chat }: { chat: IChat }) {
     const useUpdateChatMutation = useUpdateChat();
+    const { setActiveModal } = useModalStore();
 
-    const { setChatSidebarTab, setActiveModal } = useSidebarStore();
+    const { setChatSidebarTab } = useChatSidebarStore();
+
     const { data: me } = useProfile();
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
@@ -72,7 +75,7 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
                         src={
                             isPrivateChat
                                 ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user.avatarUrl
+                                      ?.user?.avatarUrl
                                 : chat.avatar
                         }
                         alt="avatar2"

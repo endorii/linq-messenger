@@ -18,9 +18,9 @@ import {
     ContextMenuSeparator,
 } from "@/shared/components/ui/context-menu";
 import Image from "next/image";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { toast } from "sonner";
 import ChatSentData from "@/features/chats/components/ChatSentData";
+import { useChatInputStore, useModalStore, useSelectionStore } from "@/store";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -29,12 +29,9 @@ function ChatSlug() {
     const { data: me } = useProfile();
     const useCreateMessageMutation = useCreateMessage();
 
-    const {
-        setSelectedMessage,
-        setChatSentType,
-        setActiveModal,
-        setMessageForEdit,
-    } = useSidebarStore();
+    const { setActiveModal } = useModalStore();
+    const { setSelectedMessage } = useSelectionStore();
+    const { setChatSentType, setMessageForEdit } = useChatInputStore();
 
     const handleSend = (msg: string) => {
         useCreateMessageMutation.mutateAsync({

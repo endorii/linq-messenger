@@ -1,7 +1,6 @@
 "use client";
 
 import { IUser } from "@/shared/interfaces/IUser";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { IChat } from "@/shared/interfaces/IChat";
 import { IMessage } from "@/shared/interfaces/IMessage";
 import { ChatEnum } from "@/shared/enums/enums";
@@ -10,9 +9,10 @@ import { highlightMatch } from "@/shared/utils/highlightMatch";
 import { useGlobalSearch } from "../../hooks/useSearch";
 import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useRouter } from "next/navigation";
+import { useNavigationStore } from "@/store";
 
 function SidebarSearch({ searchValue }: { searchValue: string }) {
-    const { setSidebarTab } = useSidebarStore();
+    const { setSidebarTab } = useNavigationStore();
     const { data: searchData, isLoading } = useGlobalSearch(searchValue);
     const { data: me } = useProfile();
     const router = useRouter();
@@ -129,7 +129,7 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
 
                         if (message.chat.type === ChatEnum.PRIVATE) {
                             const otherUser = message.chat.members?.find(
-                                (m) => m.user.id !== me?.id
+                                (m) => m.user?.id !== me?.id
                             )?.user;
 
                             avatar = otherUser?.avatarUrl || "";

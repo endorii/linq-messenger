@@ -1,9 +1,9 @@
 import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
-import { useSidebarStore } from "@/store/sidebarStore";
 import SidebarEditProfile from "../edit/SidebarEditProfile";
+import { useNavigationStore } from "@/store";
 
 function SidebarEditProfileTab() {
-    const { setProfileTab } = useSidebarStore();
+    const { setProfileTab } = useNavigationStore();
     return (
         <>
             <SharedSidebarMenu

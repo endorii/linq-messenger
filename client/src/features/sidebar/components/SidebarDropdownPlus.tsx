@@ -8,10 +8,10 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator,
 } from "@/shared/components/ui/dropdown-menu";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useModalStore } from "@/store";
 
 function SidebarDropdownPlus() {
-    const { setActiveModal } = useSidebarStore();
+    const { setActiveModal } = useModalStore();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

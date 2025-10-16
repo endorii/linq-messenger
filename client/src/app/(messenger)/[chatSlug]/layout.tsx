@@ -11,14 +11,14 @@ import { useProfile } from "@/features/auth/hooks/useAuth";
 import ChatMessages from "@/features/chats/components/ChatMessages";
 import { ChatEnum } from "@/shared/enums/enums";
 import DeleteMessage from "@/features/sidebar/modals/DeleteMessage";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useModalStore, useSelectionStore } from "@/store";
 
 function ChatLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
-    const { activeModal, setSelectedMessage, setActiveModal, setSelectedChat } =
-        useSidebarStore();
+    const { setSelectedChat, setSelectedMessage } = useSelectionStore();
+    const { activeModal, setActiveModal } = useModalStore();
 
     useEffect(() => {
         if (!isChatLoading && !chat) {

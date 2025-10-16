@@ -11,12 +11,12 @@ import {
 import { ChatEnum } from "@/shared/enums/enums";
 import { MuteIcon, OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useEffect } from "react";
 import { useToggleMuteChat } from "../hooks/useChatMembers";
 import { Button } from "@/shared/components/ui/button";
 import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
+import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
 
 function ChatHeader({ chat }: { chat: IChat }) {
     const {
@@ -34,14 +34,14 @@ function ChatHeader({ chat }: { chat: IChat }) {
     const { data: me } = useProfile();
     const toggleMuteChatMutation = useToggleMuteChat();
 
+    const { setActiveModal } = useModalStore();
+    const { setSelectedUser } = useSelectionStore();
     const {
         chatSidebarOpened,
         chatSidebarTab,
         setChatSidebarOpened,
         setChatSidebarTab,
-        setActiveModal,
-        setSelectedUser,
-    } = useSidebarStore();
+    } = useChatSidebarStore();
 
     const isPrivate = chat.type === ChatEnum.PRIVATE;
 

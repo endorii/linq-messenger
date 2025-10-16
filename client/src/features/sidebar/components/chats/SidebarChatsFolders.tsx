@@ -9,11 +9,13 @@ import {
     ContextMenuItem,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useDeleteFolder } from "@/features/folders/hooks/useFolders";
+import { useModalStore, useSelectionStore } from "@/store";
 
 function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
-    const { setActiveModal, setSelectedFolder } = useSidebarStore();
+    const { setActiveModal } = useModalStore();
+    const { setSelectedFolder } = useSelectionStore();
+
     const useDeleteFolderMutation = useDeleteFolder();
 
     return (

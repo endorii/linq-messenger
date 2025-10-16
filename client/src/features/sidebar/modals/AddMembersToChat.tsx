@@ -6,8 +6,8 @@ import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useAddMembersToChat } from "@/features/chats/hooks/useChatMembers";
+import { useSelectionStore } from "@/store";
 
 interface CreateProps {
     isOpen: boolean;
@@ -16,7 +16,7 @@ interface CreateProps {
 
 export default function AddMembersToChat({ isOpen, onClose }: CreateProps) {
     const { data: contacts } = useContacts();
-    const { selectedChat } = useSidebarStore();
+    const { selectedChat } = useSelectionStore();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const addMembersMutation = useAddMembersToChat();
 

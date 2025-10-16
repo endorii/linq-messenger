@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useCreateContact } from "@/features/contacts/hooks/useContacts";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useSelectionStore } from "@/store";
 
 interface AddContactProps {
     isOpen: boolean;
@@ -21,7 +21,7 @@ interface FormData {
 }
 
 export default function AddContact({ isOpen, onClose }: AddContactProps) {
-    const { selectedUser, setSelectedUser } = useSidebarStore();
+    const { selectedUser, setSelectedUser } = useSelectionStore();
 
     const {
         register,

@@ -1,9 +1,9 @@
+import { useNavigationStore } from "@/store";
 import SidebarProfilePrivacy from "../privacy/SidebarProfilePrivacy";
 import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
-import { useSidebarStore } from "@/store/sidebarStore";
 
 function SidebarProfilePrivacyTab() {
-    const { setProfileTab } = useSidebarStore();
+    const { setProfileTab } = useNavigationStore();
     return (
         <>
             <SharedSidebarMenu

@@ -5,12 +5,12 @@ import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
 import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { createPortal } from "react-dom";
 import { CloseIcon } from "@/shared/icons";
-import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import {
     useDeleteMessage,
     useDeleteMessageForMe,
 } from "@/features/messages/hooks/useMessages";
+import { useSelectionStore } from "@/store";
 
 interface DeleteMessageProps {
     isOpen: boolean;
@@ -23,7 +23,7 @@ export default function DeleteMessage({
     onClose,
     chatId,
 }: DeleteMessageProps) {
-    const { selectedMessage } = useSidebarStore();
+    const { selectedMessage } = useSelectionStore();
     const { data: me } = useProfile();
 
     const deleteMessageForMeMutation = useDeleteMessageForMe();

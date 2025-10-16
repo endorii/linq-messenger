@@ -7,11 +7,8 @@ import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import {
-    useCreateFolder,
-    useUpdateFolder,
-} from "../../folders/hooks/useFolders";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useUpdateFolder } from "../../folders/hooks/useFolders";
+import { useSelectionStore } from "@/store";
 
 //замінити скрізь
 interface CreateNewChannelProps {
@@ -24,7 +21,7 @@ interface FormData {
 }
 
 export default function EditFolder({ isOpen, onClose }: CreateNewChannelProps) {
-    const { selectedFolder, setSelectedFolder } = useSidebarStore();
+    const { selectedFolder, setSelectedFolder } = useSelectionStore();
 
     const {
         register,

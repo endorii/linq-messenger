@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { useNavigationStore } from "@/store";
 
 function SidebarSearchMenu({
     searchValue,
@@ -12,7 +12,7 @@ function SidebarSearchMenu({
     searchValue: string;
     setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }) {
-    const { setSidebarTab } = useSidebarStore();
+    const { setSidebarTab } = useNavigationStore();
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
