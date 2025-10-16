@@ -29,6 +29,7 @@ import {
 } from "@/features/chats/hooks/useChatMembers";
 import { MuteIcon } from "@/shared/icons";
 import dayjs from "dayjs";
+import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
 
 interface SidebarChatProps {
     chat: IChat;
@@ -49,6 +50,20 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const toggleMarkChatMutation = useToggleMarkChat();
     const toggleMuteMutation = useToggleMuteChat();
 
+    const toggleBlockUserMutation = useToggleBlockUser();
+
+    const handleBlockUser = async () => {
+        if (!otherMember) return;
+        toggleBlockUserMutation.mutateAsync({
+            chatId: chat.id,
+            blockUserPayload: {
+                userIdBlock: otherMember?.userId,
+            },
+        });
+    };
+    const handleDeleteModal = () => setActiveModal("deleteChat");
+    const handleContextMenu = () => setSelectedChat(chat);
+
     if (meMember?.muteUntil && dayjs(meMember.muteUntil).isBefore(dayjs())) {
         meMember.isMuted = false;
         meMember.muteUntil = null;
@@ -63,10 +78,6 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     }
 
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
-
-    const handleDeleteModal = () => setActiveModal("deleteChat");
-    const handleBlockUser = () => console.log(`Block user in chat: ${chat.id}`);
-    const handleContextMenu = () => setSelectedChat(chat);
 
     const foldersWithNoChat = folders?.filter(
         (f) => !chat.folders?.some((cf) => cf.folderId === f.id)
@@ -230,7 +241,9 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
 
                 {isPrivateChat && (
                     <ContextMenuItem onClick={handleBlockUser}>
-                        Block User
+                        {chat.blockingInfo?.isBlocked
+                            ? "Unblock User"
+                            : " Block User"}
                     </ContextMenuItem>
                 )}
 

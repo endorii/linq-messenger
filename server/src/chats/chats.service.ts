@@ -129,20 +129,56 @@ export class ChatsService {
                 members: { some: { userId, leftAt: null } },
             },
             include: {
-                members: { where: { leftAt: null }, include: { user: true } },
-                messages: {
-                    where: {
-                        OR: [
-                            { type: { not: MessageType.SYSTEM } },
-                            { type: MessageType.SYSTEM, content: { not: "left the chat" } },
-                        ],
-                    },
-                    orderBy: { createdAt: "desc" },
-                    take: 50,
+                members: {
+                    where: { leftAt: null },
+                    include: { user: true },
                 },
             },
         });
+
         if (!chat) throw new NotFoundException("Chat not found or access denied");
+
+        // Для приватних чатів отримуємо інформацію про блокування
+
+        if (chat.type === "PRIVATE") {
+            let blockingInfo: {
+                isBlocked: boolean;
+                isBlockedByOther: boolean;
+                interlocutorId: string;
+            } | null = null;
+
+            const currentUser = await this.prisma.user.findUnique({
+                where: { id: userId },
+                include: {
+                    blockedUsers: true,
+                    blockedByUsers: true,
+                },
+            });
+
+            const interlocutor = chat.members.find((m) => m.userId !== userId);
+
+            if (interlocutor && currentUser) {
+                const isBlocked = currentUser.blockedUsers.some(
+                    (b) => b.blockedId === interlocutor.userId
+                );
+
+                const isBlockedByOther = currentUser.blockedByUsers.some(
+                    (b) => b.blockerId === interlocutor.userId
+                );
+
+                blockingInfo = {
+                    isBlocked,
+                    isBlockedByOther,
+                    interlocutorId: interlocutor.userId,
+                };
+            }
+
+            return {
+                ...chat,
+                blockingInfo,
+            };
+        }
+
         return chat;
     }
 

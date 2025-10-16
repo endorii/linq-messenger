@@ -25,6 +25,14 @@ export interface IChat {
 
     lastMessageId?: string;
     lastMessage?: IMessage;
+
+    blockingInfo?: BlockInfo;
+}
+
+interface BlockInfo {
+    isBlocked: boolean;
+    isBlockedByOther: boolean;
+    interlocutorId: string;
 }
 
 export interface ChatPayload {

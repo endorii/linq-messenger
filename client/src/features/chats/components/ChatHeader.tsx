@@ -15,6 +15,8 @@ import { useSidebarStore } from "@/store/sidebarStore";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useEffect } from "react";
 import { useToggleMuteChat } from "../hooks/useChatMembers";
+import { Button } from "@/shared/components/ui/button";
+import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
 
 function ChatHeader({ chat }: { chat: IChat }) {
     const {
@@ -26,6 +28,8 @@ function ChatHeader({ chat }: { chat: IChat }) {
         meMember,
         otherMember,
     } = useChatEntity(chat);
+
+    console.log(otherMember?.userId);
 
     const { data: me } = useProfile();
     const toggleMuteChatMutation = useToggleMuteChat();
@@ -52,6 +56,18 @@ function ChatHeader({ chat }: { chat: IChat }) {
             setSelectedUser(entity);
             setActiveModal("addContact");
         }
+    };
+
+    const toggleBlockUserMutation = useToggleBlockUser();
+
+    const handleBlockUser = async () => {
+        if (!otherMember) return;
+        toggleBlockUserMutation.mutateAsync({
+            chatId: chat.id,
+            blockUserPayload: {
+                userIdBlock: otherMember?.userId,
+            },
+        });
     };
 
     const handleEditContact = async () => {
@@ -90,7 +106,7 @@ function ChatHeader({ chat }: { chat: IChat }) {
     const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];
 
     return (
-        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
+        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
             <div
                 className="flex gap-[20px] w-full"
                 onClick={() => {
@@ -116,12 +132,22 @@ function ChatHeader({ chat }: { chat: IChat }) {
                         )}
                     </div>
                     <div className="text-sm text-neutral-400">
-                        {isPrivate
+                        {isPrivate && chat.blockingInfo?.isBlockedByOther
+                            ? "for a long time"
+                            : isPrivate
                             ? "last seen recently"
                             : `${chat.members?.length || 0} members`}
                     </div>
                 </div>
             </div>
+            {chat.blockingInfo?.isBlocked && (
+                <Button
+                    className="mx-[20px] bg-purple-gradient"
+                    onClick={handleBlockUser}
+                >
+                    Unblock User
+                </Button>
+            )}
             <div className="flex gap-[25px]">
                 {chat.type === ChatEnum.PRIVATE ? (
                     <button>
@@ -161,7 +187,11 @@ function ChatHeader({ chat }: { chat: IChat }) {
                         {chat.type === ChatEnum.PRIVATE && (
                             <>
                                 <DropdownMenuItem>Video Call</DropdownMenuItem>
-                                <DropdownMenuItem>Block user</DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleBlockUser}>
+                                    {chat.blockingInfo?.isBlocked
+                                        ? "Unblock user"
+                                        : "Block user"}
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                             </>
                         )}

@@ -9,6 +9,7 @@ import { MessagesModule } from './messages/messages.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { SearchModule } from './search/search.module';
 import { ChatMembersModule } from './chat-members/chat-members.module';
+import { UserBlocksModule } from './user-blocks/user-blocks.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ChatMembersModule } from './chat-members/chat-members.module';
         ContactsModule,
         SearchModule,
         ChatMembersModule,
+        UserBlocksModule,
     ],
 })
 export class AppModule {}

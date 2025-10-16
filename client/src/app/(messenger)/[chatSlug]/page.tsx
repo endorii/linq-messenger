@@ -20,6 +20,7 @@ import {
 import Image from "next/image";
 import { useSidebarStore } from "@/store/sidebarStore";
 import { toast } from "sonner";
+import ChatSentData from "@/features/chats/components/ChatSentData";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -55,11 +56,11 @@ function ChatSlug() {
     const messagesForEmptyChat = ["Hi👋", "Welcome", ":)"];
 
     if (isLoading) return <div>Loading...</div>;
+    if (!chat) return null;
 
-    const isAdmin = chat?.members.some(
-        (member) => member.user?.id === me?.id && member.role === "ADMIN"
-    );
     const isChannel = chat?.type === ChatEnum.CHANNEL;
+
+    const isAdmin = chat.adminId === me?.id;
 
     const shouldShowNoMessages =
         !messages || (messages.length === 0 && !(isChannel && !isAdmin));
@@ -101,203 +102,224 @@ function ChatSlug() {
         {}
     );
 
+    const canSendMessages =
+        (chat.type === ChatEnum.PRIVATE && !chat.blockingInfo?.isBlocked) ||
+        (chat.type === ChatEnum.CHANNEL && isAdmin) ||
+        chat.type === ChatEnum.GROUP;
+
     return (
-        <div className="flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
-            {groupedMessages &&
-                Object.entries(groupedMessages)
-                    .reverse()
-                    .map(([date, msgs]) => (
-                        <div key={date} className="flex flex-col gap-[5px]">
-                            <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
-                                {dayjs(date).format("D MMMM")}
-                            </div>
-                            {msgs.map((msg, i) => {
-                                const prevMsg = msgs[i - 1];
-                                const nextMsg = msgs[i + 1];
+        <div className="flex flex-col h-full w-full">
+            <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
+                {groupedMessages &&
+                    Object.entries(groupedMessages)
+                        .reverse()
+                        .map(([date, msgs]) => (
+                            <div key={date} className="flex flex-col gap-[5px]">
+                                <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                    {dayjs(date).format("D MMMM")}
+                                </div>
+                                {msgs.map((msg, i) => {
+                                    const prevMsg = msgs[i - 1];
+                                    const nextMsg = msgs[i + 1];
 
-                                const isSameSenderAsPrev =
-                                    prevMsg &&
-                                    prevMsg.sender?.id === msg.sender?.id;
-                                const isSameSenderAsNext =
-                                    nextMsg &&
-                                    nextMsg.sender?.id === msg.sender?.id;
+                                    const isSameSenderAsPrev =
+                                        prevMsg &&
+                                        prevMsg.sender?.id === msg.sender?.id;
+                                    const isSameSenderAsNext =
+                                        nextMsg &&
+                                        nextMsg.sender?.id === msg.sender?.id;
 
-                                const sender = msg.sender;
-                                const avatarUrl = sender?.avatarUrl;
-                                const username = sender?.username;
+                                    const sender = msg.sender;
+                                    const avatarUrl = sender?.avatarUrl;
+                                    const username = sender?.username;
 
-                                if (msg.type === "SYSTEM") {
+                                    if (msg.type === "SYSTEM") {
+                                        return (
+                                            <div
+                                                key={msg.id}
+                                                className="self-center text-sm text-gray-400 my-3 bg-neutral-900/40 px-3 py-1 rounded-md"
+                                            >
+                                                {msg.content}
+                                            </div>
+                                        );
+                                    }
+
                                     return (
                                         <div
                                             key={msg.id}
-                                            className="self-center text-sm text-gray-400 my-3 bg-neutral-900/40 px-3 py-1 rounded-md"
-                                        >
-                                            {msg.content}
-                                        </div>
-                                    );
-                                }
-
-                                return (
-                                    <div
-                                        key={msg.id}
-                                        className={`flex ${
-                                            msg.isMine
-                                                ? "justify-end"
-                                                : "justify-start"
-                                        } ${!isSameSenderAsPrev ? "mt-3" : ""}`}
-                                    >
-                                        <div
-                                            className={`flex flex-col ${
+                                            className={`flex ${
                                                 msg.isMine
-                                                    ? "items-end"
-                                                    : "items-start"
-                                            } relative`}
+                                                    ? "justify-end"
+                                                    : "justify-start"
+                                            } ${
+                                                !isSameSenderAsPrev
+                                                    ? "mt-3"
+                                                    : ""
+                                            }`}
                                         >
-                                            <ContextMenu>
-                                                <ContextMenuTrigger
-                                                    onContextMenu={() =>
-                                                        setSelectedMessage(msg)
-                                                    }
-                                                    className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
-                                                        msg.isMine
-                                                            ? "bg-purple-gradient self-end rounded-br-none"
-                                                            : "bg-neutral-800 self-start rounded-bl-none"
-                                                    } ${
-                                                        isSameSenderAsPrev
-                                                            ? "mt-[2px]"
-                                                            : ""
-                                                    }`}
-                                                >
-                                                    <div>
-                                                        {msg.content}
-                                                        <div className="flex gap-[3px] justify-end">
-                                                            <div className="text-xs text-gray-400 ">
-                                                                {msg.createdAt !==
-                                                                msg.updatedAt ? (
-                                                                    <div className="text-xs text-gray-400 text-right">
-                                                                        edited
-                                                                    </div>
-                                                                ) : null}
+                                            <div
+                                                className={`flex flex-col ${
+                                                    msg.isMine
+                                                        ? "items-end"
+                                                        : "items-start"
+                                                } relative`}
+                                            >
+                                                <ContextMenu>
+                                                    <ContextMenuTrigger
+                                                        onContextMenu={() =>
+                                                            setSelectedMessage(
+                                                                msg
+                                                            )
+                                                        }
+                                                        className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
+                                                            msg.isMine
+                                                                ? "bg-purple-gradient self-end rounded-br-none"
+                                                                : "bg-neutral-800 self-start rounded-bl-none"
+                                                        } ${
+                                                            isSameSenderAsPrev
+                                                                ? "mt-[2px]"
+                                                                : ""
+                                                        }`}
+                                                    >
+                                                        <div>
+                                                            {msg.content}
+                                                            <div className="flex gap-[3px] justify-end">
+                                                                <div className="text-xs text-gray-400 ">
+                                                                    {msg.createdAt !==
+                                                                    msg.updatedAt ? (
+                                                                        <div className="text-xs text-gray-400 text-right">
+                                                                            edited
+                                                                        </div>
+                                                                    ) : null}
+                                                                </div>
+                                                                <div className="text-xs text-gray-400 text-right">
+                                                                    {dayjs(
+                                                                        msg.createdAt
+                                                                    ).format(
+                                                                        "HH:mm"
+                                                                    )}
+                                                                </div>
                                                             </div>
-                                                            <div className="text-xs text-gray-400 text-right">
-                                                                {dayjs(
-                                                                    msg.createdAt
-                                                                ).format(
-                                                                    "HH:mm"
+                                                        </div>
+                                                    </ContextMenuTrigger>
+
+                                                    <ContextMenuContent className="w-[200px]">
+                                                        <ContextMenuItem className="p-0 focus:bg-transparent">
+                                                            <div className="flex gap-2 overflow-x-auto max-w-full p-2">
+                                                                {[
+                                                                    "👍",
+                                                                    "❤️",
+                                                                    "😂",
+                                                                    "🔥",
+                                                                    "🎉",
+                                                                    "😢",
+                                                                    "😡",
+                                                                    "🤔",
+                                                                    "🙏",
+                                                                ].map(
+                                                                    (emoji) => (
+                                                                        <button
+                                                                            key={
+                                                                                emoji
+                                                                            }
+                                                                            className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
+                                                                            onClick={() =>
+                                                                                console.log(
+                                                                                    "Clicked emoji:",
+                                                                                    emoji
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                emoji
+                                                                            }
+                                                                        </button>
+                                                                    )
                                                                 )}
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </ContextMenuTrigger>
-
-                                                <ContextMenuContent className="w-[200px]">
-                                                    <ContextMenuItem className="p-0 focus:bg-transparent">
-                                                        <div className="flex gap-2 overflow-x-auto max-w-full p-2">
-                                                            {[
-                                                                "👍",
-                                                                "❤️",
-                                                                "😂",
-                                                                "🔥",
-                                                                "🎉",
-                                                                "😢",
-                                                                "😡",
-                                                                "🤔",
-                                                                "🙏",
-                                                            ].map((emoji) => (
-                                                                <button
-                                                                    key={emoji}
-                                                                    className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
-                                                                    onClick={() =>
-                                                                        console.log(
-                                                                            "Clicked emoji:",
-                                                                            emoji
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    {emoji}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    </ContextMenuItem>
-                                                    <ContextMenuSeparator />
-                                                    <ContextMenuItem>
-                                                        Reply
-                                                    </ContextMenuItem>
-                                                    {msg.isMine && (
+                                                        </ContextMenuItem>
+                                                        <ContextMenuSeparator />
+                                                        <ContextMenuItem>
+                                                            Reply
+                                                        </ContextMenuItem>
+                                                        {msg.isMine && (
+                                                            <ContextMenuItem
+                                                                onClick={() => {
+                                                                    setMessageForEdit(
+                                                                        msg
+                                                                    );
+                                                                    setChatSentType(
+                                                                        "edit"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Edit
+                                                            </ContextMenuItem>
+                                                        )}
                                                         <ContextMenuItem
                                                             onClick={() => {
-                                                                setMessageForEdit(
-                                                                    msg
-                                                                );
-                                                                setChatSentType(
-                                                                    "edit"
+                                                                handleCopy(
+                                                                    msg.content
                                                                 );
                                                             }}
                                                         >
-                                                            Edit
+                                                            Copy
                                                         </ContextMenuItem>
-                                                    )}
-                                                    <ContextMenuItem
-                                                        onClick={() => {
-                                                            handleCopy(
-                                                                msg.content
-                                                            );
-                                                        }}
-                                                    >
-                                                        Copy
-                                                    </ContextMenuItem>
-                                                    <ContextMenuItem>
-                                                        Pin
-                                                    </ContextMenuItem>
-                                                    <ContextMenuItem>
-                                                        Forward
-                                                    </ContextMenuItem>
-                                                    <ContextMenuItem>
-                                                        Select
-                                                    </ContextMenuItem>
-                                                    {(chat?.type ===
-                                                        ChatEnum.PRIVATE ||
-                                                        chat?.adminId ===
-                                                            me?.id ||
-                                                        msg.senderId ===
-                                                            me?.id) && (
-                                                        <ContextMenuItem
-                                                            variant="destructive"
-                                                            onClick={() => {
-                                                                setActiveModal(
-                                                                    "deleteMessage"
-                                                                );
-                                                            }}
-                                                        >
-                                                            Delete
+                                                        <ContextMenuItem>
+                                                            Pin
                                                         </ContextMenuItem>
-                                                    )}
-                                                </ContextMenuContent>
-                                            </ContextMenu>
+                                                        <ContextMenuItem>
+                                                            Forward
+                                                        </ContextMenuItem>
+                                                        <ContextMenuItem>
+                                                            Select
+                                                        </ContextMenuItem>
+                                                        {(chat?.type ===
+                                                            ChatEnum.PRIVATE ||
+                                                            chat?.adminId ===
+                                                                me?.id ||
+                                                            msg.senderId ===
+                                                                me?.id) && (
+                                                            <ContextMenuItem
+                                                                variant="destructive"
+                                                                onClick={() => {
+                                                                    setActiveModal(
+                                                                        "deleteMessage"
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </ContextMenuItem>
+                                                        )}
+                                                    </ContextMenuContent>
+                                                </ContextMenu>
 
-                                            {!msg.isMine &&
-                                                !isSameSenderAsNext &&
-                                                chat?.type !==
-                                                    ChatEnum.CHANNEL && (
-                                                    <div className="absolute bottom-0 left-[-40px]">
-                                                        <Image
-                                                            src={
-                                                                avatarUrl || ""
-                                                            }
-                                                            alt={username}
-                                                            width={32}
-                                                            height={32}
-                                                            unoptimized
-                                                            className="rounded-full object-cover"
-                                                        />
-                                                    </div>
-                                                )}
+                                                {!msg.isMine &&
+                                                    !isSameSenderAsNext &&
+                                                    chat?.type !==
+                                                        ChatEnum.CHANNEL && (
+                                                        <div className="absolute bottom-0 left-[-40px]">
+                                                            <Image
+                                                                src={
+                                                                    avatarUrl ||
+                                                                    ""
+                                                                }
+                                                                alt={username}
+                                                                width={32}
+                                                                height={32}
+                                                                unoptimized
+                                                                className="rounded-full object-cover"
+                                                            />
+                                                        </div>
+                                                    )}
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ))}
+                                    );
+                                })}
+                            </div>
+                        ))}
+            </div>
+            {canSendMessages && <ChatSentData chatId={chatId} />}
         </div>
     );
 }

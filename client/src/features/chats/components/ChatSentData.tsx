@@ -68,7 +68,7 @@ function ChatSentData({ chatId }: ChatSentDataProps) {
     };
 
     return (
-        <div className="absolute bottom-0 w-full px-[15%] flex items-end gap-[10px] justify-between py-[15px] bg-transparent">
+        <div className="w-full px-[15%] flex items-end gap-[10px] justify-between py-[15px] bg-transparent ">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <button className="bg-purple-gradient rounded-xl p-[11px] cursor-pointer">

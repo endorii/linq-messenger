@@ -17,7 +17,6 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
     const { data: chat, isLoading: isChatLoading } = useChat(chatId);
-    const { data: me, isLoading: isMeLoading } = useProfile();
     const { activeModal, setSelectedMessage, setActiveModal, setSelectedChat } =
         useSidebarStore();
 
@@ -27,14 +26,9 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
         }
 
         setSelectedChat(chat ?? null);
-    }, [isChatLoading, chat, router]);
+    }, [isChatLoading, chat, router, setSelectedChat]);
 
     if (!chat) return null;
-
-    const isAdmin = chat.adminId === me?.id;
-    const canSendMessages =
-        chat.type !== ChatEnum.CHANNEL ||
-        (chat.type === ChatEnum.CHANNEL && isAdmin);
 
     return (
         <div className="flex w-full h-[100vh]">
@@ -42,8 +36,6 @@ function ChatLayout({ children }: { children: React.ReactNode }) {
                 <ChatHeader chat={chat} />
 
                 <ChatMessages>{children}</ChatMessages>
-
-                {canSendMessages && <ChatSentData chatId={chat.id} />}
             </div>
             <ChatSidebar chat={chat} />
             <DeleteMessage
