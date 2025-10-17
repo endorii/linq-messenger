@@ -1,4 +1,4 @@
-function EmojiIcon({ className }: { className: string }) {
+export function EmojiIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
             <path d="M8.5 11C9.32843 11 10 10.3284 10 9.5C10 8.67157 9.32843 8 8.5 8C7.67157 8 7 8.67157 7 9.5C7 10.3284 7.67157 11 8.5 11Z" />
@@ -8,5 +8,3 @@ function EmojiIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default EmojiIcon;

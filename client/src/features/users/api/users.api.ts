@@ -1,5 +1,5 @@
 import { httpService } from "@/shared/api/httpService";
-import { IUser } from "../interfaces/IUser";
+import { IUser } from "../../../shared/interfaces/IUser";
 
 export async function fetchUniqueUsername(username: string) {
     if (!username) return null;

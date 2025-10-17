@@ -1,18 +1,16 @@
 "use client";
 
-import { IUser } from "@/shared/interfaces/IUser";
-import SidebarChats from "../chats/SidebarChats";
-import SidebarDropdownPlus from "../SidebarDropdownPlus";
-import SidebarMenu from "../SidebarMenu";
+import { IUser } from "@/shared/interfaces";
+import { ChatsMenu } from "../chats/ChatsMenu";
+import { SidebarChats } from "../chats/SidebarChats";
+import { ChatsDropdownPlus } from "../chats/ChatsDropdownPlus";
 
-function ChatsTab({ user }: { user: IUser }) {
+export function ChatsTab({ user }: { user: IUser }) {
     return (
         <>
-            <SidebarMenu user={user} />
+            <ChatsMenu user={user} />
             <SidebarChats />
-            <SidebarDropdownPlus />
+            <ChatsDropdownPlus />
         </>
     );
 }
-
-export default ChatsTab;

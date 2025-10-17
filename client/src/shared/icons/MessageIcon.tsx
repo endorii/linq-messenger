@@ -1,4 +1,4 @@
-function MessageIcon({ className }: { className?: string }) {
+export function MessageIcon({ className }: { className?: string }) {
     return (
         <svg
             viewBox="0 0 24 24"
@@ -14,5 +14,3 @@ function MessageIcon({ className }: { className?: string }) {
         </svg>
     );
 }
-
-export default MessageIcon;

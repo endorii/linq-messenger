@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function SafeLink({
+export function SafeLink({
     href,
     children,
     className,

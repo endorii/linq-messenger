@@ -1,8 +1,8 @@
 import { useNavigationStore } from "@/store";
-import SidebarProfileNotifications from "../notifications/SidebarProfileNotifications";
-import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
+import { SidebarProfileNotifications } from "../notifications/SidebarProfileNotifications";
+import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 
-function SidebarProfileNotificationsTab() {
+export function SidebarProfileNotificationsTab() {
     const { setProfileTab } = useNavigationStore();
     return (
         <>
@@ -14,5 +14,3 @@ function SidebarProfileNotificationsTab() {
         </>
     );
 }
-
-export default SidebarProfileNotificationsTab;

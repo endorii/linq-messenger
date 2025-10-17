@@ -1,6 +1,4 @@
-import { fetchToggleMuteChat } from "@/features/chats/api/chat-members.api";
 import { BlockUserPayload } from "@/shared/interfaces/IBlockedUser";
-import { IChatMember } from "@/shared/interfaces/IChatMember";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

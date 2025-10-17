@@ -25,7 +25,7 @@ const notificationItems = [
     },
 ];
 
-function SidebarProfileNotifications() {
+export function SidebarProfileNotifications() {
     const [checked, setChecked] = useState<Record<string, boolean>>({
         private: true,
         groups: true,
@@ -62,5 +62,3 @@ function SidebarProfileNotifications() {
         </div>
     );
 }
-
-export default SidebarProfileNotifications;

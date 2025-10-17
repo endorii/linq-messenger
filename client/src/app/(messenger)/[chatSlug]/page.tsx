@@ -1,92 +1,46 @@
 "use client";
 
-import {
-    useCreateMessage,
-    useMessages,
-} from "@/features/messages/hooks/useMessages";
-import { useParams } from "next/navigation";
-import dayjs from "dayjs";
-import { MessageIcon } from "@/shared/icons";
 import { useProfile } from "@/features/auth/hooks/useAuth";
+import { ChatSentData } from "@/features/chats/components/messages";
+import { ChatMessagesSkeleton } from "@/features/chats/components/skeletons/ChatMessagesSkeleton";
 import { useChat } from "@/features/chats/hooks/useChats";
+import { ChatEmptyWindow } from "@/features/messages/components/ChatEmptyWindow";
+import { ChatMessage } from "@/features/messages/components/ChatMessage";
+import { ChatMessageSystem } from "@/features/messages/components/ChatMessageSystem";
+import { useMessages } from "@/features/messages/hooks/useMessages";
 import { ChatEnum } from "@/shared/enums/enums";
-import {
-    ContextMenu,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuTrigger,
-    ContextMenuSeparator,
-} from "@/shared/components/ui/context-menu";
-import Image from "next/image";
-import { toast } from "sonner";
-import ChatSentData from "@/features/chats/components/ChatSentData";
-import { useChatInputStore, useModalStore, useSelectionStore } from "@/store";
+import { usePrivateChat } from "@/shared/hooks";
+
+import dayjs from "dayjs";
+import { useParams } from "next/navigation";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
-    const { data: messages, isLoading } = useMessages(chatId);
-    const { data: chat } = useChat(chatId);
-    const { data: me } = useProfile();
-    const useCreateMessageMutation = useCreateMessage();
+    const { data: chat, isPending: isChatPending } = useChat(chatId);
+    const { data: messages, isPending: isMessagesPending } =
+        useMessages(chatId);
 
-    const { setActiveModal } = useModalStore();
-    const { setSelectedMessage } = useSelectionStore();
-    const { setChatSentType, setMessageForEdit } = useChatInputStore();
+    const { data: me, isPending: isMePending } = useProfile();
 
-    const handleSend = (msg: string) => {
-        useCreateMessageMutation.mutateAsync({
-            chatId,
-            messagePayload: { content: msg },
-        });
-    };
-
-    const handleCopy = async (text: string) => {
-        try {
-            await navigator.clipboard.writeText(text);
-            toast.success("Copied!");
-        } catch (err) {
-            toast.error("Failed to copy");
-            console.error(err);
-        }
-    };
-
-    const messagesForEmptyChat = ["Hi👋", "Welcome", ":)"];
-
-    if (isLoading) return <div>Loading...</div>;
     if (!chat) return null;
 
+    const { isPrivate, meMember } = usePrivateChat(chat);
+    const isGroup = chat?.type === ChatEnum.GROUP;
     const isChannel = chat?.type === ChatEnum.CHANNEL;
+    const isAdmin = chat.adminId === meMember?.userId;
 
-    const isAdmin = chat.adminId === me?.id;
+    const isLoading = isMessagesPending || isChatPending || isMePending;
 
+    if (isLoading) return <ChatMessagesSkeleton />;
+
+    const isGroupOrPrivate = isGroup || isPrivate;
+    const noMessages = !messages || messages.length === 0;
     const shouldShowNoMessages =
-        !messages || (messages.length === 0 && !(isChannel && !isAdmin));
+        (isGroupOrPrivate && noMessages) ||
+        (isChannel && isAdmin && noMessages);
 
     if (shouldShowNoMessages) {
-        return (
-            <div className="flex w-full flex-col items-center justify-center h-full ">
-                <div className="flex flex-col p-[20px] border border-white/5 rounded-xl backdrop-blur-[5px] max-w-[300px]">
-                    <div className="font-bold text-center">
-                        No messages here yet...
-                    </div>
-                    <div className="text-center">
-                        Sent a message or choose one below
-                    </div>
-                    <div className="flex flex-col gap-[10px] mt-[20px]">
-                        {messagesForEmptyChat.map((msg, i) => (
-                            <div
-                                className="group flex gap-[10px] items-center border-2 border-white/5 hover:border-violet-500 p-[10px] rounded-xl transition-all duration-200 cursor-pointer hover:bg-neutral-950"
-                                key={i}
-                                onClick={() => handleSend(msg)}
-                            >
-                                <MessageIcon className="w-[25px] fill-none stroke-2 stroke-white/60 group-hover:stroke-white" />
-                                <div>{`"${msg}"`}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        );
+        return <ChatEmptyWindow chatId={chatId} />;
     }
 
     const groupedMessages = messages?.reduce<Record<string, typeof messages>>(
@@ -105,218 +59,86 @@ function ChatSlug() {
         chat.type === ChatEnum.GROUP;
 
     return (
-        <div className="flex flex-col h-full w-full">
-            <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
-                {groupedMessages &&
-                    Object.entries(groupedMessages)
-                        .reverse()
-                        .map(([date, msgs]) => (
-                            <div key={date} className="flex flex-col gap-[5px]">
-                                <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
-                                    {dayjs(date).format("D MMMM")}
-                                </div>
-                                {msgs.map((msg, i) => {
-                                    const prevMsg = msgs[i - 1];
-                                    const nextMsg = msgs[i + 1];
+        <div className="flex flex-col h-full w-full relative">
+            <div
+                className="absolute inset-0"
+                style={{
+                    backgroundImage: `url(${
+                        chat.background ||
+                        "https://cdn.pixabay.com/photo/2024/06/30/10/28/sky-8862862_1280.png"
+                    })`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    filter: "blur(8px)", //додати перемикач для блюру
+                    zIndex: 0,
+                }}
+            />
 
-                                    const isSameSenderAsPrev =
-                                        prevMsg &&
-                                        prevMsg.sender?.id === msg.sender?.id;
-                                    const isSameSenderAsNext =
-                                        nextMsg &&
-                                        nextMsg.sender?.id === msg.sender?.id;
+            <div className="relative flex flex-col h-full w-full pt-[65px] z-10">
+                <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
+                    {groupedMessages &&
+                        Object.entries(groupedMessages)
+                            .reverse()
+                            .map(([date, msgs]) => (
+                                <div
+                                    key={date}
+                                    className="flex flex-col gap-[5px]"
+                                >
+                                    <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                        {dayjs(date).format("D MMMM")}
+                                    </div>
+                                    {msgs.map((msg, i) => {
+                                        const prevMsg = msgs[i - 1];
+                                        const nextMsg = msgs[i + 1];
 
-                                    const sender = msg.sender;
-                                    const avatarUrl = sender?.avatarUrl;
-                                    const username = sender?.username;
+                                        const isSameSenderAsPrev =
+                                            prevMsg &&
+                                            prevMsg.sender?.id ===
+                                                msg.sender?.id;
+                                        const isSameSenderAsNext =
+                                            nextMsg &&
+                                            nextMsg.sender?.id ===
+                                                msg.sender?.id;
 
-                                    if (msg.type === "SYSTEM") {
+                                        const sender = msg.sender;
+                                        const avatarUrl =
+                                            sender?.avatarUrl || "";
+                                        const username = sender?.username;
+
+                                        if (msg.type === "SYSTEM") {
+                                            return (
+                                                <ChatMessageSystem
+                                                    msg={msg}
+                                                    key={msg.id}
+                                                />
+                                            );
+                                        }
+
                                         return (
-                                            <div
+                                            <ChatMessage
                                                 key={msg.id}
-                                                className="self-center text-sm text-gray-400 my-3 bg-neutral-900/40 px-3 py-1 rounded-md"
-                                            >
-                                                {msg.content}
-                                            </div>
+                                                msg={msg}
+                                                isSameSenderAsPrev={
+                                                    isSameSenderAsPrev
+                                                }
+                                                isSameSenderAsNext={
+                                                    isSameSenderAsNext
+                                                }
+                                                isChannel={false}
+                                                avatarUrl={avatarUrl}
+                                                username={username}
+                                                me={me}
+                                                isAdmin={isAdmin}
+                                                isPrivate={isPrivate}
+                                            />
                                         );
-                                    }
+                                    })}
+                                </div>
+                            ))}
+                </div>
 
-                                    return (
-                                        <div
-                                            key={msg.id}
-                                            className={`flex ${
-                                                msg.isMine
-                                                    ? "justify-end"
-                                                    : "justify-start"
-                                            } ${
-                                                !isSameSenderAsPrev
-                                                    ? "mt-3"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <div
-                                                className={`flex flex-col ${
-                                                    msg.isMine
-                                                        ? "items-end"
-                                                        : "items-start"
-                                                } relative`}
-                                            >
-                                                <ContextMenu>
-                                                    <ContextMenuTrigger
-                                                        onContextMenu={() =>
-                                                            setSelectedMessage(
-                                                                msg
-                                                            )
-                                                        }
-                                                        className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
-                                                            msg.isMine
-                                                                ? "bg-purple-gradient self-end rounded-br-none"
-                                                                : "bg-neutral-800 self-start rounded-bl-none"
-                                                        } ${
-                                                            isSameSenderAsPrev
-                                                                ? "mt-[2px]"
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        <div>
-                                                            {msg.content}
-                                                            <div className="flex gap-[3px] justify-end">
-                                                                <div className="text-xs text-gray-400 ">
-                                                                    {msg.createdAt !==
-                                                                    msg.updatedAt ? (
-                                                                        <div className="text-xs text-gray-400 text-right">
-                                                                            edited
-                                                                        </div>
-                                                                    ) : null}
-                                                                </div>
-                                                                <div className="text-xs text-gray-400 text-right">
-                                                                    {dayjs(
-                                                                        msg.createdAt
-                                                                    ).format(
-                                                                        "HH:mm"
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </ContextMenuTrigger>
-
-                                                    <ContextMenuContent className="w-[200px]">
-                                                        <ContextMenuItem className="p-0 focus:bg-transparent">
-                                                            <div className="flex gap-2 overflow-x-auto max-w-full p-2">
-                                                                {[
-                                                                    "👍",
-                                                                    "❤️",
-                                                                    "😂",
-                                                                    "🔥",
-                                                                    "🎉",
-                                                                    "😢",
-                                                                    "😡",
-                                                                    "🤔",
-                                                                    "🙏",
-                                                                ].map(
-                                                                    (emoji) => (
-                                                                        <button
-                                                                            key={
-                                                                                emoji
-                                                                            }
-                                                                            className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
-                                                                            onClick={() =>
-                                                                                console.log(
-                                                                                    "Clicked emoji:",
-                                                                                    emoji
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                emoji
-                                                                            }
-                                                                        </button>
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                        </ContextMenuItem>
-                                                        <ContextMenuSeparator />
-                                                        <ContextMenuItem>
-                                                            Reply
-                                                        </ContextMenuItem>
-                                                        {msg.isMine && (
-                                                            <ContextMenuItem
-                                                                onClick={() => {
-                                                                    setMessageForEdit(
-                                                                        msg
-                                                                    );
-                                                                    setChatSentType(
-                                                                        "edit"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Edit
-                                                            </ContextMenuItem>
-                                                        )}
-                                                        <ContextMenuItem
-                                                            onClick={() => {
-                                                                handleCopy(
-                                                                    msg.content
-                                                                );
-                                                            }}
-                                                        >
-                                                            Copy
-                                                        </ContextMenuItem>
-                                                        <ContextMenuItem>
-                                                            Pin
-                                                        </ContextMenuItem>
-                                                        <ContextMenuItem>
-                                                            Forward
-                                                        </ContextMenuItem>
-                                                        <ContextMenuItem>
-                                                            Select
-                                                        </ContextMenuItem>
-                                                        {(chat?.type ===
-                                                            ChatEnum.PRIVATE ||
-                                                            chat?.adminId ===
-                                                                me?.id ||
-                                                            msg.senderId ===
-                                                                me?.id) && (
-                                                            <ContextMenuItem
-                                                                variant="destructive"
-                                                                onClick={() => {
-                                                                    setActiveModal(
-                                                                        "deleteMessage"
-                                                                    );
-                                                                }}
-                                                            >
-                                                                Delete
-                                                            </ContextMenuItem>
-                                                        )}
-                                                    </ContextMenuContent>
-                                                </ContextMenu>
-
-                                                {!msg.isMine &&
-                                                    !isSameSenderAsNext &&
-                                                    chat?.type !==
-                                                        ChatEnum.CHANNEL && (
-                                                        <div className="absolute bottom-0 left-[-40px]">
-                                                            <Image
-                                                                src={
-                                                                    avatarUrl ||
-                                                                    ""
-                                                                }
-                                                                alt={username}
-                                                                width={32}
-                                                                height={32}
-                                                                unoptimized
-                                                                className="rounded-full object-cover"
-                                                            />
-                                                        </div>
-                                                    )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ))}
+                {canSendMessages && <ChatSentData chatId={chatId} />}
             </div>
-            {canSendMessages && <ChatSentData chatId={chatId} />}
         </div>
     );
 }

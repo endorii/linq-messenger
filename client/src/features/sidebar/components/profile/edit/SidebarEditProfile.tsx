@@ -6,11 +6,14 @@ import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { IUser } from "@/shared/interfaces/IUser";
-import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useUniqueUsername, useUpdateUser } from "@/shared/hooks/useUsers";
 import { CheckIcon } from "@/shared/icons";
+import {
+    useUniqueUsername,
+    useUpdateUser,
+} from "@/features/users/hooks/useUsers";
+import { useDebounce } from "@/shared/hooks";
 
-function SidebarEditProfile() {
+export function SidebarEditProfile() {
     const { data: me } = useProfile();
 
     const {
@@ -194,5 +197,3 @@ function SidebarEditProfile() {
         </div>
     );
 }
-
-export default SidebarEditProfile;

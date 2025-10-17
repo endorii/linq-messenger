@@ -1,12 +1,10 @@
 "use client";
 
-import { IChat } from "@/shared/interfaces/IChat";
-import ChatSidebarInfo from "./ChatSidebarInfo";
-import ChatSidebarEditContact from "./ChatSidebarEditContact";
-import ChatSidebarEditChat from "./ChatSidebarEditChat";
+import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore } from "@/store";
+import { ChatInfo, EditChat, EditContact } from "./components";
 
-function ChatSidebar({ chat }: { chat: IChat }) {
+export function ChatSidebar({ chat }: { chat: IChat }) {
     const { chatSidebarOpened, chatSidebarTab } = useChatSidebarStore();
 
     return (
@@ -17,14 +15,12 @@ function ChatSidebar({ chat }: { chat: IChat }) {
         >
             {chatSidebarOpened &&
                 (chatSidebarTab === "editContact" ? (
-                    <ChatSidebarEditContact chat={chat} />
+                    <EditContact chat={chat} />
                 ) : chatSidebarTab === "editChat" ? (
-                    <ChatSidebarEditChat chat={chat} />
+                    <EditChat chat={chat} />
                 ) : (
-                    <ChatSidebarInfo chat={chat} />
+                    <ChatInfo chat={chat} />
                 ))}
         </div>
     );
 }
-
-export default ChatSidebar;

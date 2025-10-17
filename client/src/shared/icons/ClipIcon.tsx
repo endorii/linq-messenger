@@ -1,4 +1,4 @@
-function ClipIcon({ className }: { className: string }) {
+export function ClipIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 512 512" className={className}>
             <g>
@@ -23,5 +23,3 @@ function ClipIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default ClipIcon;

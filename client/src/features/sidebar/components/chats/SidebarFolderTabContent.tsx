@@ -1,19 +1,21 @@
 import { useFolderChats } from "@/features/chats/hooks/useChats";
-import { IFolder } from "@/shared/interfaces/IFolder";
+import { IFolder } from "@/shared/interfaces";
 import { useMemo } from "react";
-import SidebarChat from "./SidebarChat";
+import { SidebarChat } from "./SidebarChat";
 import { TabsContent } from "@/shared/components/ui/tabs";
+import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 
-function SidebarFolderTabContent({
+export function SidebarFolderTabContent({
     folder,
     isActive,
 }: {
     folder: IFolder;
     isActive: boolean;
 }) {
-    const { data: folderChats, isLoading } = useFolderChats(folder.id, {
-        enabled: isActive,
-    });
+    const { data: folderChats, isPending: isFolderChatsPending } =
+        useFolderChats(folder.id, {
+            enabled: isActive,
+        });
 
     const sortedFolderChats = useMemo(() => {
         if (!folderChats) return [];
@@ -33,7 +35,9 @@ function SidebarFolderTabContent({
     return (
         <TabsContent value={folder.id}>
             <div className="flex flex-col gap-[3px] w-full">
-                {sortedFolderChats.length > 0 ? (
+                {isFolderChatsPending ? (
+                    <ChatListSkeleton />
+                ) : sortedFolderChats.length > 0 ? (
                     sortedFolderChats.map((chat) => (
                         <SidebarChat
                             key={chat.id}
@@ -50,5 +54,3 @@ function SidebarFolderTabContent({
         </TabsContent>
     );
 }
-
-export default SidebarFolderTabContent;

@@ -1,4 +1,4 @@
-function ThemeIcon({ className }: { className: string }) {
+export function ThemeIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
             <g>
@@ -11,5 +11,3 @@ function ThemeIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default ThemeIcon;

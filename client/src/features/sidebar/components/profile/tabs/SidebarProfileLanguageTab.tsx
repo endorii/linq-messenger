@@ -1,8 +1,8 @@
+import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 import { useNavigationStore } from "@/store";
-import SidebarProfileLanguage from "../language/SidebarProfileLanguage";
-import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
+import { SidebarProfileLanguage } from "../language/SidebarProfileLanguage";
 
-function SidebarProfileLanguageTab() {
+export function SidebarProfileLanguageTab() {
     const { setProfileTab } = useNavigationStore();
     return (
         <>
@@ -14,5 +14,3 @@ function SidebarProfileLanguageTab() {
         </>
     );
 }
-
-export default SidebarProfileLanguageTab;

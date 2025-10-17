@@ -1,4 +1,4 @@
-function LinqIcon({ className }: { className: string }) {
+export function LinqIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 24.00 24.00">
             <g id="SVGRepo_iconCarrier">
@@ -18,5 +18,3 @@ function LinqIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default LinqIcon;

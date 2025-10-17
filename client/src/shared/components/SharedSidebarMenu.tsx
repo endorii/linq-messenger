@@ -1,6 +1,6 @@
 import { BackIcon } from "../icons";
 
-function SharedSidebarMenu({
+export function SharedSidebarMenu({
     title,
     onClose,
 }: {
@@ -18,5 +18,3 @@ function SharedSidebarMenu({
         </div>
     );
 }
-
-export default SharedSidebarMenu;

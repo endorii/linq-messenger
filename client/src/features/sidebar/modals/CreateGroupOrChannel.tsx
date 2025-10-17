@@ -1,17 +1,17 @@
 "use client";
 
+import { useCreateChat } from "@/features/chats/hooks/useChats";
+import { useContacts } from "@/features/contacts/hooks/useContacts";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import CameraIcon from "@/shared/icons/CameraIcon";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
 import { Textarea } from "@/shared/components/ui/textarea";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { ChatEnum } from "@/shared/enums/enums";
+import { useEscapeKeyClose } from "@/shared/hooks";
+import { CameraIcon } from "@/shared/icons/CameraIcon";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { useCreateChat } from "@/features/chats/hooks/useChats";
-import { useContacts } from "@/features/contacts/hooks/useContacts";
-import { ChatEnum } from "@/shared/enums/enums";
 
 interface CreateProps {
     isOpen: boolean;
@@ -24,11 +24,7 @@ interface FormData {
     description?: string;
 }
 
-export default function CreateGroupOrChannel({
-    isOpen,
-    onClose,
-    type,
-}: CreateProps) {
+export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
     const {
         trigger,
         register,

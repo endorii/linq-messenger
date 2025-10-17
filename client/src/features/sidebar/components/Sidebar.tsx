@@ -1,27 +1,33 @@
 "use client";
 
-import AddContact from "../modals/AddContact";
-import CreateFolder from "../modals/CreateFolder";
-import CreateGroupOrChannel from "../modals/CreateGroupOrChannel";
-import { IUser } from "@/shared/interfaces/IUser";
 import { ChatEnum } from "@/shared/enums/enums";
-import ChatsTab from "./tabs/ChatsTab";
-import ContactsTab from "./tabs/ContactsTab";
-import ProfileTab from "./tabs/ProfileTab";
-import EditFolder from "../modals/EditFolder";
-import DeleteChat from "../modals/DeleteChat";
-import { SearchTab } from "./tabs/SearchTab";
-import MuteChat from "../modals/MuteChat";
-import AddMembersToChat from "../modals/AddMembersToChat";
+import { IUser } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useNavigationStore } from "@/store";
+import {
+    CreateFolder,
+    EditFolder,
+    CreateGroupOrChannel,
+    AddContact,
+    AddMembersToChat,
+    MuteChat,
+    DeleteChat,
+} from "../modals";
+import { ChatsTab, ContactsTab, ProfileTab, SearchTab } from "./tabs";
 
-function Sidebar({ user }: { user: IUser }) {
+export function Sidebar({ user }: { user: IUser }) {
     const { activeModal, setActiveModal } = useModalStore();
     const { selectedChat, setSelectedChat } = useSelectionStore();
     const { sidebarTab } = useNavigationStore();
 
+    const handleCloseModal = () => setActiveModal(null);
+
+    const handleCloseChatModal = () => {
+        handleCloseModal();
+        setSelectedChat(null);
+    };
+
     return (
-        <div className="relative bg-neutral-950 h-full flex flex-col">
+        <div className="relative flex flex-col h-full bg-neutral-950 ">
             {sidebarTab === "chats" && <ChatsTab user={user} />}
             {sidebarTab === "contacts" && <ContactsTab />}
             {sidebarTab === "profile" && <ProfileTab />}
@@ -29,53 +35,48 @@ function Sidebar({ user }: { user: IUser }) {
 
             <CreateFolder
                 isOpen={activeModal === "addFolder"}
-                onClose={() => setActiveModal(null)}
+                onClose={handleCloseModal}
             />
             <EditFolder
                 isOpen={activeModal === "editFolder"}
-                onClose={() => setActiveModal(null)}
+                onClose={handleCloseModal}
             />
-            <CreateGroupOrChannel
-                isOpen={activeModal === "addNewChannel"}
-                onClose={() => setActiveModal(null)}
-                type={ChatEnum.CHANNEL}
-            />
-            <CreateGroupOrChannel
-                isOpen={activeModal === "addNewGroup"}
-                onClose={() => setActiveModal(null)}
-                type={ChatEnum.GROUP}
-            />
+            {["addNewChannel", "addNewGroup"].map((modal) => (
+                <CreateGroupOrChannel
+                    key={modal}
+                    isOpen={activeModal === modal}
+                    onClose={handleCloseModal}
+                    type={
+                        modal === "addNewChannel"
+                            ? ChatEnum.CHANNEL
+                            : ChatEnum.GROUP
+                    }
+                />
+            ))}
+
             <AddContact
                 isOpen={activeModal === "addContact"}
-                onClose={() => setActiveModal(null)}
+                onClose={handleCloseModal}
             />
             <AddMembersToChat
                 isOpen={activeModal === "addMembers"}
-                onClose={() => setActiveModal(null)}
+                onClose={handleCloseModal}
             />
-            {selectedChat && (
-                <MuteChat
-                    isOpen={activeModal === "muteChat"}
-                    onClose={() => {
-                        setActiveModal(null);
-                        setSelectedChat(null);
-                    }}
-                    chat={selectedChat}
-                />
-            )}
 
             {selectedChat && (
-                <DeleteChat
-                    isOpen={activeModal === "deleteChat"}
-                    onClose={() => {
-                        setActiveModal(null);
-                        setSelectedChat(null);
-                    }}
-                    chat={selectedChat}
-                />
+                <>
+                    <MuteChat
+                        isOpen={activeModal === "muteChat"}
+                        onClose={handleCloseChatModal}
+                        chat={selectedChat}
+                    />
+                    <DeleteChat
+                        isOpen={activeModal === "deleteChat"}
+                        onClose={handleCloseChatModal}
+                        chat={selectedChat}
+                    />
+                </>
             )}
         </div>
     );
 }
-
-export default Sidebar;

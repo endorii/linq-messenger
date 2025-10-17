@@ -11,8 +11,15 @@ import {
 } from "@/shared/components/ui/context-menu";
 import { useDeleteFolder } from "@/features/folders/hooks/useFolders";
 import { useModalStore, useSelectionStore } from "@/store";
+import { FoldersListSkeleton } from "../../ui/skeletons/FoldersListSkeleton";
 
-function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
+export function SidebarChatsFolders({
+    folders,
+    isFoldersPending,
+}: {
+    folders: IFolder[];
+    isFoldersPending: boolean;
+}) {
     const { setActiveModal } = useModalStore();
     const { setSelectedFolder } = useSelectionStore();
 
@@ -21,8 +28,7 @@ function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
     return (
         <TabsList className="flex w-full overflow-x-auto overflow-y-hidden mb-[5px]">
             <TabsTrigger value="allChats">All chats</TabsTrigger>
-            {folders &&
-                folders.length > 0 &&
+            {folders && folders.length > 0 ? (
                 folders.map((folder) => (
                     <ContextMenu key={folder.id}>
                         <ContextMenuTrigger>
@@ -51,9 +57,10 @@ function SidebarChatsFolders({ folders }: { folders: IFolder[] | undefined }) {
                             </ContextMenuItem>
                         </ContextMenuContent>
                     </ContextMenu>
-                ))}
+                ))
+            ) : isFoldersPending ? (
+                <FoldersListSkeleton />
+            ) : null}
         </TabsList>
     );
 }
-
-export default SidebarChatsFolders;

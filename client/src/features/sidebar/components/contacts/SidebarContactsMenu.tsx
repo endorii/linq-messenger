@@ -4,7 +4,7 @@ import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
 import { useNavigationStore } from "@/store";
 
-function SidebarContactsMenu({
+export function SidebarContactsMenu({
     searchValue,
     setSearchValue,
 }: {
@@ -44,5 +44,3 @@ function SidebarContactsMenu({
         </div>
     );
 }
-
-export default SidebarContactsMenu;

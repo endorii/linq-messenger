@@ -1,15 +1,14 @@
 "use client";
 
-import { Button } from "@/shared/components/ui/button";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { createPortal } from "react-dom";
-import { CloseIcon } from "@/shared/icons";
-import { ChatEnum } from "@/shared/enums/enums";
 import { useProfile } from "@/features/auth/hooks/useAuth";
-import { useDeleteChat, useLeaveChat } from "@/features/chats/hooks/useChats";
-import { IChat } from "@/shared/interfaces/IChat";
-import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
+import { useLeaveChat, useDeleteChat } from "@/features/chats/hooks/useChats";
+import { Button } from "@/shared/components/ui/button";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { ChatEnum } from "@/shared/enums/enums";
+import { usePrivateChat, useEscapeKeyClose } from "@/shared/hooks";
+import { CloseIcon } from "@/shared/icons";
+import { IChat } from "@/shared/interfaces";
+import { createPortal } from "react-dom";
 
 interface DeleteChatProps {
     isOpen: boolean;
@@ -17,7 +16,7 @@ interface DeleteChatProps {
     chat: IChat;
 }
 
-export default function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
+export function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
     const { otherMember } = usePrivateChat(chat);
     const { data: me } = useProfile();
 

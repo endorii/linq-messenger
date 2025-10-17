@@ -95,6 +95,7 @@ model Chat {
     description String?
     avatar      String?
     uniqueLink  String?      @unique @map("unique_link")
+    background  String?
     type        ChatType     @default(PRIVATE)
     isActive    Boolean      @default(true)
     isDeleted   Boolean      @default(false)

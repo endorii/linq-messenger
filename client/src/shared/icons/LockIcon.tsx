@@ -1,4 +1,4 @@
-function LockIcon({ className }: { className: string }) {
+export function LockIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
             <g id="Interface / Lock">
@@ -12,5 +12,3 @@ function LockIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default LockIcon;

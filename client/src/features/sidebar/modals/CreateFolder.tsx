@@ -1,13 +1,13 @@
 "use client";
 
+import { useCreateFolder } from "@/features/folders/hooks/useFolders";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { useEscapeKeyClose } from "@/shared/hooks";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { useCreateFolder } from "../../folders/hooks/useFolders";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -18,10 +18,7 @@ interface FormData {
     folderName: string;
 }
 
-export default function CreateFolder({
-    isOpen,
-    onClose,
-}: CreateNewChannelProps) {
+export function CreateFolder({ isOpen, onClose }: CreateNewChannelProps) {
     const {
         register,
         handleSubmit,

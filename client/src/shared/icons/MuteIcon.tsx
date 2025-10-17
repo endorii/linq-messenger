@@ -1,4 +1,4 @@
-function MuteIcon({ className }: { className: string }) {
+export function MuteIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24">
             <g>
@@ -11,5 +11,3 @@ function MuteIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default MuteIcon;

@@ -1,4 +1,4 @@
-function OptionsIcon({ className }: { className: string }) {
+export function OptionsIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 16 16">
             <path d="M8 12C9.10457 12 10 12.8954 10 14C10 15.1046 9.10457 16 8 16C6.89543 16 6 15.1046 6 14C6 12.8954 6.89543 12 8 12Z" />
@@ -7,5 +7,3 @@ function OptionsIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default OptionsIcon;

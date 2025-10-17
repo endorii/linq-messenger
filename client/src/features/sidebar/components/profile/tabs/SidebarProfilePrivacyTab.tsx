@@ -1,8 +1,8 @@
+import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 import { useNavigationStore } from "@/store";
-import SidebarProfilePrivacy from "../privacy/SidebarProfilePrivacy";
-import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
+import { SidebarProfilePrivacy } from "../privacy/SidebarProfilePrivacy";
 
-function SidebarProfilePrivacyTab() {
+export function SidebarProfilePrivacyTab() {
     const { setProfileTab } = useNavigationStore();
     return (
         <>
@@ -14,5 +14,3 @@ function SidebarProfilePrivacyTab() {
         </>
     );
 }
-
-export default SidebarProfilePrivacyTab;

@@ -8,7 +8,7 @@ import {
 import { BackIcon, EditIcon, OptionsIcon } from "@/shared/icons";
 import { useNavigationStore } from "@/store";
 
-function SidebarSettingsMenu() {
+export function SidebarSettingsMenu() {
     const { setSidebarTab, setProfileTab } = useNavigationStore();
 
     const logoutUserMutation = useLogoutUser();
@@ -50,5 +50,3 @@ function SidebarSettingsMenu() {
         </div>
     );
 }
-
-export default SidebarSettingsMenu;

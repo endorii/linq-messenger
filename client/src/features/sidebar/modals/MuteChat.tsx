@@ -1,18 +1,16 @@
 "use client";
 
+import { useToggleMuteChat } from "@/features/chats-members/hooks/useChatMembers";
 import { Button } from "@/shared/components/ui/button";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { createPortal } from "react-dom";
-import { useToggleMuteChat } from "@/features/chats/hooks/useChatMembers";
-import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
 import { Label } from "@/shared/components/ui/label";
-import { useState } from "react";
-import dayjs from "dayjs";
-import { IChat } from "@/shared/interfaces/IChat";
-import { ChatEnum } from "@/shared/enums/enums";
+import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { usePrivateChat, useEscapeKeyClose } from "@/shared/hooks";
+import { IChat } from "@/shared/interfaces";
 import { useSelectionStore } from "@/store";
-import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
+import dayjs from "dayjs";
+import { useState } from "react";
+import { createPortal } from "react-dom";
 
 interface CreateNewChannelProps {
     isOpen: boolean;
@@ -31,7 +29,7 @@ const muteOptions = [
     { value: 0, label: "Mute Forever" },
 ];
 
-export default function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
+export function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
     const [selectedOption, setSelectedOption] = useState<number>(0);
     const handleClose = () => onClose();
 

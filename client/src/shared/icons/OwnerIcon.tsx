@@ -1,4 +1,4 @@
-function OwnerIcon({ className }: { className: string }) {
+export function OwnerIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24">
             <path
@@ -9,5 +9,3 @@ function OwnerIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default OwnerIcon;

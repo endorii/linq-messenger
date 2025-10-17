@@ -1,4 +1,4 @@
-const InfoIcon = ({ className }: { className: string }) => {
+export function InfoIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24">
             <g>
@@ -10,6 +10,4 @@ const InfoIcon = ({ className }: { className: string }) => {
             </g>
         </svg>
     );
-};
-
-export default InfoIcon;
+}

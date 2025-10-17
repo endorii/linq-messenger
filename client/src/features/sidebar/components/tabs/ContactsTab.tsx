@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import SidebarContacts from "../contacts/SidebarContacts";
-import SidebarContactsMenu from "../contacts/SidebarContactsMenu";
-import SidebarContactsPlus from "../contacts/SidebarContactsPlus";
+import {
+    SidebarContactsMenu,
+    SidebarContacts,
+    SidebarContactsPlus,
+} from "../contacts";
 
-function ContactsTab() {
+export function ContactsTab() {
     const [searchValue, setSearchValue] = useState("");
 
     return (
@@ -19,5 +21,3 @@ function ContactsTab() {
         </>
     );
 }
-
-export default ContactsTab;

@@ -1,4 +1,4 @@
-function MicrophoneIcon({ className }: { className: string }) {
+export function MicrophoneIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
             <path
@@ -9,5 +9,3 @@ function MicrophoneIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default MicrophoneIcon;

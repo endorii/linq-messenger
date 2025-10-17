@@ -7,7 +7,7 @@ type UseEscapeKeyCloseProps = {
     onClose: () => void;
 };
 
-const useEscapeKeyClose = ({ isOpen, onClose }: UseEscapeKeyCloseProps) => {
+export function useEscapeKeyClose({ isOpen, onClose }: UseEscapeKeyCloseProps) {
     useEffect(() => {
         const handleEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
@@ -23,6 +23,4 @@ const useEscapeKeyClose = ({ isOpen, onClose }: UseEscapeKeyCloseProps) => {
             document.removeEventListener("keydown", handleEscape);
         };
     }, [isOpen, onClose]);
-};
-
-export default useEscapeKeyClose;
+}

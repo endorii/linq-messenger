@@ -2,7 +2,7 @@ import { PlusIcon } from "@/shared/icons";
 import { useModalStore } from "@/store";
 import React from "react";
 
-function SidebarContactsPlus() {
+export function SidebarContactsPlus() {
     const { setActiveModal } = useModalStore();
     return (
         <button
@@ -13,5 +13,3 @@ function SidebarContactsPlus() {
         </button>
     );
 }
-
-export default SidebarContactsPlus;

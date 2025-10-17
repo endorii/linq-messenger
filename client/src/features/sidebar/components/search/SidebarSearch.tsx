@@ -11,7 +11,7 @@ import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useRouter } from "next/navigation";
 import { useNavigationStore } from "@/store";
 
-function SidebarSearch({ searchValue }: { searchValue: string }) {
+export function SidebarSearch({ searchValue }: { searchValue: string }) {
     const { setSidebarTab } = useNavigationStore();
     const { data: searchData, isLoading } = useGlobalSearch(searchValue);
     const { data: me } = useProfile();
@@ -186,5 +186,3 @@ function SidebarSearch({ searchValue }: { searchValue: string }) {
         </div>
     );
 }
-
-export default SidebarSearch;

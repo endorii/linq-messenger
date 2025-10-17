@@ -1,10 +1,10 @@
+import { useToggleMuteChat } from "@/features/chats-members/hooks/useChatMembers";
 import { Switch } from "@/shared/components/ui/switch";
 import { NotifcationIcon } from "@/shared/icons";
-import { IChatMember } from "@/shared/interfaces/IChatMember";
+import { IChatMember } from "@/shared/interfaces";
 import { useState } from "react";
-import { useToggleMuteChat } from "../hooks/useChatMembers";
 
-export default function NotificationSwitch({
+export function NotificationSwitch({
     chatId,
     meMember,
 }: {

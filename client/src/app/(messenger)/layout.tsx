@@ -1,16 +1,16 @@
 "use client";
 
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { Sidebar } from "@/features/sidebar/components/Sidebar";
+import {
+    ResizablePanelGroup,
+    ResizablePanel,
+    ResizableHandle,
+} from "@/shared/components/ui/resizable";
+import { useEscapeKeyNavigate } from "@/shared/hooks";
+import { LinqIcon } from "@/shared/icons";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import Sidebar from "@/features/sidebar/components/Sidebar";
-import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-} from "@/shared/components/ui/resizable";
-import { LinqIcon } from "@/shared/icons";
-import useEscapeKeyNavigate from "@/shared/hooks/useEscapeKeyNavigate";
 
 export default function MessengerLayout({
     children,
@@ -20,38 +20,47 @@ export default function MessengerLayout({
     const router = useRouter();
 
     useEscapeKeyNavigate();
-    const { data: user, isLoading } = useProfile();
+
+    const { data: me, isPending: isMePending } = useProfile();
 
     useEffect(() => {
-        if (!isLoading && !user) {
+        if (!me && !isMePending) {
             router.replace("/signin");
         }
-    }, [isLoading, user, router]);
+    }, [isMePending, me, router]);
 
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center w-screen h-screen bg-purple-gradient text-white">
-                <LinqIcon className="w-[100px] h-[100px] animate-ping" />
-            </div>
-        );
+    if (isMePending) {
+        return null;
+        // return (
+        //     <div className="flex items-center justify-center w-screen h-screen bg-purple-gradient text-white">
+        //         <LinqIcon className="w-[100px] h-[100px] animate-ping" />
+        //     </div>
+        // );
     }
 
-    if (!user) {
+    if (!me && !isMePending) {
         return null;
     }
 
     return (
-        <div className="flex w-screen h-screen bg-neutral-900 text-white">
-            <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel minSize={20} maxSize={30} defaultSize={20}>
-                    <Sidebar user={user} />
-                </ResizablePanel>
-                <ResizableHandle />
+        <div className="flex w-screen h-screen bg-neutral-900 text-white overflow-hidden">
+            <ResizablePanelGroup
+                direction="horizontal"
+                className="h-full w-full"
+            >
                 <ResizablePanel
-                    defaultSize={70}
-                    className="bg-[url('https://i.pinimg.com/736x/a4/a4/61/a4a461c572891b4bf1f2e6af3d127428.jpg')]"
+                    defaultSize={30}
+                    minSize={20}
+                    maxSize={40}
+                    className="h-full overflow-hidden border-r border-neutral-800"
                 >
-                    {children}
+                    <Sidebar user={me} />
+                </ResizablePanel>
+
+                <ResizableHandle className="bg-neutral-800 hover:bg-neutral-700 transition-colors duration-200" />
+
+                <ResizablePanel className="h-full overflow-hidden flex-1 bg-neutral-950">
+                    <div className="relative h-full w-full">{children}</div>
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

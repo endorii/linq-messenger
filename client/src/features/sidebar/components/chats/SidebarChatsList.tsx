@@ -1,18 +1,24 @@
 "use client";
 
-import { TabsContent } from "@/shared/components/ui/tabs";
-import { IFolder } from "@/shared/interfaces/IFolder";
-import SidebarChat from "./SidebarChat";
-import { useChats } from "@/features/chats/hooks/useChats";
 import { useMemo } from "react";
-import SidebarFolderTabContent from "./SidebarFolderTabContent";
+import { useChats } from "@/features/chats/hooks/useChats";
+import { IFolder } from "@/shared/interfaces";
+import { SidebarChat } from "./SidebarChat";
+import { SidebarFolderTabContent } from "./SidebarFolderTabContent";
+import { TabsContent } from "@/shared/components/ui/tabs";
+import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 
 interface SidebarChatsListProps {
-    folders: IFolder[] | undefined;
+    folders: IFolder[];
+    isFoldersPending: boolean;
     activeTab: string;
 }
 
-function SidebarChatsList({ folders, activeTab }: SidebarChatsListProps) {
+export function SidebarChatsList({
+    folders,
+    isFoldersPending,
+    activeTab,
+}: SidebarChatsListProps) {
     const { data: chats, isPending: isChatsPending } = useChats();
 
     const sortedChats = useMemo(() => {
@@ -32,9 +38,7 @@ function SidebarChatsList({ folders, activeTab }: SidebarChatsListProps) {
             <TabsContent value="allChats">
                 <div className="flex flex-col gap-[3px] w-full">
                     {isChatsPending ? (
-                        <div className="text-center text-muted-foreground py-4">
-                            Loading chats...
-                        </div>
+                        <ChatListSkeleton />
                     ) : sortedChats && sortedChats.length > 0 ? (
                         sortedChats.map((chat) => (
                             <SidebarChat
@@ -62,5 +66,3 @@ function SidebarChatsList({ folders, activeTab }: SidebarChatsListProps) {
         </div>
     );
 }
-
-export default SidebarChatsList;

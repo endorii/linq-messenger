@@ -10,7 +10,7 @@ import {
 import { useNavigationStore } from "@/store";
 import Image from "next/image";
 
-function SidebarProfile() {
+export function SidebarProfile() {
     const { data: me, isPending: isMeLoading } = useProfile();
     const { setProfileTab } = useNavigationStore();
 
@@ -113,5 +113,3 @@ function SidebarProfile() {
         </div>
     );
 }
-
-export default SidebarProfile;

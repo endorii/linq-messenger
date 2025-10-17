@@ -1,7 +1,7 @@
-function CheckIcon({ className }: { className: string }) {
+export function CheckIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
-            <g id="Interface / Check">
+            <g>
                 <path
                     d="M6 12L10.2426 16.2426L18.727 7.75732"
                     strokeLinecap="round"
@@ -11,5 +11,3 @@ function CheckIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default CheckIcon;

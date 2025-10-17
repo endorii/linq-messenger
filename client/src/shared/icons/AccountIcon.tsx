@@ -1,4 +1,4 @@
-const AccountIcon = ({ className }: { className: string }) => {
+export function AccountIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
             <g>
@@ -10,6 +10,4 @@ const AccountIcon = ({ className }: { className: string }) => {
             </g>
         </svg>
     );
-};
-
-export default AccountIcon;
+}

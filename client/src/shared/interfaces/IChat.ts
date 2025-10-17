@@ -16,6 +16,9 @@ export interface IChat {
     createdAt: string;
     updatedAt: string;
 
+    uniqueLink?: string;
+    background?: string;
+
     adminId?: string;
     admin?: IUser;
 
@@ -31,7 +34,7 @@ export interface IChat {
     privateChat?: IPrivateChatData | null;
 }
 
-interface BlockInfo {
+export interface BlockInfo {
     isBlocked: boolean;
     isBlockedByOther: boolean;
     interlocutorId: string;

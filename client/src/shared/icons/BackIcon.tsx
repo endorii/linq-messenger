@@ -1,9 +1,8 @@
-const BackIcon = ({ className }: { className: string }) => {
+export function BackIcon({ className }: { className: string }) {
     return (
         <svg viewBox="0 0 24 24" className={className}>
-            <g id="Arrow / Chevron_Left">
+            <g>
                 <path
-                    id="Vector"
                     d="M15 19L8 12L15 5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -11,6 +10,4 @@ const BackIcon = ({ className }: { className: string }) => {
             </g>
         </svg>
     );
-};
-
-export default BackIcon;
+}

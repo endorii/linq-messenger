@@ -1,7 +1,3 @@
-import React from "react";
-
-function SidebarProfilePrivacy() {
+export function SidebarProfilePrivacy() {
     return <div>SidebarProfilePrivacy</div>;
 }
-
-export default SidebarProfilePrivacy;

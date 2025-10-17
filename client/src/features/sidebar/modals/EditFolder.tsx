@@ -1,14 +1,14 @@
 "use client";
 
+import { useUpdateFolder } from "@/features/folders/hooks/useFolders";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { useEscapeKeyClose } from "@/shared/hooks";
+import { useSelectionStore } from "@/store";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { useUpdateFolder } from "../../folders/hooks/useFolders";
-import { useSelectionStore } from "@/store";
 
 //замінити скрізь
 interface CreateNewChannelProps {
@@ -20,7 +20,7 @@ interface FormData {
     folderName: string;
 }
 
-export default function EditFolder({ isOpen, onClose }: CreateNewChannelProps) {
+export function EditFolder({ isOpen, onClose }: CreateNewChannelProps) {
     const { selectedFolder, setSelectedFolder } = useSelectionStore();
 
     const {

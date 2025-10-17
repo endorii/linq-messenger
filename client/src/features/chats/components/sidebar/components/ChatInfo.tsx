@@ -1,4 +1,5 @@
 "use client";
+import { useProfile } from "@/features/auth/hooks/useAuth";
 import {
     Tabs,
     TabsContent,
@@ -6,6 +7,7 @@ import {
     TabsTrigger,
 } from "@/shared/components/ui/tabs";
 import { ChatEnum } from "@/shared/enums/enums";
+import { usePrivateChat } from "@/shared/hooks";
 import {
     AtSignIcon,
     BackIcon,
@@ -13,16 +15,15 @@ import {
     InfoIcon,
     LinkIcon,
 } from "@/shared/icons";
-import AddContactIcon from "@/shared/icons/AddContactIcon";
-import { IChat } from "@/shared/interfaces/IChat";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import OwnerIcon from "@/shared/icons/OwnerIcon";
-import NotificationSwitch from "./NotificationSwitch";
+import { AddContactIcon } from "@/shared/icons/AddContactIcon";
+import { OwnerIcon } from "@/shared/icons/OwnerIcon";
+import { IChat } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
-import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
+import { NotificationSwitch } from "../ui/NotificationSwitch";
 
-function ChatSidebarInfo({ chat }: { chat: IChat }) {
-    const { meMember, otherMember, contact, chatName } = usePrivateChat(chat);
+export function ChatInfo({ chat }: { chat: IChat }) {
+    const { isPrivate, meMember, otherMember, contact, chatName } =
+        usePrivateChat(chat);
 
     const { data: me } = useProfile();
 
@@ -30,7 +31,6 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
     const { setSelectedUser } = useSelectionStore();
     const { setChatSidebarOpened, setChatSidebarTab } = useChatSidebarStore();
 
-    const isPrivateChat = chat.type === ChatEnum.PRIVATE;
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const isAdmin = chat.adminId === me?.id;
@@ -45,6 +45,14 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
         }
     };
 
+    const handleEditContact = () => {
+        setChatSidebarTab("editContact");
+    };
+
+    const handleEditChat = () => {
+        setChatSidebarTab("editChat");
+    };
+
     return (
         <div className="flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[18px]">
@@ -53,7 +61,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         <BackIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
                     </button>
                     <div className="text-xl font-semibold text-nowrap">
-                        {isPrivateChat
+                        {isPrivate
                             ? "User information"
                             : isGroupChat
                             ? "Group information"
@@ -63,17 +71,17 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                     </div>
                 </div>
 
-                {isPrivateChat && contact ? (
-                    <button
-                        onClick={() => {
-                            setChatSidebarTab("editContact");
-                        }}
-                    >
+                {isPrivate && contact ? (
+                    <button onClick={handleEditContact}>
                         <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
                     </button>
-                ) : isPrivateChat ? (
+                ) : isPrivate ? (
                     <button onClick={handleAddContact}>
                         <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                    </button>
+                ) : !isPrivate && isAdmin ? (
+                    <button onClick={handleEditChat}>
+                        <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
                     </button>
                 ) : null}
             </div>
@@ -82,18 +90,18 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                 <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full overflow-hidden">
                     <img
                         src={
-                            isPrivateChat
+                            isPrivate
                                 ? otherMember?.user?.avatarUrl
                                 : chat.avatar
                         }
-                        alt="avatar2"
+                        alt="avatar"
                         className="rounded-full"
                     />
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">
                     <div className="text-xl font-semibold">{chatName}</div>
                     <div className="text-sm text-neutral-400">
-                        {isPrivateChat
+                        {isPrivate
                             ? "last seen recently"
                             : `${chat.members?.length || 0} members`}
                     </div>
@@ -118,7 +126,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                             <div className="text-sm text-neutral-400">Link</div>
                         </div>
                     </div>
-                ) : isPrivateChat && otherMember ? (
+                ) : isPrivate && otherMember ? (
                     <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
                         <AtSignIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
@@ -212,7 +220,7 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
                         <div className="flex flex-wrap w-full">music</div>
                     </TabsContent>
                 </Tabs>
-                {!isPrivateChat && (
+                {!isPrivate && (
                     <button
                         className="absolute bottom-4 left-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
                         onClick={() => setActiveModal("addMembers")}
@@ -224,5 +232,3 @@ function ChatSidebarInfo({ chat }: { chat: IChat }) {
         </div>
     );
 }
-
-export default ChatSidebarInfo;

@@ -1,33 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
     useCreateMessage,
     useUpdateMessage,
 } from "@/features/messages/hooks/useMessages";
 import {
     ClipIcon,
+    CloseIcon,
+    EditIcon,
+    EmojiIcon,
     MicrophoneIcon,
     SendIcon,
-    EmojiIcon,
-    EditIcon,
-    CloseIcon,
 } from "@/shared/icons";
+import { useChatInputStore } from "@/store";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import { useState, useEffect } from "react";
+import { ChatTextarea } from "./ChatTextarea";
 import {
     DropdownMenu,
-    DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
-import ChatTextarea from "./ChatTextarea";
-import { useChatInputStore } from "@/store";
 
 interface ChatSentDataProps {
     chatId: string;
 }
 
-function ChatSentData({ chatId }: ChatSentDataProps) {
+export function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
 
     const createMessageMutation = useCreateMessage();
@@ -151,5 +151,3 @@ function ChatSentData({ chatId }: ChatSentDataProps) {
         </div>
     );
 }
-
-export default ChatSentData;

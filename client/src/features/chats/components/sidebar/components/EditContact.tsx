@@ -1,30 +1,26 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
-import { Switch } from "@/shared/components/ui/switch";
 import {
-    CloseIcon,
-    NotifcationIcon,
-    PlusIcon,
-    TrashIcon,
-} from "@/shared/icons";
-import { IChat } from "@/shared/interfaces/IChat";
-import {
-    useDeleteContact,
     useUpdateContact,
+    useDeleteContact,
 } from "@/features/contacts/hooks/useContacts";
+import { Input } from "@/shared/components/ui/input";
+import { usePrivateChat } from "@/shared/hooks";
+import { CloseIcon, PlusIcon, TrashIcon } from "@/shared/icons";
+import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore } from "@/store";
-import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
-function ChatSidebarEditContact({ chat }: { chat: IChat }) {
+import { useForm } from "react-hook-form";
+import { NotificationSwitch } from "../ui/NotificationSwitch";
+
+export function EditContact({ chat }: { chat: IChat }) {
     const useUpdateContactMutation = useUpdateContact();
     const useDeleteContactMutation = useDeleteContact();
 
     const { setChatSidebarTab } = useChatSidebarStore();
 
-    const { isPrivate, otherMember, contact } = usePrivateChat(chat);
+    const { isPrivate, otherMember, contact, meMember } = usePrivateChat(chat);
 
     if (!contact) {
         setChatSidebarTab("info");
@@ -117,13 +113,9 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
 
                 <hr className="border-neutral-800" />
 
-                <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
-                    <div className="flex gap-[30px] items-center">
-                        <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
-                        <div>Notifications</div>
-                    </div>
-                    <Switch className="cursor-pointer" />
-                </div>
+                {meMember && (
+                    <NotificationSwitch chatId={chat.id} meMember={meMember} />
+                )}
 
                 <button
                     className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
@@ -138,5 +130,3 @@ function ChatSidebarEditContact({ chat }: { chat: IChat }) {
         </div>
     );
 }
-
-export default ChatSidebarEditContact;

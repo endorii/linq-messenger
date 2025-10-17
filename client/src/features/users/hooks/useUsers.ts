@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchUniqueUsername, fetchUpdateUser } from "../api/users.api";
-import { IUser } from "../interfaces/IUser";
+import { fetchUniqueUsername, fetchUpdateUser } from "@/features/users/api/users.api";
+import { IUser } from "@/shared/interfaces";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 

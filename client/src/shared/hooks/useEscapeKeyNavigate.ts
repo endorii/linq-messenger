@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-const useEscapeKeyNavigate = () => {
+export function useEscapeKeyNavigate() {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -20,6 +20,4 @@ const useEscapeKeyNavigate = () => {
             document.removeEventListener("keydown", handleEscape);
         };
     }, [router, pathname]);
-};
-
-export default useEscapeKeyNavigate;
+}

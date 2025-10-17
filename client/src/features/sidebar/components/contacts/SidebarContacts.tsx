@@ -4,7 +4,7 @@ import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
 import { useNavigationStore } from "@/store";
 
-function SidebarContacts({ searchValue }: { searchValue: string }) {
+export function SidebarContacts({ searchValue }: { searchValue: string }) {
     const { data: contacts, isPending: isContactsPending } = useContacts();
 
     const { setSidebarTab } = useNavigationStore();
@@ -81,5 +81,3 @@ function SidebarContacts({ searchValue }: { searchValue: string }) {
         </div>
     );
 }
-
-export default SidebarContacts;

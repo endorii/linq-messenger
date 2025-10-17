@@ -4,7 +4,11 @@ interface IModalWrapperProps {
     modalTitle?: string;
 }
 
-function ModalWrapper({ onClose, children, modalTitle }: IModalWrapperProps) {
+export function ModalWrapper({
+    onClose,
+    children,
+    modalTitle,
+}: IModalWrapperProps) {
     return (
         <div
             className="fixed inset-0 bg-black/80 flex items-center products-center justify-center z-50 cursor-pointer"
@@ -23,5 +27,3 @@ function ModalWrapper({ onClose, children, modalTitle }: IModalWrapperProps) {
         </div>
     );
 }
-
-export default ModalWrapper;

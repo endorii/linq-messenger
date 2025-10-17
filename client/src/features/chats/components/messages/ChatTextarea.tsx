@@ -8,13 +8,13 @@ interface ChatTextareaProps {
     onEnter: () => void;
 }
 
-function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
+export function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const resize = () => {
         const el = textareaRef.current;
         if (el) {
-            el.style.height = "40px"; // базова висота
+            el.style.height = "40px";
             const newHeight = Math.min(el.scrollHeight, 500);
             el.style.height = `${Math.max(newHeight, 40)}px`;
         }
@@ -45,5 +45,3 @@ function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
         />
     );
 }
-
-export default ChatTextarea;

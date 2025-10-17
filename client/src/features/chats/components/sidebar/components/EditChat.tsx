@@ -12,7 +12,7 @@ import {
 } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 
-import { useUpdateChat } from "../hooks/useChats";
+import { useUpdateChat } from "../../../hooks/useChats";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useModalStore, useChatSidebarStore } from "@/store";
@@ -22,7 +22,7 @@ interface FormData {
     description: string;
 }
 
-function ChatSidebarEditChat({ chat }: { chat: IChat }) {
+export function EditChat({ chat }: { chat: IChat }) {
     const useUpdateChatMutation = useUpdateChat();
     const { setActiveModal } = useModalStore();
 
@@ -124,16 +124,6 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
 
                 <hr className="border-neutral-800" />
 
-                <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
-                    <div className="flex gap-[30px] items-center">
-                        <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
-                        <div>Notifications</div>
-                    </div>
-                    <Switch className="cursor-pointer" />
-                </div>
-
-                <hr className="border-neutral-800" />
-
                 <div className="flex flex-col gap-[10px]">
                     <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
@@ -189,5 +179,3 @@ function ChatSidebarEditChat({ chat }: { chat: IChat }) {
         </div>
     );
 }
-
-export default ChatSidebarEditChat;

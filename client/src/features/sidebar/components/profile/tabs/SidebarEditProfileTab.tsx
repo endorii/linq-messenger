@@ -1,8 +1,8 @@
-import SharedSidebarMenu from "@/shared/components/SharedSidebarMenu";
-import SidebarEditProfile from "../edit/SidebarEditProfile";
+import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 import { useNavigationStore } from "@/store";
+import { SidebarEditProfile } from "../edit/SidebarEditProfile";
 
-function SidebarEditProfileTab() {
+export function SidebarEditProfileTab() {
     const { setProfileTab } = useNavigationStore();
     return (
         <>
@@ -14,5 +14,3 @@ function SidebarEditProfileTab() {
         </>
     );
 }
-
-export default SidebarEditProfileTab;

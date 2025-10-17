@@ -7,7 +7,7 @@ const languages = [
     { value: "uk", label: "Українська", description: "Ukrainian" },
 ];
 
-function SidebarProfileLanguage() {
+export function SidebarProfileLanguage() {
     const [selectedLanguage, setSelectedLanguage] = useState("en");
 
     return (
@@ -44,5 +44,3 @@ function SidebarProfileLanguage() {
         </div>
     );
 }
-
-export default SidebarProfileLanguage;

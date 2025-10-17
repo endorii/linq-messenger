@@ -1,4 +1,4 @@
-function BurgerMenuIcon({ className }: { className: string }) {
+export function BurgerMenuIcon({ className }: { className: string }) {
     return (
         <svg className={className} viewBox="0 0 24 24">
             <path
@@ -9,5 +9,3 @@ function BurgerMenuIcon({ className }: { className: string }) {
         </svg>
     );
 }
-
-export default BurgerMenuIcon;

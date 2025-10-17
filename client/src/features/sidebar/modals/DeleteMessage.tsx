@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/shared/components/ui/button";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
-import { createPortal } from "react-dom";
-import { CloseIcon } from "@/shared/icons";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import {
-    useDeleteMessage,
     useDeleteMessageForMe,
+    useDeleteMessage,
 } from "@/features/messages/hooks/useMessages";
+import { Button } from "@/shared/components/ui/button";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { useEscapeKeyClose } from "@/shared/hooks";
+import { CloseIcon } from "@/shared/icons";
 import { useSelectionStore } from "@/store";
+import { createPortal } from "react-dom";
 
 interface DeleteMessageProps {
     isOpen: boolean;
@@ -18,11 +18,7 @@ interface DeleteMessageProps {
     chatId: string;
 }
 
-export default function DeleteMessage({
-    isOpen,
-    onClose,
-    chatId,
-}: DeleteMessageProps) {
+export function DeleteMessage({ isOpen, onClose, chatId }: DeleteMessageProps) {
     const { selectedMessage } = useSelectionStore();
     const { data: me } = useProfile();
 

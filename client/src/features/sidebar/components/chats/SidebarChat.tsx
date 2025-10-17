@@ -1,5 +1,15 @@
 "use client";
 
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import {
+    useToggleMarkChat,
+    useToggleMuteChat,
+} from "@/features/chats-members/hooks/useChatMembers";
+import { useContacts } from "@/features/contacts/hooks/useContacts";
+import {
+    useAddChatToFolder,
+    useRemoveChatFromFolder,
+} from "@/features/folders/hooks/useFolders";
 import {
     ContextMenu,
     ContextMenuContent,
@@ -10,25 +20,15 @@ import {
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
 import { ChatEnum } from "@/shared/enums/enums";
-import { IChat } from "@/shared/interfaces/IChat";
-import SafeLink from "@/shared/ui/links/SafeLink";
-import formatSidebarLastMessageDateInChat from "@/shared/utils/formatSidebarLastMessageDateInChat";
-import { useParams } from "next/navigation";
-import { IFolder } from "@/shared/interfaces/IFolder";
-import {
-    useAddChatToFolder,
-    useRemoveChatFromFolder,
-} from "@/features/folders/hooks/useFolders";
-import Link from "next/link";
-import {
-    useToggleMarkChat,
-    useToggleMuteChat,
-} from "@/features/chats/hooks/useChatMembers";
 import { MuteIcon } from "@/shared/icons";
-import dayjs from "dayjs";
+import { IChat, IFolder } from "@/shared/interfaces";
+import { SafeLink } from "@/shared/ui/links/SafeLink";
+import { formatSidebarLastMessageDateInChat } from "@/shared/utils/formatSidebarLastMessageDateInChat";
 import { useModalStore, useSelectionStore } from "@/store";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import { useContacts } from "@/features/contacts/hooks/useContacts";
+
+import dayjs from "dayjs";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
 interface SidebarChatProps {
@@ -37,7 +37,7 @@ interface SidebarChatProps {
     folderId?: string;
 }
 
-function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
+export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     if (!chat) return null;
     const params = useParams();
     const chatId = params?.chatSlug;
@@ -279,5 +279,3 @@ function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
         </ContextMenu>
     );
 }
-
-export default SidebarChat;

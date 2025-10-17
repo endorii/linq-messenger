@@ -1,20 +1,20 @@
 "use client";
 
+import { useAddMembersToChat } from "@/features/chats-members/hooks/useChatMembers";
+import { useContacts } from "@/features/contacts/hooks/useContacts";
 import { Button } from "@/shared/components/ui/button";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { useEscapeKeyClose } from "@/shared/hooks";
+import { useSelectionStore } from "@/store";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { useContacts } from "@/features/contacts/hooks/useContacts";
-import { useAddMembersToChat } from "@/features/chats/hooks/useChatMembers";
-import { useSelectionStore } from "@/store";
 
 interface CreateProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-export default function AddMembersToChat({ isOpen, onClose }: CreateProps) {
+export function AddMembersToChat({ isOpen, onClose }: CreateProps) {
     const { data: contacts } = useContacts();
     const { selectedChat } = useSelectionStore();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);

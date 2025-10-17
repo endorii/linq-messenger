@@ -12,7 +12,7 @@ import {
 import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function useChats() {
     return useQuery<IChat[], Error>({
@@ -93,13 +93,19 @@ export function useUpdateChat() {
 
 export function useLeaveChat() {
     const router = useRouter();
+    const pathname = usePathname();
     const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (chatId: string) => fetchLeaveChat(chatId),
-        onSuccess: (data) => {
+        onSuccess: (data, chatId) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
-            router.push("/");
+
+            // Перевірка: якщо користувач зараз на сторінці чату
+            if (pathname === `/${chatId}`) {
+                router.push("/");
+            }
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;
@@ -110,13 +116,19 @@ export function useLeaveChat() {
 
 export function useDeleteChat() {
     const router = useRouter();
+    const pathname = usePathname();
     const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (chatId: string) => fetchDeleteChat(chatId),
-        onSuccess: (data) => {
+        onSuccess: (data, chatId) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
-            router.push("/");
+
+            // Перевірка: якщо користувач зараз на сторінці чату
+            if (pathname === `/${chatId}`) {
+                router.push("/");
+            }
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;

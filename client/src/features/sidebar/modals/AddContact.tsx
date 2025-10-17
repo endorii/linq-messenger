@@ -1,14 +1,14 @@
 "use client";
 
+import { useCreateContact } from "@/features/contacts/hooks/useContacts";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import useEscapeKeyClose from "@/shared/hooks/useEscapeKeyClose";
-import ModalWrapper from "@/shared/components/wrappers/ModalWrapper";
+import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { useEscapeKeyClose } from "@/shared/hooks";
+import { useSelectionStore } from "@/store";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
-import { useCreateContact } from "@/features/contacts/hooks/useContacts";
-import { useSelectionStore } from "@/store";
 
 interface AddContactProps {
     isOpen: boolean;
@@ -20,7 +20,7 @@ interface FormData {
     contactCustomName?: string;
 }
 
-export default function AddContact({ isOpen, onClose }: AddContactProps) {
+export function AddContact({ isOpen, onClose }: AddContactProps) {
     const { selectedUser, setSelectedUser } = useSelectionStore();
 
     const {

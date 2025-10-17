@@ -1,20 +1,22 @@
 "use client";
-import SidebarProfile from "../profile/SidebarProfile";
-import SidebarProfileMenu from "../profile/SidebarProfileMenu";
-import SidebarProfileNotificationsTab from "../profile/tabs/SidebarProfileNotificationsTab";
-import SidebarProfilePrivacyTab from "../profile/tabs/SidebarProfilePrivacyTab";
-import SidebarProfileLanguageTab from "../profile/tabs/SidebarProfileLanguageTab";
-import SidebarEditProfileTab from "../profile/tabs/SidebarEditProfileTab";
-import { useNavigationStore } from "@/store";
 
-function ProfileTab() {
+import { useNavigationStore } from "@/store";
+import { SidebarProfile } from "../profile/SidebarProfile";
+import {
+    SidebarEditProfileTab,
+    SidebarProfileNotificationsTab,
+    SidebarProfilePrivacyTab,
+    SidebarProfileLanguageTab,
+} from "../profile/tabs";
+
+export function ProfileTab() {
     const { profileTab } = useNavigationStore();
 
     return (
         <>
             {profileTab === "overview" && (
                 <>
-                    <SidebarProfileMenu />
+                    <SidebarProfile />
                     <SidebarProfile />
                 </>
             )}
@@ -28,5 +30,3 @@ function ProfileTab() {
         </>
     );
 }
-
-export default ProfileTab;
