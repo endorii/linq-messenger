@@ -95,6 +95,11 @@ export class ChatsService {
                     where: { leftAt: null },
                     include: { user: true },
                 },
+                pinnedMessages: {
+                    include: {
+                        message: true,
+                    },
+                },
             },
         });
 

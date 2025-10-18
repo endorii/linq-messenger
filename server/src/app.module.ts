@@ -10,6 +10,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { SearchModule } from './search/search.module';
 import { ChatMembersModule } from './chat-members/chat-members.module';
 import { UserBlocksModule } from './user-blocks/user-blocks.module';
+import { PinnedMessagesModule } from './pinned-messages/pinned-messages.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { UserBlocksModule } from './user-blocks/user-blocks.module';
         SearchModule,
         ChatMembersModule,
         UserBlocksModule,
+        PinnedMessagesModule,
     ],
 })
 export class AppModule {}

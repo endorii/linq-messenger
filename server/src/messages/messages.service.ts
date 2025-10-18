@@ -31,6 +31,7 @@ export class MessagesService {
                 replyTo: {
                     include: { sender: true },
                 },
+                pinnedMessages: true,
             },
         });
 
