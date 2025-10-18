@@ -39,10 +39,6 @@ function ChatSlug() {
         (isGroupOrPrivate && noMessages) ||
         (isChannel && isAdmin && noMessages);
 
-    if (shouldShowNoMessages) {
-        return <ChatEmptyWindow chatId={chatId} />;
-    }
-
     const groupedMessages = messages?.reduce<Record<string, typeof messages>>(
         (acc, msg) => {
             const dateKey = dayjs(msg.createdAt).format("YYYY-MM-DD");
@@ -63,19 +59,19 @@ function ChatSlug() {
             <div
                 className="absolute inset-0"
                 style={{
-                    backgroundImage: `url(${
-                        chat.background ||
-                        "https://cdn.pixabay.com/photo/2024/06/30/10/28/sky-8862862_1280.png"
-                    })`,
+                    backgroundImage: `url(${chat?.background || "/BG.png"})`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
-                    filter: "blur(8px)", //додати перемикач для блюру
+                    filter: "blur(0px)", // TODO: зробити перемикач для блюру
                     zIndex: 0,
                 }}
             />
 
             <div className="relative flex flex-col h-full w-full pt-[65px] z-10">
                 <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
+                    {shouldShowNoMessages && (
+                        <ChatEmptyWindow chatId={chatId} />
+                    )}
                     {groupedMessages &&
                         Object.entries(groupedMessages)
                             .reverse()

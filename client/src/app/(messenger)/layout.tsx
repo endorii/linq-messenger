@@ -8,9 +8,8 @@ import {
     ResizableHandle,
 } from "@/shared/components/ui/resizable";
 import { useEscapeKeyNavigate } from "@/shared/hooks";
-import { LinqIcon } from "@/shared/icons";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function MessengerLayout({
     children,
@@ -23,11 +22,35 @@ export default function MessengerLayout({
 
     const { data: me, isPending: isMePending } = useProfile();
 
+    const [sidebarSize, setSidebarSize] = useState({
+        default: 23,
+        min: 17,
+        max: 35,
+    });
+
     useEffect(() => {
         if (!me && !isMePending) {
             router.replace("/signin");
         }
     }, [isMePending, me, router]);
+
+    useEffect(() => {
+        function handleResize() {
+            const width = window.innerWidth;
+
+            if (width < 768) {
+                setSidebarSize({ default: 70, min: 50, max: 90 });
+            } else if (width < 1280) {
+                setSidebarSize({ default: 25, min: 20, max: 35 });
+            } else {
+                setSidebarSize({ default: 23, min: 17, max: 35 });
+            }
+        }
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     if (isMePending) {
         return null;
@@ -49,9 +72,9 @@ export default function MessengerLayout({
                 className="h-full w-full"
             >
                 <ResizablePanel
-                    defaultSize={30}
-                    minSize={20}
-                    maxSize={40}
+                    defaultSize={sidebarSize.default}
+                    minSize={sidebarSize.min}
+                    maxSize={sidebarSize.max}
                     className="h-full overflow-hidden border-r border-neutral-800"
                 >
                     <Sidebar user={me} />

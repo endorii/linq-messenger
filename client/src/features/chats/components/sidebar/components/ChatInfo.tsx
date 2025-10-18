@@ -20,6 +20,7 @@ import { OwnerIcon } from "@/shared/icons/OwnerIcon";
 import { IChat } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
+import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 
 export function ChatInfo({ chat }: { chat: IChat }) {
     const { isPrivate, meMember, otherMember, contact, chatName } =
@@ -30,13 +31,14 @@ export function ChatInfo({ chat }: { chat: IChat }) {
     const { setActiveModal } = useModalStore();
     const { setSelectedUser } = useSelectionStore();
     const { setChatSidebarOpened, setChatSidebarTab } = useChatSidebarStore();
+    const createPrivateChatMutation = useCreatePrivateChat();
 
     const isGroupChat = chat.type === ChatEnum.GROUP;
     const isChannel = chat.type === ChatEnum.CHANNEL;
     const isAdmin = chat.adminId === me?.id;
 
     const canViewMembers =
-        !isChannel || (!isChannel && chat.members.length < 50) || isAdmin;
+        !isPrivate && ((!isChannel && chat.members.length < 50) || isAdmin);
 
     const handleAddContact = () => {
         if (otherMember?.user) {
@@ -51,6 +53,10 @@ export function ChatInfo({ chat }: { chat: IChat }) {
 
     const handleEditChat = () => {
         setChatSidebarTab("editChat");
+    };
+
+    const handleOpenOrCreatePrivateChat = (otherMemberId: string) => {
+        createPrivateChatMutation.mutateAsync(otherMemberId);
     };
 
     return (
@@ -165,6 +171,11 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                                     <div
                                         key={member.userId || i}
                                         className="flex gap-[10px] p-[10px] items-center hover:bg-white/5 cursor-pointer rounded-xl"
+                                        onClick={() =>
+                                            handleOpenOrCreatePrivateChat(
+                                                member.userId
+                                            )
+                                        }
                                     >
                                         <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full overflow-hidden">
                                             <img

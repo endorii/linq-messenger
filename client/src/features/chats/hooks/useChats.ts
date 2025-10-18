@@ -45,7 +45,7 @@ export function useCreatePrivateChat() {
         mutationFn: (otherUserId: string | undefined) => fetchCreatePrivateChat(otherUserId),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
-            toast.success(data.message);
+            // toast.success(data.message);
             router.push(`/${data.data?.id}`);
         },
         onError: (error: AxiosError<any>) => {

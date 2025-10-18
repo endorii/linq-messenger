@@ -3,7 +3,6 @@
 import React from "react";
 
 export function ChatMessagesSkeleton() {
-    // Статичний список повідомлень з різним вирівнюванням і шириною
     const messages = [
         { id: 1, isMine: true, widths: [200, 150] },
         { id: 2, isMine: false, widths: [180] },
@@ -21,7 +20,7 @@ export function ChatMessagesSkeleton() {
     ];
 
     return (
-        <div className="flex flex-col h-full w-full pt-[65px] ]">
+        <div className="flex flex-col h-full w-full pt-[65px]">
             <div className="flex-1 flex flex-col-reverse gap-[10px] overflow-y-auto px-[15%] py-[20px]">
                 {messages.map((msg) => (
                     <div

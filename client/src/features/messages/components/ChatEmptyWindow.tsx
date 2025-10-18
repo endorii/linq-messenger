@@ -12,7 +12,7 @@ export function ChatEmptyWindow({ chatId }: { chatId: string }) {
     const messagesForEmptyChat = ["Hi👋", "Welcome", ":)"];
     return (
         <div className="flex w-full flex-col items-center justify-center h-full ">
-            <div className="flex flex-col p-[20px] border border-white/5 rounded-xl backdrop-blur-[5px] max-w-[300px]">
+            <div className="flex flex-col p-[20px] border border-white/5 rounded-xl backdrop-blur-[5px] max-w-[300px] bg-neutral-900">
                 <div className="font-bold text-center">
                     No messages here yet...
                 </div>

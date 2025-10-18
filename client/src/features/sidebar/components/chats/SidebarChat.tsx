@@ -61,20 +61,26 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
 
     const chatName = useMemo(() => {
         if (!isPrivate) return chat.name || "Unnamed Chat";
-        if (!otherMember) return "Private Chat";
+        // if (!otherMember) return "Private Chat";
 
         if (contacts && contacts.length > 0) {
             const contact = contacts.find(
-                (c) => c.contactId === otherMember.userId
+                (c) => c.contactId === otherMember?.userId
             );
 
-            if (contact) return contact.nickname || "Private Chat";
+            if (contact)
+                return (
+                    contact.nickname ||
+                    otherMember?.user?.firstName +
+                        " " +
+                        otherMember?.user?.lastName ||
+                    otherMember?.user?.username
+                );
         }
 
         return (
-            otherMember.user?.firstName ||
-            otherMember.user?.username ||
-            "Private Chat"
+            otherMember?.user?.firstName || otherMember?.user?.username
+            // "Private Chat"
         );
     }, [isPrivate, otherMember, contacts, chat.name]);
 

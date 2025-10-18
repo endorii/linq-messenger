@@ -6,7 +6,7 @@ import {
 } from "@/features/contacts/hooks/useContacts";
 import { Input } from "@/shared/components/ui/input";
 import { usePrivateChat } from "@/shared/hooks";
-import { CloseIcon, PlusIcon, TrashIcon } from "@/shared/icons";
+import { CheckIcon, CloseIcon, PlusIcon, TrashIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore } from "@/store";
 import { Label } from "@radix-ui/react-dropdown-menu";
@@ -106,7 +106,7 @@ export function EditContact({ chat }: { chat: IChat }) {
                             type="submit"
                             className="absolute top-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
                         >
-                            <PlusIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                            <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
                         </button>
                     )}
                 </form>

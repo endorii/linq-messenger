@@ -8,6 +8,7 @@ import {
     SidebarProfilePrivacyTab,
     SidebarProfileLanguageTab,
 } from "../profile/tabs";
+import { SidebarSettingsMenu } from "../profile/SidebarProfileMenu";
 
 export function ProfileTab() {
     const { profileTab } = useNavigationStore();
@@ -16,7 +17,7 @@ export function ProfileTab() {
         <>
             {profileTab === "overview" && (
                 <>
-                    <SidebarProfile />
+                    <SidebarSettingsMenu />
                     <SidebarProfile />
                 </>
             )}

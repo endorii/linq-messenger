@@ -269,7 +269,18 @@ export class ChatsService {
         const chat = await this.prisma.chat.findUnique({ where: { id: chatId, adminId: userId } });
         if (!chat) throw new NotFoundException("Chat not found or access denied");
 
+        const oldName = chat.name;
         await this.prisma.chat.update({ where: { id: chatId }, data: dto });
+
+        if (dto.name && dto.name !== oldName) {
+            await this.prisma.message.create({
+                data: {
+                    chatId,
+                    type: MessageType.SYSTEM,
+                    content: `Chat name changed on "${dto.name}"`,
+                },
+            });
+        }
         return { message: "Chat updated successfully" };
     }
 
