@@ -30,3 +30,4 @@ export { AtSignIcon } from "./AtSignIcon";
 export { GlobeIcon } from "./GlobeIcon";
 export { LockIcon } from "./LockIcon";
 export { MuteIcon } from "./MuteIcon";
+export { ReplyIcon } from "./ReplyIcon";

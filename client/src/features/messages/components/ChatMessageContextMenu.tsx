@@ -5,8 +5,7 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { ChatEnum } from "@/shared/enums/enums";
-import { IChatMember, IMessage, IUser } from "@/shared/interfaces";
+import { IMessage, IUser } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
@@ -24,7 +23,8 @@ export function ChatMessageContextMenu({
 }) {
     const { setActiveModal } = useModalStore();
     const { setSelectedMessage } = useSelectionStore();
-    const { setChatSentType, setMessageForEdit } = useChatInputStore();
+    const { setChatSentType, setMessageForEdit, setMessageForReply } =
+        useChatInputStore();
 
     const handleCopy = async (text: string) => {
         try {
@@ -40,24 +40,37 @@ export function ChatMessageContextMenu({
         <ContextMenu>
             <ContextMenuTrigger
                 onContextMenu={() => setSelectedMessage(msg)}
-                className={`px-[10px] py-[6px] max-w-[500px] rounded-xl wrap-anywhere ${
+                className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
                     msg.isMine
                         ? "bg-purple-gradient self-end rounded-br-none"
                         : "bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
                 <div>
-                    {msg.content}
-                    <div className="flex gap-[3px] justify-end">
-                        <div className="text-xs text-gray-400 ">
-                            {msg.createdAt !== msg.updatedAt ? (
-                                <div className="text-xs text-gray-400 text-right">
-                                    edited
-                                </div>
-                            ) : null}
+                    {msg?.replyTo && (
+                        <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
+                            <div className="font-bold text-sm">
+                                {msg?.replyTo?.sender.username}
+                            </div>
+                            <div className="text-sm">
+                                {msg?.replyTo?.content}
+                            </div>
                         </div>
-                        <div className="text-xs text-gray-400 text-right">
-                            {dayjs(msg.createdAt).format("HH:mm")}
+                    )}
+
+                    <div>
+                        {msg.content}
+                        <div className="flex gap-[3px] justify-end">
+                            <div className="text-xs text-gray-400 ">
+                                {msg.createdAt !== msg.updatedAt ? (
+                                    <div className="text-xs text-gray-400 text-right">
+                                        edited
+                                    </div>
+                                ) : null}
+                            </div>
+                            <div className="text-xs text-gray-400 text-right">
+                                {dayjs(msg.createdAt).format("HH:mm")}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,7 +103,14 @@ export function ChatMessageContextMenu({
                     </div>
                 </ContextMenuItem>
                 <ContextMenuSeparator />
-                <ContextMenuItem>Reply</ContextMenuItem>
+                <ContextMenuItem
+                    onClick={() => {
+                        setMessageForReply(msg);
+                        setChatSentType("reply");
+                    }}
+                >
+                    Reply
+                </ContextMenuItem>
                 {msg.isMine && (
                     <ContextMenuItem
                         onClick={() => {

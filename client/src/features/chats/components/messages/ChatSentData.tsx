@@ -10,6 +10,7 @@ import {
     EditIcon,
     EmojiIcon,
     MicrophoneIcon,
+    ReplyIcon,
     SendIcon,
 } from "@/shared/icons";
 import { useChatInputStore } from "@/store";
@@ -32,8 +33,14 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
 
     const createMessageMutation = useCreateMessage();
 
-    const { chatSentType, messageForEdit, setChatSentType, setMessageForEdit } =
-        useChatInputStore();
+    const {
+        chatSentType,
+        messageForEdit,
+        messageForReply,
+        setChatSentType,
+        setMessageForEdit,
+        setMessageForReply,
+    } = useChatInputStore();
 
     const updateMessageMutation = useUpdateMessage();
 
@@ -43,6 +50,13 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
         }
     }, [chatSentType, messageForEdit]);
 
+    useEffect(() => {
+        setChatSentType("sent");
+        setMessageForEdit(null);
+        setMessageForReply(null);
+        setInputValue("");
+    }, [chatId]);
+
     const handleSend = (value: string) => {
         if (!value.trim()) return;
 
@@ -51,6 +65,16 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 chatId,
                 messageId: messageForEdit.id,
                 messagePayload: { content: value },
+            });
+            setChatSentType("sent");
+            setMessageForEdit(null);
+        } else if (chatSentType === "reply" && messageForReply) {
+            createMessageMutation.mutateAsync({
+                chatId,
+                messagePayload: {
+                    content: value,
+                    replyToId: messageForReply.id,
+                },
             });
             setChatSentType("sent");
             setMessageForEdit(null);
@@ -84,15 +108,51 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
 
             <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
                 <div className="flex flex-col w-full gap-[3px]">
+                    {chatSentType === "reply" ? (
+                        <div className="flex gap-[5px] px-[10px] py-[3px] ">
+                            <ReplyIcon className="w-[30px] stroke-2 stroke-white fill-none mx-[10px]" />
+                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4">
+                                <div className="font-bold text-sm">
+                                    {messageForReply?.sender.username}
+                                </div>
+                                <div className="text-sm">
+                                    {`${messageForReply?.content.slice(
+                                        0,
+                                        100
+                                    )} ${
+                                        messageForReply?.content.length! > 100
+                                            ? "..."
+                                            : ""
+                                    }`}
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setInputValue("");
+                                    setMessageForEdit(null);
+                                    setChatSentType("sent");
+                                }}
+                            >
+                                <CloseIcon className="w-[20px] stroke-3 stroke-white fill-none mx-[10px]" />
+                            </button>
+                        </div>
+                    ) : null}
                     {chatSentType === "edit" ? (
                         <div className="flex gap-[5px] px-[10px] py-[3px] ">
                             <EditIcon className="w-[30px] stroke-2 stroke-white fill-none mx-[10px]" />
-                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 border-violet-600">
+                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4">
                                 <div className="font-bold text-sm">
                                     Edit message
                                 </div>
                                 <div className="text-sm">
-                                    {messageForEdit?.content}
+                                    {`${messageForEdit?.content.slice(
+                                        0,
+                                        100
+                                    )} ${
+                                        messageForEdit?.content.length! > 100
+                                            ? "..."
+                                            : ""
+                                    }`}
                                 </div>
                             </div>
                             <button

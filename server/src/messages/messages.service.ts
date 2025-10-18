@@ -28,6 +28,9 @@ export class MessagesService {
             orderBy: { createdAt: "asc" },
             include: {
                 sender: { select: { id: true, username: true, avatarUrl: true } },
+                replyTo: {
+                    include: { sender: true },
+                },
             },
         });
 
