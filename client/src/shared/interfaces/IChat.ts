@@ -1,5 +1,5 @@
 import { MemberRole } from "../types/types";
-import { IMessage } from "./IMessage";
+import { IMessage, IPinnedMessage } from "./IMessage";
 import { IUser } from "./IUser";
 import { ChatEnum } from "../enums/enums";
 import { IFolderChat } from "./IFolder";
@@ -24,6 +24,8 @@ export interface IChat {
 
     members: IChatMember[];
     messages: IMessage[];
+
+    pinnedMessages: IPinnedMessage[];
 
     folders: IFolderChat[];
 

@@ -31,3 +31,4 @@ export { GlobeIcon } from "./GlobeIcon";
 export { LockIcon } from "./LockIcon";
 export { MuteIcon } from "./MuteIcon";
 export { ReplyIcon } from "./ReplyIcon";
+export { PinIcon } from "./PinIcon";

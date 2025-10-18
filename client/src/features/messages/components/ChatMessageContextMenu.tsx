@@ -9,6 +9,8 @@ import { IMessage, IUser } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
+import { useTogglePinMessage } from "../hooks/usePinnedMessages";
+import { CheckIcon, MuteIcon, PinIcon } from "@/shared/icons";
 
 export function ChatMessageContextMenu({
     msg,
@@ -25,6 +27,8 @@ export function ChatMessageContextMenu({
     const { setSelectedMessage } = useSelectionStore();
     const { setChatSentType, setMessageForEdit, setMessageForReply } =
         useChatInputStore();
+
+    const togglePinMessageMutation = useTogglePinMessage();
 
     const handleCopy = async (text: string) => {
         try {
@@ -68,8 +72,16 @@ export function ChatMessageContextMenu({
                                     </div>
                                 ) : null}
                             </div>
-                            <div className="text-xs text-gray-400 text-right">
-                                {dayjs(msg.createdAt).format("HH:mm")}
+                            <div className="flex items-center gap-[3px]">
+                                {msg?.pinnedMessages &&
+                                    msg?.pinnedMessages?.length > 0 && (
+                                        <div className="text-xs text-gray-400 text-right">
+                                            <PinIcon className="w-[13px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                        </div>
+                                    )}
+                                <div className="text-xs text-gray-400 text-right">
+                                    {dayjs(msg.createdAt).format("HH:mm")}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,7 +140,18 @@ export function ChatMessageContextMenu({
                 >
                     Copy
                 </ContextMenuItem>
-                <ContextMenuItem>Pin</ContextMenuItem>
+                {
+                    <ContextMenuItem
+                        onClick={() => {
+                            togglePinMessageMutation.mutateAsync({
+                                chatId: msg.chatId,
+                                messageId: msg.id,
+                            });
+                        }}
+                    >
+                        Pin
+                    </ContextMenuItem>
+                }
                 <ContextMenuItem>Forward</ContextMenuItem>
                 <ContextMenuItem>Select</ContextMenuItem>
                 {(isPrivate || isAdmin || msg.senderId === me?.id) && (

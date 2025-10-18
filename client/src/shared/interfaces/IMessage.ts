@@ -47,7 +47,19 @@ export interface IMessage {
     reactions: IMessageReaction[];
     messagesRead: IMessageRead[];
 
+    pinnedMessages?: IPinnedMessage[];
+
     isMine: boolean;
+}
+
+export interface IPinnedMessage {
+    id: string;
+    chatId: string;
+    messageId: string;
+    createdAt: string;
+    userId: string;
+
+    message?: IMessage;
 }
 
 export interface MessagePayload {

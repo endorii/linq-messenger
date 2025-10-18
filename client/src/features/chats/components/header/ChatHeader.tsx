@@ -1,14 +1,7 @@
 "use client";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
 import { ChatEnum } from "@/shared/enums/enums";
-import { MuteIcon, OptionsIcon, PhoneIcon, SearchIcon } from "@/shared/icons";
+import { MuteIcon, PhoneIcon, PinIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useEffect } from "react";
@@ -120,7 +113,7 @@ export function ChatHeader({
                     </div>
                 </div>
             ) : (
-                <>
+                <div className="w-full flex justify-between items-center gap-[20px]">
                     <div
                         className="flex gap-[20px] w-full"
                         onClick={() => {
@@ -130,7 +123,6 @@ export function ChatHeader({
                         <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
                             <img
                                 src={
-                                    //змінити
                                     isPrivate
                                         ? otherMember?.user?.avatarUrl
                                         : chat.avatar
@@ -147,21 +139,18 @@ export function ChatHeader({
                                 )}
                             </div>
                             <div className="text-sm text-neutral-400">
-                                {
-                                    //змінити
-                                    isPrivate &&
-                                    chat.blockingInfo?.isBlockedByOther
-                                        ? "for a long time"
-                                        : isPrivate &&
-                                          chat.blockingInfo?.isBlocked
-                                        ? "blocked user"
-                                        : isPrivate
-                                        ? "last seen recently"
-                                        : `${chat.members?.length || 0} members`
-                                }
+                                {isPrivate &&
+                                chat.blockingInfo?.isBlockedByOther
+                                    ? "for a long time"
+                                    : isPrivate && chat.blockingInfo?.isBlocked
+                                    ? "blocked user"
+                                    : isPrivate
+                                    ? "last seen recently"
+                                    : `${chat.members?.length || 0} members`}
                             </div>
                         </div>
                     </div>
+
                     {chat.blockingInfo?.isBlocked && (
                         <Button
                             className="mx-[20px] bg-purple-gradient"
@@ -170,6 +159,29 @@ export function ChatHeader({
                             Unblock User
                         </Button>
                     )}
+                    {chat.pinnedMessages.length > 0 && (
+                        <div className="flex justify-between px-[15px] py-[4px] bg-white/5 w-full max-w-[250px] rounded-xl border-l-4 ">
+                            <div>
+                                <div className="font-bold text-sm">
+                                    {`Last pinned message`}
+                                </div>
+                                <div className="text-sm text-white">
+                                    {chat.pinnedMessages[0]?.message?.content.slice(
+                                        0,
+                                        20
+                                    ) +
+                                        (chat.pinnedMessages[0]?.message
+                                            ?.content.length! > 20
+                                            ? "..."
+                                            : "")}
+                                </div>
+                            </div>
+                            <button>
+                                <PinIcon className="w-[22px] stroke-neutral-300 stroke-[1] fill-neutral-300" />
+                            </button>
+                        </div>
+                    )}
+
                     <div className="flex gap-[25px]">
                         {isPrivate ? (
                             <button>
@@ -199,7 +211,7 @@ export function ChatHeader({
                             destructiveAction={destructiveAction}
                         />
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
