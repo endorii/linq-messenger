@@ -7,6 +7,7 @@ import {
 } from "../api/contacts.api";
 import { toast } from "sonner";
 import { ContactPayload, IContact } from "@/shared/interfaces/IContact";
+import { AxiosError } from "axios";
 
 export function useContacts() {
     return useQuery<IContact[], Error>({
@@ -19,8 +20,15 @@ export function useContacts() {
 export function useCreateContact() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (contactPayload: ContactPayload) => fetchAddContact(contactPayload),
-        onSuccess: (data) => {
+        mutationFn: ({
+            chatId,
+            contactPayload,
+        }: {
+            chatId: string;
+            contactPayload: ContactPayload;
+        }) => fetchAddContact(contactPayload),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
         },
@@ -50,10 +58,16 @@ export function useUpdateContact() {
 export function useDeleteContact() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (contactId: string) => fetchDeleteContact(contactId),
-        onSuccess: (data) => {
+        mutationFn: ({ chatId, contactId }: { chatId: string; contactId: string }) =>
+            fetchDeleteContact(contactId),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
     });
 }

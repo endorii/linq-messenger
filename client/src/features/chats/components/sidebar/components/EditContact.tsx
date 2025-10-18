@@ -51,12 +51,11 @@ export function EditContact({ chat }: { chat: IChat }) {
     };
 
     const handleDeleteContact = () => {
-        try {
-            useDeleteContactMutation.mutateAsync(contact.id);
-            setChatSidebarTab("info");
-        } catch (error: any) {
-            console.log(error);
-        }
+        useDeleteContactMutation.mutateAsync({
+            chatId: chat.id,
+            contactId: contact.contactId,
+        });
+        setChatSidebarTab("info");
     };
 
     return (

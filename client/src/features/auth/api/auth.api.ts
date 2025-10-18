@@ -6,28 +6,43 @@ import {
     ServerResponseWithMessage,
 } from "../interfaces/auth.interfaces";
 import { httpService } from "@/shared/api/httpService";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export async function registerUser(userData: RegisterUserDto): Promise<ServerResponseWithMessage> {
-    const { data } = await httpService.post("/auth/signup", userData);
+    const { data } = await axios.post(`${API_URL}/auth/signup`, userData, {
+        withCredentials: true,
+    });
     return data;
 }
 
 export async function loginUser(
     userData: LoginUserDto
 ): Promise<ServerResponseWithMessage<LoginResponse>> {
-    const { data } = await httpService.post(`/auth/signin`, userData);
+    const { data } = await axios.post(`${API_URL}/auth/signin`, userData, {
+        withCredentials: true,
+    });
+
     localStorage.setItem("accessToken", data.accessToken);
     return data;
 }
 
 export async function verifyUser(token: string): Promise<ServerResponseWithMessage> {
-    const { data } = await httpService.get(`/auth/verify?token=${token}`);
+    const { data } = await axios.get(`${API_URL}/auth/verify?token=${token}`, {
+        withCredentials: true,
+    });
     return data;
 }
 
 export async function resendVerifyUser(email: string): Promise<ServerResponseWithMessage> {
-    const { data } = await httpService.post("/auth/resend-verification", { email });
+    const { data } = await axios.post(
+        `${API_URL}/auth/resend-verification`,
+        { email },
+        {
+            withCredentials: true,
+        }
+    );
     return data;
 }
 
@@ -46,9 +61,7 @@ export async function refreshToken(): Promise<{ accessToken: string }> {
         const { data } = await httpService.post("/auth/refresh");
         const accessToken: string = data.accessToken;
 
-        if (!accessToken) {
-            throw new Error("No access token returned from server");
-        }
+        if (!accessToken) throw new Error("No access token returned from server");
 
         localStorage.setItem("accessToken", accessToken);
         return data;

@@ -4,6 +4,7 @@ import {
     HttpException,
     Injectable,
     NotFoundException,
+    UnauthorizedException,
 } from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import * as bcrypt from "bcryptjs";
@@ -95,6 +96,10 @@ export class AuthService {
         const existingUser = await this.userService.findByUsername(userData.username);
         if (!existingUser) throw new ConflictException("Wrong login or password");
 
+        if (!existingUser.isVerified) {
+            throw new UnauthorizedException("Verify your email before logging in");
+        }
+
         const isPasswordMatch = await bcrypt.compare(userData.password, existingUser.password);
         if (!isPasswordMatch) throw new ConflictException("Wrong login or password");
 
@@ -159,7 +164,7 @@ export class AuthService {
 
     async getProfile(userId: string) {
         const user = await this.prisma.user.findUnique({
-            where: { id: userId },
+            where: { id: userId, isVerified: true },
             include: {
                 blockedByUsers: true,
                 blockedUsers: true,

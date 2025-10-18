@@ -10,7 +10,7 @@ import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 import { useTogglePinMessage } from "../hooks/usePinnedMessages";
-import { CheckIcon, MuteIcon, PinIcon } from "@/shared/icons";
+import { PinIcon } from "@/shared/icons";
 
 export function ChatMessageContextMenu({
     msg,

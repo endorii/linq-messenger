@@ -71,9 +71,10 @@ export function SidebarProfile() {
                     unoptimized
                     className="w-[150px] h-[150px] rounded-full object-cover"
                 />
+
                 <div className="text-center">
                     <div className="text-lg font-semibold">
-                        {`${me.firstName} ${me.lastName}`}
+                        {`${me.firstName} ${me?.lastName ?? ""} `}
                     </div>
                     <div className="text-neutral-400">
                         {me.isOnline ? "Online" : "last seen recently"}
@@ -90,7 +91,7 @@ export function SidebarProfile() {
                         <Icon className="w-[30px] fill-none stroke-2 stroke-neutral-400" />
                         <div className="flex flex-col">
                             <div className="font-semibold text-base">
-                                {value}
+                                {value ?? "-"}
                             </div>
                             <div className="text-neutral-400">{label}</div>
                         </div>

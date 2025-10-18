@@ -13,7 +13,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
     if (isContactsPending) return <div>Завантаження...</div>;
     if (!contacts || contacts.length === 0)
         return (
-            <div className="flex justify-center p-[10px] bg-neutral-900 mt-[10px] font-medium">
+            <div className="text-center text-muted-foreground py-4">
                 No contacts
             </div>
         );
