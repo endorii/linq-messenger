@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { ChatMessageContextMenu } from "./ChatMessageContextMenu";
-import { IMessage, IUser } from "@/shared/interfaces";
+import { IUser } from "@/shared/interfaces";
+import { PinnedChatMessageContextMenu } from "./PinnedChatMessageContextMenu";
+import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 
-export function ChatMessage({
+export function PinnedChatMessage({
     msg,
     isSameSenderAsPrev,
     isSameSenderAsNext,
@@ -13,7 +14,7 @@ export function ChatMessage({
     avatarUrl,
     username,
 }: {
-    msg: IMessage;
+    msg: IPinnedMessage;
     isSameSenderAsPrev: boolean;
     isSameSenderAsNext: boolean;
     me: IUser | undefined;
@@ -34,7 +35,7 @@ export function ChatMessage({
                     msg.isMine ? "items-end" : "items-start"
                 } relative`}
             >
-                <ChatMessageContextMenu
+                <PinnedChatMessageContextMenu
                     msg={msg}
                     isPrivate={isPrivate}
                     isAdmin={isAdmin}

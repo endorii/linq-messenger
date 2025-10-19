@@ -8,16 +8,21 @@ import { useEffect } from "react";
 import { useToggleMuteChat } from "../../../chats-members/hooks/useChatMembers";
 import { Button } from "@/shared/components/ui/button";
 import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
-import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
+import {
+    useChatSidebarStore,
+    useModalStore,
+    useNavigationStore,
+    useSelectionStore,
+} from "@/store";
 import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 import { ChatHeaderDropdownMenu } from "./components/ChatHeaderDropdownMenu";
 
 export function ChatHeader({
     chat,
-    isChatLoading,
+    isChatPending,
 }: {
     chat: IChat;
-    isChatLoading: boolean;
+    isChatPending: boolean;
 }) {
     const { data: me } = useProfile();
     const toggleMuteChatMutation = useToggleMuteChat();
@@ -30,6 +35,8 @@ export function ChatHeader({
         setChatSidebarOpened,
         setChatSidebarTab,
     } = useChatSidebarStore();
+
+    const { setChatView } = useNavigationStore();
 
     const { isPrivate, meMember, otherMember, chatName } = usePrivateChat(chat);
 
@@ -65,6 +72,10 @@ export function ChatHeader({
         }
     };
 
+    const handleSetChatView = (view: "pinned" | "messages") => {
+        setChatView(view);
+    };
+
     const contactActionLabel = chat.privateChat?.contact
         ? "Edit contact"
         : "Add contact";
@@ -97,7 +108,7 @@ export function ChatHeader({
 
     return (
         <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
-            {isChatLoading ? (
+            {isChatPending ? (
                 <div
                     className="flex gap-[20px] w-full"
                     onClick={() => {
@@ -160,25 +171,35 @@ export function ChatHeader({
                         </Button>
                     )}
                     {chat.pinnedMessages.length > 0 && (
-                        <div className="flex justify-between px-[15px] py-[4px] bg-white/5 w-full max-w-[250px] rounded-xl border-l-4 ">
+                        <div className="flex justify-between items-center px-[15px] py-[4px] bg-white/5 w-full max-w-[250px] rounded-xl border-l-4 ">
                             <div>
                                 <div className="font-bold text-sm">
                                     {`Last pinned message`}
                                 </div>
                                 <div className="text-sm text-white">
-                                    {chat.pinnedMessages[0]?.message?.content.slice(
-                                        0,
-                                        20
-                                    ) +
-                                        (chat.pinnedMessages[0]?.message
-                                            ?.content.length! > 20
+                                    {chat.pinnedMessages[
+                                        chat.pinnedMessages.length - 1
+                                    ]?.message?.content.slice(0, 20) +
+                                        (chat.pinnedMessages[
+                                            chat.pinnedMessages.length - 1
+                                        ]?.message?.content.length! > 20
                                             ? "..."
                                             : "")}
                                 </div>
                             </div>
-                            <button>
-                                <PinIcon className="w-[22px] stroke-neutral-300 stroke-[1] fill-neutral-300" />
-                            </button>
+                            <div className="relative flex group ">
+                                <button
+                                    className="group-hover:bg-white/5 p-[9px] rounded-full"
+                                    onClick={() => handleSetChatView("pinned")}
+                                >
+                                    <PinIcon className="w-[22px] stroke-neutral-300 stroke-[1] fill-neutral-300" />
+                                </button>
+                                {chat.pinnedMessages.length > 1 && (
+                                    <div className="absolute top-[0px] right-[-2px] bg-purple-gradient rounded-full text-center text-xs w-[17px] h-[17px]">
+                                        {chat.pinnedMessages.length}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
 

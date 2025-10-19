@@ -59,7 +59,8 @@ export interface IPinnedMessage {
     createdAt: string;
     userId: string;
 
-    message?: IMessage;
+    message: IMessage;
+    isMine: boolean;
 }
 
 export interface MessagePayload {

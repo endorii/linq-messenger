@@ -1,4 +1,4 @@
-import { Chat, ChatMember, Contact } from "generated/prisma";
+import { Chat, ChatMember, Contact, PinnedMessage } from "generated/prisma";
 
 export interface IPrivateChatData {
     meMember: ChatMember;
@@ -13,6 +13,7 @@ export interface IBlockingInfo {
 }
 
 export interface IEnrichedChat extends Chat {
+    pinnedMessages: PinnedMessage[];
     privateChat: IPrivateChatData | null;
     blockingInfo: IBlockingInfo;
 }

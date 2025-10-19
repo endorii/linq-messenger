@@ -5,32 +5,37 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { IMessage, IUser } from "@/shared/interfaces";
-import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
+import { IUser } from "@/shared/interfaces";
+import {
+    useModalStore,
+    useSelectionStore,
+    useChatInputStore,
+    useNavigationStore,
+} from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
-
-import { PinIcon } from "@/shared/icons";
 import {
     useCreatePinMessage,
     useDeletePinnedMessage,
 } from "../hooks/usePinnedMessages";
+import { PinIcon } from "@/shared/icons";
+import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 
-export function ChatMessageContextMenu({
+export function PinnedChatMessageContextMenu({
     msg,
     isPrivate,
     isAdmin,
     me,
 }: {
-    msg: IMessage;
+    msg: IPinnedMessage;
     isPrivate: boolean;
     isAdmin: boolean;
     me: IUser | undefined;
 }) {
     const { setActiveModal } = useModalStore();
     const { setSelectedMessage } = useSelectionStore();
-    const { setChatSentType, setMessageForEdit, setMessageForReply } =
-        useChatInputStore();
+    const { setChatSentType, setMessageForEdit } = useChatInputStore();
+    const { setChatView } = useNavigationStore();
 
     const createPinMessageMutation = useCreatePinMessage();
     const deletePinnedMessageMutation = useDeletePinnedMessage();
@@ -46,28 +51,24 @@ export function ChatMessageContextMenu({
     };
 
     const handleEdit = () => {
-        setMessageForEdit(msg);
-        setChatSentType("edit");
-    };
-
-    const handleReply = () => {
-        setMessageForReply(msg);
-        setChatSentType("reply");
+        setChatView("messages");
+        Promise.resolve().then(() => {
+            setMessageForEdit(msg.message);
+            setChatSentType("edit");
+        });
     };
 
     const handlePin = () => {
         createPinMessageMutation.mutateAsync({
-            chatId: msg.chatId,
-            messageId: msg.id,
+            chatId: msg.message.chatId,
+            messageId: msg.message.id,
         });
     };
 
     const handleUnpin = () => {
-        if (!msg.pinnedMessages || msg.pinnedMessages.length < 0) return;
-
         deletePinnedMessageMutation.mutateAsync({
-            chatId: msg.chatId,
-            messageId: msg.pinnedMessages[0].id,
+            chatId: msg.message.chatId,
+            messageId: msg.id,
         });
     };
 
@@ -78,7 +79,7 @@ export function ChatMessageContextMenu({
     return (
         <ContextMenu>
             <ContextMenuTrigger
-                onContextMenu={() => setSelectedMessage(msg)}
+                onContextMenu={() => setSelectedMessage(msg.message)}
                 className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
                     msg.isMine
                         ? "bg-purple-gradient self-end rounded-br-none"
@@ -86,30 +87,31 @@ export function ChatMessageContextMenu({
                 }`}
             >
                 <div>
-                    {msg?.replyTo && (
+                    {msg.message.replyTo && (
                         <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
                             <div className="font-bold text-sm">
-                                {msg?.replyTo?.sender.username}
+                                {msg.message.replyTo.sender.username}
                             </div>
                             <div className="text-sm">
-                                {msg?.replyTo?.content}
+                                {msg.message.replyTo.content}
                             </div>
                         </div>
                     )}
 
                     <div>
-                        {msg.content}
+                        {msg.message.content}
                         <div className="flex gap-[3px] justify-end">
                             <div className="text-xs text-gray-400 ">
-                                {msg.createdAt !== msg.updatedAt ? (
+                                {msg.message.createdAt !==
+                                msg.message.updatedAt ? (
                                     <div className="text-xs text-gray-400 text-right">
                                         edited
                                     </div>
                                 ) : null}
                             </div>
                             <div className="flex items-center gap-[3px]">
-                                {msg?.pinnedMessages &&
-                                    msg?.pinnedMessages?.length > 0 && (
+                                {msg.message.pinnedMessages &&
+                                    msg.message.pinnedMessages.length > 0 && (
                                         <div className="text-xs text-gray-400 text-right">
                                             <PinIcon className="w-[13px] fill-neutral-400 stroke-1 stroke-neutral-400" />
                                         </div>
@@ -150,19 +152,19 @@ export function ChatMessageContextMenu({
                     </div>
                 </ContextMenuItem>
                 <ContextMenuSeparator />
-                <ContextMenuItem onClick={handleReply}>Reply</ContextMenuItem>
                 {msg.isMine && (
                     <ContextMenuItem onClick={handleEdit}>Edit</ContextMenuItem>
                 )}
+
                 <ContextMenuItem
                     onClick={() => {
-                        handleCopy(msg.content);
+                        handleCopy(msg.message.content);
                     }}
                 >
                     Copy
                 </ContextMenuItem>
-                {msg.pinnedMessages &&
-                msg.pinnedMessages?.length > 0 &&
+                {msg.message.pinnedMessages &&
+                msg.message.pinnedMessages?.length > 0 &&
                 (isAdmin || isPrivate) ? (
                     <ContextMenuItem
                         variant="destructive"
@@ -173,9 +175,8 @@ export function ChatMessageContextMenu({
                 ) : (
                     <ContextMenuItem onClick={handlePin}>Pin</ContextMenuItem>
                 )}
-                <ContextMenuItem>Forward</ContextMenuItem>
-                <ContextMenuItem>Select</ContextMenuItem>
-                {(isPrivate || isAdmin || msg.senderId === me?.id) && (
+
+                {(isPrivate || isAdmin || msg.message.senderId === me?.id) && (
                     <ContextMenuItem
                         variant="destructive"
                         onClick={handleDelete}

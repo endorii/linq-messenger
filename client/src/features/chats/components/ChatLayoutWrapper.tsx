@@ -1,16 +1,12 @@
 "use client";
 
-import { ChatHeader } from "@/features/chats/components/header/ChatHeader";
-import { ChatMessages } from "@/features/chats/components/messages";
-import { ChatSidebar } from "@/features/chats/components/sidebar/ChatSidebar";
-
 import { useChat } from "@/features/chats/hooks/useChats";
 import { DeleteMessage } from "@/features/sidebar/modals";
-import { useSelectionStore, useModalStore } from "@/store";
+import { useSelectionStore, useModalStore, useNavigationStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { ChatHeaderSkeleton } from "./skeletons/ChatHeaderSkeleton";
-import { ChatMessagesSkeleton } from "./skeletons/ChatMessagesSkeleton";
+import { ChatMessagesWrapper } from "./ChatMessagesWrapper";
+import { ChatPinnedMessagesWrapper } from "./ChatPinnedMessagesWrapper";
 
 export function ChatLayoutWrapper({
     children,
@@ -21,13 +17,20 @@ export function ChatLayoutWrapper({
 }) {
     const router = useRouter();
 
-    const { data: chat, isLoading: isChatLoading } = useChat(chatSlug);
+    const { data: chat, isPending: isChatPending } = useChat(chatSlug);
 
     const { setSelectedChat, setSelectedMessage } = useSelectionStore();
     const { activeModal, setActiveModal } = useModalStore();
+    const { chatView } = useNavigationStore();
+
+    const { setChatView } = useNavigationStore();
 
     useEffect(() => {
-        if (!chat && !isChatLoading) {
+        setChatView("messages");
+    }, [chatSlug]);
+
+    useEffect(() => {
+        if (!chat && !isChatPending) {
             router.push("/");
             return;
         }
@@ -35,35 +38,44 @@ export function ChatLayoutWrapper({
         if (chat) {
             setSelectedChat(chat);
         }
-    }, [chat, router, setSelectedChat, isChatLoading]);
+    }, [chat, router, setSelectedChat, isChatPending]);
 
     return (
-        <div className="flex w-full h-[100vh]">
-            <div className="flex-1 relative overflow-hidden">
-                {isChatLoading || !chat ? (
-                    <ChatHeaderSkeleton />
-                ) : (
-                    <ChatHeader chat={chat} isChatLoading={isChatLoading} />
-                )}
-
-                {isChatLoading || !chat ? (
-                    <ChatMessagesSkeleton />
-                ) : (
-                    <ChatMessages chat={chat}>{children}</ChatMessages>
-                )}
-            </div>
-
-            {chat && <ChatSidebar chat={chat} />}
-
+        <div className="flex w-full h-[100vh] relative">
+            <div
+                className="absolute inset-0"
+                style={{
+                    backgroundImage: `url(${chat?.background || "/BG.png"})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    filter: "blur(0px)", // TODO: зробити перемикач для блюру
+                    zIndex: 0,
+                }}
+            />
             {chat && (
-                <DeleteMessage
-                    isOpen={activeModal === "deleteMessage"}
-                    onClose={() => {
-                        setActiveModal(null);
-                        setSelectedMessage(null);
-                    }}
-                    chatId={chat.id}
-                />
+                <>
+                    {chatView === "messages" ? (
+                        <ChatMessagesWrapper
+                            chat={chat}
+                            isChatPending={isChatPending}
+                        >
+                            {children}
+                        </ChatMessagesWrapper>
+                    ) : chatView === "pinned" ? (
+                        <ChatPinnedMessagesWrapper chat={chat} />
+                    ) : null}
+
+                    {chat && (
+                        <DeleteMessage
+                            isOpen={activeModal === "deleteMessage"}
+                            onClose={() => {
+                                setActiveModal(null);
+                                setSelectedMessage(null);
+                            }}
+                            chatId={chat.id}
+                        />
+                    )}
+                </>
             )}
         </div>
     );

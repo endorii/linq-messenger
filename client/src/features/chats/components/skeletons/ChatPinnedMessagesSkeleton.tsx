@@ -1,6 +1,6 @@
 "use client";
 
-export function ChatMessagesSkeleton() {
+export function ChatPinnedMessagesSkeleton() {
     const messages = [
         { id: 1, isMine: true, widths: [200, 150] },
         { id: 2, isMine: false, widths: [180] },
@@ -58,10 +58,8 @@ export function ChatMessagesSkeleton() {
                 ))}
             </div>
 
-            <div className="w-full px-[15%] py-[15px] flex items-end gap-[10px] bg-transparent">
-                <div className="w-12 h-12 bg-neutral-800 rounded-xl animate-pulse flex-shrink-0" />
-                <div className="flex-1 flex flex-col gap-2 p-3 bg-neutral-900 rounded-xl animate-pulse min-h-[48px]"></div>
-                <div className="w-12 h-12 bg-neutral-800 rounded-full animate-pulse flex-shrink-0" />
+            <div className="w-full px-[15%] py-[15px] flex justify-center gap-[10px] bg-transparent">
+                <div className="w-[195px] h-[54px] bg-neutral-800 rounded-xl animate-pulse flex-shrink-0" />
             </div>
         </div>
     );

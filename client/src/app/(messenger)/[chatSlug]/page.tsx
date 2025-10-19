@@ -56,17 +56,6 @@ function ChatSlug() {
 
     return (
         <div className="flex flex-col h-full w-full relative">
-            <div
-                className="absolute inset-0"
-                style={{
-                    backgroundImage: `url(${chat?.background || "/BG.png"})`,
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    filter: "blur(0px)", // TODO: зробити перемикач для блюру
-                    zIndex: 0,
-                }}
-            />
-
             <div className="relative flex flex-col h-full w-full pt-[65px] z-10">
                 <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
                     {shouldShowNoMessages && (
@@ -120,7 +109,7 @@ function ChatSlug() {
                                                 isSameSenderAsNext={
                                                     isSameSenderAsNext
                                                 }
-                                                isChannel={false}
+                                                isGroup={isGroup}
                                                 avatarUrl={avatarUrl}
                                                 username={username}
                                                 me={me}

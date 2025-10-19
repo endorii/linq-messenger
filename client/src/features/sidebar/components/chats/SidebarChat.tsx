@@ -61,27 +61,25 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
 
     const chatName = useMemo(() => {
         if (!isPrivate) return chat.name || "Unnamed Chat";
-        // if (!otherMember) return "Private Chat";
 
-        if (contacts && contacts.length > 0) {
-            const contact = contacts.find(
-                (c) => c.contactId === otherMember?.userId
-            );
+        const user = otherMember?.user;
+        if (!user) return "Private Chat";
 
-            if (contact)
-                return (
-                    contact.nickname ||
-                    otherMember?.user?.firstName +
-                        " " +
-                        otherMember?.user?.lastName ||
-                    otherMember?.user?.username
-                );
+        const contact = contacts?.find(
+            (c) => c.contactId === otherMember?.userId
+        );
+
+        if (contact) {
+            const fullName = [user.firstName, user.lastName]
+                .filter(Boolean)
+                .join(" ");
+            return contact.nickname || fullName || user.username;
         }
 
-        return (
-            otherMember?.user?.firstName || otherMember?.user?.username
-            // "Private Chat"
-        );
+        const fullName = [user.firstName, user.lastName]
+            .filter(Boolean)
+            .join(" ");
+        return fullName || user.username;
     }, [isPrivate, otherMember, contacts, chat.name]);
 
     const handleDeleteModal = () => setActiveModal("deleteChat");

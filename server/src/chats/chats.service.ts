@@ -97,7 +97,11 @@ export class ChatsService {
                 },
                 pinnedMessages: {
                     include: {
-                        message: true,
+                        message: {
+                            include: {
+                                pinnedMessages: true,
+                            },
+                        },
                     },
                 },
             },
@@ -105,12 +109,21 @@ export class ChatsService {
 
         if (!chat) throw new NotFoundException("Chat not found or access denied");
 
+        const enrichedPinnedMessages = chat.pinnedMessages.map((pm) => ({
+            ...pm,
+            message: {
+                ...pm.message,
+                isMine: pm.message.senderId === userId,
+            },
+        }));
+
         const meMember = chat.members.find((m) => m.userId === userId) || null;
         const otherMembers = chat.members.filter((m) => m.userId !== userId);
         const otherMember = otherMembers[0] || null;
 
         const enrichedChat: IEnrichedChat = {
             ...chat,
+            pinnedMessages: enrichedPinnedMessages,
             privateChat: null,
             blockingInfo: {
                 isBlocked: false,
