@@ -53,7 +53,7 @@ export const ModalChatItem = ({
             }`}
             onClick={() => onSelect(chat.id)}
         >
-            <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
+            <div className="w-[45px] h-[45px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                 <img
                     src={isPrivate ? otherMember?.user?.avatarUrl : chat.avatar}
                     alt="avatar"
@@ -61,15 +61,21 @@ export const ModalChatItem = ({
                 />
             </div>
 
-            <div className="flex flex-col justify-between flex-1 min-w-0">
+            <div className="flex flex-col justify-center flex-1 min-w-0">
                 <div className="flex justify-between gap-[5px]">
                     <div className="flex gap-[5px] font-semibold truncate items-center">
                         <div className="truncate">{chatName}</div>
                     </div>
                 </div>
 
-                <div className="flex gap-[10px] items-center justify-between">
-                    <div>123</div>
+                <div className="text-sm text-neutral-400">
+                    {isPrivate && chat.blockingInfo?.isBlockedByOther
+                        ? "for a long time"
+                        : isPrivate && chat.blockingInfo?.isBlocked
+                        ? "blocked user"
+                        : isPrivate
+                        ? "last seen recently"
+                        : `${chat.members?.length || 0} members`}
                 </div>
             </div>
         </div>

@@ -25,8 +25,8 @@ export function ChatMessage({
 }) {
     return (
         <div
-            className={`flex ${msg.isMine ? "justify-end" : "justify-start"} ${
-                !isSameSenderAsPrev ? "mt-3" : ""
+            className={`flex items-center gap-[20px] w-full ${
+                msg.isMine ? "justify-end" : "justify-start"
             }`}
         >
             <div

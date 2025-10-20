@@ -10,10 +10,15 @@ interface SelectionState {
     selectedChat: IChat | null;
     selectedUser: IUser | null;
     selectedMessage: IMessage | null;
+    selectedMessages: string[];
+
     setSelectedFolder: (folder: IFolder | null) => void;
     setSelectedChat: (chat: IChat | null) => void;
     setSelectedUser: (user: IUser | null) => void;
     setSelectedMessage: (message: IMessage | null) => void;
+
+    toggleSelectedMessage: (messageId: string) => void;
+    clearSelectedMessages: () => void;
 }
 
 export const useSelectionStore = create<SelectionState>()(
@@ -23,10 +28,26 @@ export const useSelectionStore = create<SelectionState>()(
             selectedChat: null,
             selectedUser: null,
             selectedMessage: null,
+            selectedMessages: [],
+
             setSelectedFolder: (folder) => set({ selectedFolder: folder }),
-            setSelectedChat: (chat) => set({ selectedChat: chat }),
+            setSelectedChat: (chat) => {
+                set({ selectedChat: chat, selectedMessages: [] });
+            },
             setSelectedUser: (user) => set({ selectedUser: user }),
             setSelectedMessage: (message) => set({ selectedMessage: message }),
+
+            toggleSelectedMessage: (messageId) =>
+                set((state) => {
+                    const exists = state.selectedMessages.includes(messageId);
+                    return {
+                        selectedMessages: exists
+                            ? state.selectedMessages.filter((id) => id !== messageId)
+                            : [...state.selectedMessages, messageId],
+                    };
+                }),
+
+            clearSelectedMessages: () => set({ selectedMessages: [] }),
         }),
         { name: "SelectionStore" }
     )

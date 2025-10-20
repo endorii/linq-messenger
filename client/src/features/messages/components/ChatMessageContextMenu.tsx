@@ -32,6 +32,8 @@ export function ChatMessageContextMenu({
     const { setChatSentType, setMessageForEdit, setMessageForReply } =
         useChatInputStore();
 
+    const { toggleSelectedMessage } = useSelectionStore();
+
     const createPinMessageMutation = useCreatePinMessage();
     const deletePinnedMessageMutation = useDeletePinnedMessage();
 
@@ -78,6 +80,10 @@ export function ChatMessageContextMenu({
 
     const handleDelete = () => {
         setActiveModal("deleteMessage");
+    };
+
+    const handleSelect = (msgId: string) => {
+        toggleSelectedMessage(msgId);
     };
 
     return (
@@ -205,7 +211,9 @@ export function ChatMessageContextMenu({
                 <ContextMenuItem onClick={handleForward}>
                     Forward
                 </ContextMenuItem>
-                <ContextMenuItem>Select</ContextMenuItem>
+                <ContextMenuItem onClick={() => handleSelect(msg.id)}>
+                    Select
+                </ContextMenuItem>
                 {(isPrivate || isAdmin || msg.senderId === me?.id) && (
                     <ContextMenuItem
                         variant="destructive"

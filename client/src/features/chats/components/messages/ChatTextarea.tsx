@@ -1,5 +1,6 @@
 "use client";
 
+import { useChatInputStore } from "@/store";
 import { useRef, useEffect } from "react";
 
 interface ChatTextareaProps {
@@ -10,6 +11,21 @@ interface ChatTextareaProps {
 
 export function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const { chatSentType } = useChatInputStore();
+
+    useEffect(() => {
+        if (chatSentType === "reply" || chatSentType === "edit") {
+            const timer = setTimeout(() => {
+                textareaRef.current?.focus();
+                if (textareaRef.current) {
+                    textareaRef.current.selectionStart =
+                        textareaRef.current.value.length;
+                }
+            }, 100);
+
+            return () => clearTimeout(timer);
+        }
+    }, [chatSentType]);
 
     const resize = () => {
         const el = textareaRef.current;

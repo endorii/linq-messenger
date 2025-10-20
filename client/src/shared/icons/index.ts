@@ -32,3 +32,4 @@ export { LockIcon } from "./LockIcon";
 export { MuteIcon } from "./MuteIcon";
 export { ReplyIcon } from "./ReplyIcon";
 export { PinIcon } from "./PinIcon";
+export { CopyIcon } from "./CopyIcon";

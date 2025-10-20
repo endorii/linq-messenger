@@ -55,7 +55,7 @@ export function ForwardMessageModal({ isOpen, onClose }: CreateProps) {
     const modalContent = (
         <ModalWrapper onClose={handleClose} modalTitle="Forward Message">
             <div className="flex flex-col gap-[15px]">
-                <div className="flex flex-col gap-[15px]">
+                <div className="flex flex-col gap-[5px]">
                     {!chats || chats.length === 0 ? (
                         <div className="text-neutral-400">No chats found</div>
                     ) : (

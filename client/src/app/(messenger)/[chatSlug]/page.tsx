@@ -2,17 +2,21 @@
 
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { ChatSentData } from "@/features/chats/components/messages";
+import { ChatSelectedMessagesPanel } from "@/features/chats/components/messages/ChatSelectedMessagesPanel";
 import { ChatMessagesSkeleton } from "@/features/chats/components/skeletons/ChatMessagesSkeleton";
 import { useChat } from "@/features/chats/hooks/useChats";
 import { ChatEmptyWindow } from "@/features/messages/components/ChatEmptyWindow";
 import { ChatMessage } from "@/features/messages/components/ChatMessage";
 import { ChatMessageSystem } from "@/features/messages/components/ChatMessageSystem";
 import { useMessages } from "@/features/messages/hooks/useMessages";
+import { Checkbox } from "@/shared/components/ui/checkbox";
 import { ChatEnum } from "@/shared/enums/enums";
 import { usePrivateChat } from "@/shared/hooks";
+import { useSelectionStore } from "@/store";
 
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 function ChatSlug() {
     const { chatSlug: chatId } = useParams<{ chatSlug: string }>();
@@ -21,8 +25,19 @@ function ChatSlug() {
         useMessages(chatId);
 
     const { data: me, isPending: isMePending } = useProfile();
+    const {
+        selectedMessages,
+        toggleSelectedMessage,
+        clearSelectedMessages,
+        setSelectedMessage,
+    } = useSelectionStore();
 
     if (!chat) return null;
+
+    useEffect(() => {
+        clearSelectedMessages();
+        setSelectedMessage(null);
+    }, [chatId, clearSelectedMessages]);
 
     const { isPrivate, meMember } = usePrivateChat(chat);
     const isGroup = chat?.type === ChatEnum.GROUP;
@@ -50,58 +65,90 @@ function ChatSlug() {
     );
 
     const canSendMessages =
-        (chat.type === ChatEnum.PRIVATE && !chat.blockingInfo?.isBlocked) ||
+        (selectedMessages.length <= 0 &&
+            chat.type === ChatEnum.PRIVATE &&
+            !chat.blockingInfo?.isBlocked) ||
         (chat.type === ChatEnum.CHANNEL && isAdmin) ||
         chat.type === ChatEnum.GROUP;
 
     return (
         <div className="flex flex-col h-full w-full relative">
-            <div className="relative flex flex-col h-full w-full pt-[65px] z-10">
-                <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
-                    {shouldShowNoMessages && (
-                        <ChatEmptyWindow chatId={chatId} />
-                    )}
-                    {groupedMessages &&
-                        Object.entries(groupedMessages)
-                            .reverse()
-                            .map(([date, msgs]) => (
-                                <div
-                                    key={date}
-                                    className="flex flex-col gap-[5px]"
-                                >
-                                    <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
-                                        {dayjs(date).format("D MMMM")}
-                                    </div>
-                                    {msgs.map((msg, i) => {
-                                        const prevMsg = msgs[i - 1];
-                                        const nextMsg = msgs[i + 1];
+            <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
+                {shouldShowNoMessages && <ChatEmptyWindow chatId={chatId} />}
+                {groupedMessages &&
+                    Object.entries(groupedMessages)
+                        .reverse()
+                        .map(([date, msgs]) => (
+                            <div key={date} className="flex flex-col gap-[5px]">
+                                <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                    {dayjs(date).format("D MMMM")}
+                                </div>
+                                {msgs.map((msg, i) => {
+                                    const prevMsg = msgs[i - 1];
+                                    const nextMsg = msgs[i + 1];
 
-                                        const isSameSenderAsPrev =
-                                            prevMsg &&
-                                            prevMsg.sender?.id ===
-                                                msg.sender?.id;
-                                        const isSameSenderAsNext =
-                                            nextMsg &&
-                                            nextMsg.sender?.id ===
-                                                msg.sender?.id;
+                                    const isSameSenderAsPrev =
+                                        prevMsg &&
+                                        prevMsg.sender?.id === msg.sender?.id;
+                                    const isSameSenderAsNext =
+                                        nextMsg &&
+                                        nextMsg.sender?.id === msg.sender?.id;
 
-                                        const sender = msg.sender;
-                                        const avatarUrl =
-                                            sender?.avatarUrl || "";
-                                        const username = sender?.username;
+                                    const sender = msg.sender;
+                                    const avatarUrl = sender?.avatarUrl || "";
+                                    const username = sender?.username;
 
-                                        if (msg.type === "SYSTEM") {
-                                            return (
-                                                <ChatMessageSystem
-                                                    msg={msg}
-                                                    key={msg.id}
-                                                />
-                                            );
-                                        }
-
+                                    if (msg.type === "SYSTEM") {
                                         return (
-                                            <ChatMessage
+                                            <ChatMessageSystem
+                                                msg={msg}
                                                 key={msg.id}
+                                            />
+                                        );
+                                    }
+
+                                    const isSelected =
+                                        selectedMessages.includes(msg.id);
+
+                                    return (
+                                        <div
+                                            key={msg.id}
+                                            className={`relative flex items-center gap-[20px] p-[5px] ${
+                                                (isSelected &&
+                                                    "bg-white/3 rounded-md") ||
+                                                (selectedMessages &&
+                                                    selectedMessages.length >
+                                                        0 &&
+                                                    " cursor-pointer")
+                                            }`}
+                                            onClick={() => {
+                                                if (
+                                                    selectedMessages &&
+                                                    selectedMessages.length > 0
+                                                ) {
+                                                    toggleSelectedMessage(
+                                                        msg.id
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            {selectedMessages &&
+                                                selectedMessages.length > 0 && (
+                                                    <Checkbox
+                                                        className="absolute left-[-70px]"
+                                                        checked={isSelected}
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                        onCheckedChange={() =>
+                                                            toggleSelectedMessage(
+                                                                msg.id
+                                                            )
+                                                        }
+                                                    />
+                                                )}
+
+                                            <ChatMessage
                                                 msg={msg}
                                                 isSameSenderAsPrev={
                                                     isSameSenderAsPrev
@@ -116,14 +163,18 @@ function ChatSlug() {
                                                 isAdmin={isAdmin}
                                                 isPrivate={isPrivate}
                                             />
-                                        );
-                                    })}
-                                </div>
-                            ))}
-                </div>
-
-                {canSendMessages && <ChatSentData chatId={chatId} />}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
             </div>
+
+            {canSendMessages && selectedMessages.length <= 0 ? (
+                <ChatSentData chatId={chatId} />
+            ) : selectedMessages.length > 0 ? (
+                <ChatSelectedMessagesPanel />
+            ) : null}
         </div>
     );
 }

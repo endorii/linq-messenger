@@ -85,8 +85,6 @@ export function ChatHeaderDropdownMenu({
                     </DropdownMenuItem>
                 )}
 
-                <DropdownMenuItem>Select messages</DropdownMenuItem>
-
                 {destructiveAction && (
                     <DropdownMenuItem
                         variant="destructive"
