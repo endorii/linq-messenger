@@ -1,6 +1,5 @@
 import { Controller, Body, Patch, Param, Req, UseGuards, Post } from "@nestjs/common";
 import { ChatMembersService } from "./chat-members.service";
-// import { CreateChatMemberDto } from "./dto/create-chat-member.dto";
 import { UpdateChatMemberDto } from "./dto/update-chat-member.dto";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";

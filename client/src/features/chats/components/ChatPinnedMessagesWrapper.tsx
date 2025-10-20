@@ -18,7 +18,6 @@ export function ChatPinnedMessagesWrapper({ chat }: { chat: IChat }) {
         );
     }
 
-    // після завантаження, якщо чату або pinned messages немає
     if (!chat || !pinedMessages) return null;
 
     return (

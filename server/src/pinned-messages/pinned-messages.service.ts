@@ -13,6 +13,13 @@ export class PinnedMessagesService {
                     include: {
                         pinnedMessages: true,
                         sender: true,
+                        forwardedMessage: { include: { sender: true } },
+                        replyTo: {
+                            include: {
+                                sender: true,
+                                forwardedMessage: { include: { sender: true } },
+                            },
+                        },
                     },
                 },
             },
