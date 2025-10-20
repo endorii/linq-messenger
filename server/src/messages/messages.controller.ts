@@ -3,6 +3,7 @@ import { MessagesService } from "./messages.service";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
 import { UpdateMessageDto } from "./dto/update-message.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 
 @Controller("messages")
 @UseGuards(JwtAuthGuard)
@@ -16,6 +17,14 @@ export class MessagesController {
         @Body() updateMessageDto: UpdateMessageDto
     ) {
         return this.messagesService.updateMessage(req.user.id, messageId, updateMessageDto);
+    }
+
+    @Post("forward")
+    async forwardMessage(
+        @Req() req: AuthenticatedRequest,
+        @Body() createForwardMessageDto: CreateForwardMessageDto
+    ) {
+        return this.messagesService.forwardMessage(req.user.id, createForwardMessageDto);
     }
 
     @Post(":messageId/deleteForMe")

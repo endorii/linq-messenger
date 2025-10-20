@@ -4,6 +4,7 @@ import { CreateMessageDto } from "./dto/create-message.dto";
 import { UpdateMessageDto } from "./dto/update-message.dto";
 import { ChatType } from "generated/prisma";
 import { ChatMembersService } from "src/chat-members/chat-members.service";
+import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 
 @Injectable()
 export class MessagesService {
@@ -29,9 +30,16 @@ export class MessagesService {
             include: {
                 sender: { select: { id: true, username: true, avatarUrl: true } },
                 replyTo: {
-                    include: { sender: true },
+                    include: {
+                        sender: true,
+                        forwardedMessage: {
+                            include: { sender: true },
+                        },
+                    },
                 },
                 pinnedMessages: true,
+                forwardedMessage: { include: { sender: true } },
+                messagesRead: true,
             },
         });
 
@@ -39,6 +47,31 @@ export class MessagesService {
             ...msg,
             isMine: msg.senderId === userId,
         }));
+    }
+
+    async forwardMessage(userId: string, createForwardMessageDto: CreateForwardMessageDto) {
+        const original = await this.prisma.message.findUnique({
+            where: { id: createForwardMessageDto.messageId },
+        });
+
+        if (!original) throw new NotFoundException("Original message not found");
+
+        const newMessages = await Promise.all(
+            createForwardMessageDto.chatIds.map((chatId) =>
+                this.prisma.message.create({
+                    data: {
+                        chatId,
+                        senderId: userId,
+                        type: original.type,
+                        content: original.content,
+                        forwardedMessageId: original.id,
+                        forwardedById: userId,
+                    },
+                })
+            )
+        );
+
+        return newMessages;
     }
 
     async postMessage(userId: string, chatId: string, createMessageDto: CreateMessageDto) {
@@ -109,25 +142,24 @@ export class MessagesService {
 
     async deleteMessageForMe(userId: string, messageId: string) {
         const message = await this.prisma.message.findUnique({
-            where: {
-                id: messageId,
-            },
+            where: { id: messageId },
         });
 
-        if (!message) throw new NotFoundException("Message do not exist");
+        if (!message) throw new NotFoundException("Message does not exist");
 
         const chat = await this.prisma.chat.findUnique({
             where: { id: message.chatId },
         });
 
-        if (!chat) {
-            throw new NotFoundException("Chat not found for this message");
-        }
+        if (!chat) throw new NotFoundException("Chat not found for this message");
+
+        const isAuthor = message.senderId === userId;
+        const isAdmin = chat.adminId === userId;
 
         const canDelete =
             chat.type === ChatType.PRIVATE ||
-            ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) &&
-                chat.adminId === userId);
+            isAuthor ||
+            ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) && isAdmin);
 
         if (!canDelete) {
             throw new ForbiddenException("You do not have permission to delete this message");
@@ -142,26 +174,25 @@ export class MessagesService {
     }
 
     async deleteMessage(userId: string, messageId: string) {
-        const message = await this.prisma.message.findFirst({
+        const message = await this.prisma.message.findUnique({
             where: { id: messageId },
         });
 
-        if (!message) {
-            throw new NotFoundException("Message does not exist or not sent by you");
-        }
+        if (!message) throw new NotFoundException("Message does not exist");
 
         const chat = await this.prisma.chat.findUnique({
             where: { id: message.chatId },
         });
 
-        if (!chat) {
-            throw new NotFoundException("Chat not found for this message");
-        }
+        if (!chat) throw new NotFoundException("Chat not found for this message");
+
+        const isAuthor = message.senderId === userId;
+        const isAdmin = chat.adminId === userId;
 
         const canDelete =
             chat.type === ChatType.PRIVATE ||
-            ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) &&
-                chat.adminId === userId);
+            isAuthor ||
+            ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) && isAdmin);
 
         if (!canDelete) {
             throw new ForbiddenException("You do not have permission to delete this message");

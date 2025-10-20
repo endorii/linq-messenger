@@ -81,6 +81,35 @@ export class ChatsService {
         });
     }
 
+    async getChatsForForward(userId: string) {
+        return await this.prisma.chat.findMany({
+            where: {
+                isActive: true,
+                isDeleted: false,
+                deletedChats: { none: { userId } },
+                OR: [
+                    {
+                        AND: [
+                            { type: { in: ["PRIVATE", "GROUP"] } },
+                            { members: { some: { userId, leftAt: null } } },
+                        ],
+                    },
+
+                    {
+                        AND: [
+                            { type: "CHANNEL" },
+                            { members: { some: { userId, role: "ADMIN", leftAt: null } } },
+                        ],
+                    },
+                ],
+            },
+            include: {
+                members: { where: { leftAt: null }, include: { user: true } },
+            },
+            orderBy: { updatedAt: "desc" },
+        });
+    }
+
     async getChat(userId: string, chatId: string) {
         const chat = await this.prisma.chat.findFirst({
             where: {
