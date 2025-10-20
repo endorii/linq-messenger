@@ -7,6 +7,11 @@ export async function fetchChats(): Promise<IChat[]> {
     return data;
 }
 
+export async function fetchChatsForForwardMessage(): Promise<IChat[]> {
+    const { data } = await httpService.get("/chats/for-forward");
+    return data;
+}
+
 export async function fetchChatsByFolder(folderId: string): Promise<IChat[]> {
     const { data } = await httpService.get(`/chats/folder/${folderId}`);
     return data;

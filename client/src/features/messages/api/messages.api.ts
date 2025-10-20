@@ -1,5 +1,5 @@
 import { httpService } from "@/shared/api/httpService";
-import { IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
+import { ForwardMessagePayload, IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
 
 export async function fetchMessages(chatId: string): Promise<IMessage[]> {
     const { data } = await httpService.get(`/chats/${chatId}/messages`);
@@ -21,6 +21,11 @@ export async function fetchUpdateMessage(
 
 export async function fetchDeleteMessageForMe(messageId: string) {
     const { data } = await httpService.post(`/messages/${messageId}/deleteForMe`);
+    return data;
+}
+
+export async function fetchForwardMessage(forwardMessagePayload: ForwardMessagePayload) {
+    const { data } = await httpService.post(`/messages/forward`, forwardMessagePayload);
     return data;
 }
 

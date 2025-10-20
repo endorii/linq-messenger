@@ -3,6 +3,7 @@ import {
     fetchChat,
     fetchChats,
     fetchChatsByFolder,
+    fetchChatsForForwardMessage,
     fetchCreateChat,
     fetchCreatePrivateChat,
     fetchDeleteChat,
@@ -18,6 +19,14 @@ export function useChats() {
     return useQuery<IChat[], Error>({
         queryKey: ["chats"],
         queryFn: () => fetchChats(),
+        retry: 3,
+    });
+}
+
+export function useChatsForForwardMessage() {
+    return useQuery<IChat[], Error>({
+        queryKey: ["chats", "for-forward"],
+        queryFn: () => fetchChatsForForwardMessage(),
         retry: 3,
     });
 }
@@ -102,7 +111,6 @@ export function useLeaveChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
 
-            // Перевірка: якщо користувач зараз на сторінці чату
             if (pathname === `/${chatId}`) {
                 router.push("/");
             }
@@ -125,7 +133,6 @@ export function useDeleteChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
 
-            // Перевірка: якщо користувач зараз на сторінці чату
             if (pathname === `/${chatId}`) {
                 router.push("/");
             }

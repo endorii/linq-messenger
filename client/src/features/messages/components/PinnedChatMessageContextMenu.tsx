@@ -18,7 +18,7 @@ import {
     useCreatePinMessage,
     useDeletePinnedMessage,
 } from "../hooks/usePinnedMessages";
-import { PinIcon } from "@/shared/icons";
+import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 
 export function PinnedChatMessageContextMenu({
@@ -80,20 +80,40 @@ export function PinnedChatMessageContextMenu({
         <ContextMenu>
             <ContextMenuTrigger
                 onContextMenu={() => setSelectedMessage(msg.message)}
-                className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
+                className={`px-[7px] py-[5px] pb-[0px] max-w-[500px] rounded-xl wrap-anywhere ${
                     msg.isMine
                         ? "bg-purple-gradient self-end rounded-br-none"
                         : "bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
                 <div>
+                    {msg.message.forwardedMessageId && (
+                        <div className="p-[3px]">
+                            <div className="text-sm">
+                                forwarded from{" "}
+                                <span className="font-semibold">
+                                    {
+                                        msg.message.forwardedMessage?.sender
+                                            .username
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    )}
                     {msg.message.replyTo && (
                         <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
-                            <div className="font-bold text-sm">
-                                {msg.message.replyTo.sender.username}
+                            <div className="font-bold text-sm flex gap-[3px]">
+                                {msg.message.replyTo?.sender.username}
+                                {msg.message.replyTo?.forwardedMessageId && (
+                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                )}
+                                {
+                                    msg.message.replyTo.forwardedMessage?.sender
+                                        .username
+                                }
                             </div>
                             <div className="text-sm">
-                                {msg.message.replyTo.content}
+                                {msg.message.replyTo?.content}
                             </div>
                         </div>
                     )}
@@ -109,16 +129,22 @@ export function PinnedChatMessageContextMenu({
                                     </div>
                                 ) : null}
                             </div>
-                            <div className="flex items-center gap-[3px]">
+                            <div className="flex items-center gap-[1px]">
                                 {msg.message.pinnedMessages &&
                                     msg.message.pinnedMessages.length > 0 && (
                                         <div className="text-xs text-gray-400 text-right">
-                                            <PinIcon className="w-[13px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                            <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
                                         </div>
                                     )}
                                 <div className="text-xs text-gray-400 text-right">
                                     {dayjs(msg.createdAt).format("HH:mm")}
                                 </div>
+                                {msg.message.messagesRead &&
+                                msg.message.messagesRead.length >= 2 ? (
+                                    <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                ) : (
+                                    <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                )}
                             </div>
                         </div>
                     </div>

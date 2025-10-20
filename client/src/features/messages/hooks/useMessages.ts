@@ -1,9 +1,10 @@
-import { IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
+import { ForwardMessagePayload, IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchCreateMessage,
     fetchDeleteMessage,
     fetchDeleteMessageForMe,
+    fetchForwardMessage,
     fetchMessages,
     fetchUpdateMessage,
 } from "../api/messages.api";
@@ -29,6 +30,24 @@ export function useCreateMessage() {
         }) => fetchCreateMessage(chatId, messagePayload),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useForwardMessage() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatIds, userId, messageId }: ForwardMessagePayload) =>
+            fetchForwardMessage({ chatIds, userId, messageId }),
+        onSuccess: (_, variables) => {
+            variables.chatIds.forEach((chatId) => {
+                queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
+            });
             queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
         onError: (error: AxiosError<any>) => {

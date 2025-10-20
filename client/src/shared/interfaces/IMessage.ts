@@ -43,6 +43,9 @@ export interface IMessage {
     chat: IChat;
     chatId: string;
 
+    forwardedMessageId?: string | null;
+    forwardedMessage?: IMessage;
+
     attachments: IAttachment[];
     reactions: IMessageReaction[];
     messagesRead: IMessageRead[];
@@ -61,6 +64,11 @@ export interface IPinnedMessage {
 
     message: IMessage;
     isMine: boolean;
+}
+export interface ForwardMessagePayload {
+    chatIds: string[];
+    messageId: string;
+    userId: string;
 }
 
 export interface MessagePayload {

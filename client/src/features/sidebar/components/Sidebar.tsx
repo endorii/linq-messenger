@@ -13,6 +13,7 @@ import {
     DeleteChat,
 } from "../modals";
 import { ChatsTab, ContactsTab, ProfileTab, SearchTab } from "./tabs";
+import { ForwardMessageModal } from "../modals";
 
 export function Sidebar({ user }: { user: IUser }) {
     const { activeModal, setActiveModal } = useModalStore();
@@ -60,6 +61,11 @@ export function Sidebar({ user }: { user: IUser }) {
             />
             <AddMembersToChat
                 isOpen={activeModal === "addMembers"}
+                onClose={handleCloseModal}
+            />
+
+            <ForwardMessageModal
+                isOpen={activeModal === "forwardMessage"}
                 onClose={handleCloseModal}
             />
 

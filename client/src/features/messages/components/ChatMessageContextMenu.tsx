@@ -10,7 +10,7 @@ import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 
-import { PinIcon } from "@/shared/icons";
+import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
 import {
     useCreatePinMessage,
     useDeletePinnedMessage,
@@ -71,6 +71,11 @@ export function ChatMessageContextMenu({
         });
     };
 
+    const handleForward = () => {
+        setActiveModal("forwardMessage");
+        setSelectedMessage(msg);
+    };
+
     const handleDelete = () => {
         setActiveModal("deleteMessage");
     };
@@ -79,20 +84,38 @@ export function ChatMessageContextMenu({
         <ContextMenu>
             <ContextMenuTrigger
                 onContextMenu={() => setSelectedMessage(msg)}
-                className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere ${
+                className={`px-[7px] py-[5px] pb-[0px] max-w-[500px] rounded-xl wrap-anywhere ${
                     msg.isMine
                         ? "bg-purple-gradient self-end rounded-br-none"
                         : "bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
                 <div>
-                    {msg?.replyTo && (
+                    {msg.forwardedMessageId && (
+                        <div className="p-[3px]">
+                            <div className="flex items-center gap-[5px] text-sm">
+                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                <div className="flex gap-[3px]">
+                                    <div>forwarded from</div>
+                                    <span className="font-semibold">
+                                        {msg.forwardedMessage?.sender.username}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {msg.replyTo && (
                         <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
-                            <div className="font-bold text-sm">
-                                {msg?.replyTo?.sender.username}
+                            <div className="font-bold text-sm flex gap-[3px]">
+                                {msg.replyTo?.sender.username}
+                                {msg.replyTo?.forwardedMessageId && (
+                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                )}
+                                {msg.replyTo.forwardedMessage?.sender.username}
                             </div>
                             <div className="text-sm">
-                                {msg?.replyTo?.content}
+                                {msg.replyTo?.content}
                             </div>
                         </div>
                     )}
@@ -107,16 +130,22 @@ export function ChatMessageContextMenu({
                                     </div>
                                 ) : null}
                             </div>
-                            <div className="flex items-center gap-[3px]">
-                                {msg?.pinnedMessages &&
+                            <div className="flex items-center gap-[1px]">
+                                {msg.pinnedMessages &&
                                     msg?.pinnedMessages?.length > 0 && (
                                         <div className="text-xs text-gray-400 text-right">
-                                            <PinIcon className="w-[13px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                            <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
                                         </div>
                                     )}
                                 <div className="text-xs text-gray-400 text-right">
                                     {dayjs(msg.createdAt).format("HH:mm")}
                                 </div>
+                                {msg.messagesRead &&
+                                msg.messagesRead.length >= 2 ? (
+                                    <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                ) : (
+                                    <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -151,7 +180,7 @@ export function ChatMessageContextMenu({
                 </ContextMenuItem>
                 <ContextMenuSeparator />
                 <ContextMenuItem onClick={handleReply}>Reply</ContextMenuItem>
-                {msg.isMine && (
+                {msg.isMine && !msg.forwardedMessageId && (
                     <ContextMenuItem onClick={handleEdit}>Edit</ContextMenuItem>
                 )}
                 <ContextMenuItem
@@ -173,7 +202,9 @@ export function ChatMessageContextMenu({
                 ) : (
                     <ContextMenuItem onClick={handlePin}>Pin</ContextMenuItem>
                 )}
-                <ContextMenuItem>Forward</ContextMenuItem>
+                <ContextMenuItem onClick={handleForward}>
+                    Forward
+                </ContextMenuItem>
                 <ContextMenuItem>Select</ContextMenuItem>
                 {(isPrivate || isAdmin || msg.senderId === me?.id) && (
                     <ContextMenuItem
