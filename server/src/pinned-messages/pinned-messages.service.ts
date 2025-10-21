@@ -55,6 +55,16 @@ export class PinnedMessagesService {
         return { message: "Message pinned successfully" };
     }
 
+    async unpinAllMessages(chatId: string) {
+        await this.prisma.pinnedMessage.deleteMany({
+            where: {
+                chatId,
+            },
+        });
+
+        return { message: "All messages unpinned successfully" };
+    }
+
     async deletePinnedMessage(chatId: string, pinnedMessageId: string) {
         const pinnedMessage = await this.prisma.pinnedMessage.findFirst({
             where: {

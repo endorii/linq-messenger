@@ -5,6 +5,7 @@ import { UpdateMessageDto } from "./dto/update-message.dto";
 import { ChatType } from "generated/prisma";
 import { ChatMembersService } from "src/chat-members/chat-members.service";
 import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
+import { CreateForwardMessagesDto } from "./dto/create-forward-messages.dto";
 
 @Injectable()
 export class MessagesService {
@@ -68,6 +69,39 @@ export class MessagesService {
                         forwardedById: userId,
                     },
                 })
+            )
+        );
+
+        return newMessages;
+    }
+
+    async forwardMessages(userId: string, createForwardMessagesDto: CreateForwardMessagesDto) {
+        const originals = await this.prisma.message.findMany({
+            where: {
+                id: {
+                    in: createForwardMessagesDto.messageIds,
+                },
+            },
+        });
+
+        if (originals.length !== createForwardMessagesDto.messageIds.length) {
+            throw new NotFoundException("Some original messages not found");
+        }
+
+        const newMessages = await Promise.all(
+            createForwardMessagesDto.chatIds.flatMap((chatId) =>
+                originals.map((original) =>
+                    this.prisma.message.create({
+                        data: {
+                            chatId,
+                            senderId: userId,
+                            type: original.type,
+                            content: original.content,
+                            forwardedMessageId: original.id,
+                            forwardedById: userId,
+                        },
+                    })
+                )
             )
         );
 

@@ -27,6 +27,11 @@ export class PinnedMessagesController {
         );
     }
 
+    @Delete("chat/:chatId")
+    unpinAllMessages(@Param("chatId") chatId: string) {
+        return this.pinnedMessagesService.unpinAllMessages(chatId);
+    }
+
     @Delete("chat/:chatId/:pinnedMessageId")
     deletePinnedMessage(
         @Param("chatId") chatId: string,
