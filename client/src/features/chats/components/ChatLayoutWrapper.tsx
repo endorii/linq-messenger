@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ChatMessagesWrapper } from "./ChatMessagesWrapper";
 import { ChatPinnedMessagesWrapper } from "./ChatPinnedMessagesWrapper";
+import { DeleteMessages } from "@/features/sidebar/modals/DeletedMessages";
 
 export function ChatLayoutWrapper({
     children,
@@ -19,7 +20,8 @@ export function ChatLayoutWrapper({
 
     const { data: chat, isPending: isChatPending } = useChat(chatSlug);
 
-    const { setSelectedChat, setSelectedMessage } = useSelectionStore();
+    const { setSelectedChat, setSelectedMessage, clearSelectedMessages } =
+        useSelectionStore();
     const { activeModal, setActiveModal } = useModalStore();
     const { chatView } = useNavigationStore();
 
@@ -66,14 +68,24 @@ export function ChatLayoutWrapper({
                     ) : null}
 
                     {chat && (
-                        <DeleteMessage
-                            isOpen={activeModal === "deleteMessage"}
-                            onClose={() => {
-                                setActiveModal(null);
-                                setSelectedMessage(null);
-                            }}
-                            chatId={chat.id}
-                        />
+                        <>
+                            <DeleteMessage
+                                isOpen={activeModal === "deleteMessage"}
+                                onClose={() => {
+                                    setActiveModal(null);
+                                    setSelectedMessage(null);
+                                }}
+                                chatId={chat.id}
+                            />
+                            <DeleteMessages
+                                isOpen={activeModal === "deleteMessages"}
+                                onClose={() => {
+                                    setActiveModal(null);
+                                    clearSelectedMessages();
+                                }}
+                                chatId={chat.id}
+                            />
+                        </>
                     )}
                 </>
             )}

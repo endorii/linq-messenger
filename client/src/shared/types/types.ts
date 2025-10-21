@@ -11,6 +11,7 @@ export type ModalType =
     | "muteChat"
     | "addMembers"
     | "forwardMessage"
+    | "deleteMessages"
     | null;
 export type SidebarTabType = "chats" | "contacts" | "profile" | "search";
 export type ChatSidebarTabType = "info" | "editContact" | "editChat";

@@ -19,17 +19,27 @@ export async function fetchUpdateMessage(
     return data;
 }
 
-export async function fetchDeleteMessageForMe(messageId: string) {
-    const { data } = await httpService.post(`/messages/${messageId}/deleteForMe`);
-    return data;
-}
-
 export async function fetchForwardMessage(forwardMessagePayload: ForwardMessagePayload) {
     const { data } = await httpService.post(`/messages/forward`, forwardMessagePayload);
     return data;
 }
 
+export async function fetchDeleteMessageForMe(messageId: string) {
+    const { data } = await httpService.post(`/messages/${messageId}/deleteForMe`);
+    return data;
+}
+
 export async function fetchDeleteMessage(messageId: string) {
     const { data } = await httpService.patch(`/messages/${messageId}/delete`);
+    return data;
+}
+
+export async function fetchDeleteMessagesForMe(messageIds: string[]) {
+    const { data } = await httpService.post(`/messages/deleteForMe`, { messageIds });
+    return data;
+}
+
+export async function fetchDeleteMessages(messageIds: string[]) {
+    const { data } = await httpService.patch(`/messages/delete`, { messageIds });
     return data;
 }

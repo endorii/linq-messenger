@@ -4,6 +4,8 @@ import {
     fetchCreateMessage,
     fetchDeleteMessage,
     fetchDeleteMessageForMe,
+    fetchDeleteMessages,
+    fetchDeleteMessagesForMe,
     fetchForwardMessage,
     fetchMessages,
     fetchUpdateMessage,
@@ -101,6 +103,38 @@ export function useDeleteMessage() {
     return useMutation({
         mutationFn: ({ chatId, messageId }: { chatId: string; messageId: string }) =>
             fetchDeleteMessage(messageId),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useDeleteMessagesForMe() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatId, messageIds }: { chatId: string; messageIds: string[] }) =>
+            fetchDeleteMessagesForMe(messageIds),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useDeleteMessages() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ chatId, messageIds }: { chatId: string; messageIds: string[] }) =>
+            fetchDeleteMessages(messageIds),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats"] });
