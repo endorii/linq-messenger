@@ -10,6 +10,30 @@ import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 export class MessagesController {
     constructor(private readonly messagesService: MessagesService) {}
 
+    @Post("forward")
+    async forwardMessage(
+        @Req() req: AuthenticatedRequest,
+        @Body() createForwardMessageDto: CreateForwardMessageDto
+    ) {
+        return this.messagesService.forwardMessage(req.user.id, createForwardMessageDto);
+    }
+
+    @Post("deleteForMe")
+    deleteMessagesForMe(
+        @Req() req: AuthenticatedRequest,
+        @Body() { messageIds }: { messageIds: string[] }
+    ) {
+        return this.messagesService.deleteMessagesForMeMany(req.user.id, messageIds);
+    }
+
+    @Patch("delete")
+    deleteMessages(
+        @Req() req: AuthenticatedRequest,
+        @Body() { messageIds }: { messageIds: string[] }
+    ) {
+        return this.messagesService.deleteMessagesMany(req.user.id, messageIds);
+    }
+
     @Patch(":messageId")
     updateMessage(
         @Req() req: AuthenticatedRequest,
@@ -19,18 +43,11 @@ export class MessagesController {
         return this.messagesService.updateMessage(req.user.id, messageId, updateMessageDto);
     }
 
-    @Post("forward")
-    async forwardMessage(
-        @Req() req: AuthenticatedRequest,
-        @Body() createForwardMessageDto: CreateForwardMessageDto
-    ) {
-        return this.messagesService.forwardMessage(req.user.id, createForwardMessageDto);
-    }
-
     @Post(":messageId/deleteForMe")
     deleteMessageForMe(@Req() req: AuthenticatedRequest, @Param("messageId") messageId: string) {
         return this.messagesService.deleteMessageForMe(req.user.id, messageId);
     }
+
     @Patch(":messageId/delete")
     deleteMessage(@Req() req: AuthenticatedRequest, @Param("messageId") messageId: string) {
         return this.messagesService.deleteMessage(req.user.id, messageId);

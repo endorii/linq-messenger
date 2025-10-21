@@ -203,4 +203,65 @@ export class MessagesService {
             data: { isRevoked: true },
         });
     }
+
+    async deleteMessagesForMeMany(userId: string, messageIds: string[]) {
+        const messages = await this.prisma.message.findMany({
+            where: { id: { in: messageIds } },
+        });
+
+        if (messages.length === 0) throw new NotFoundException("Messages do not exist");
+
+        for (const message of messages) {
+            const chat = await this.prisma.chat.findUnique({ where: { id: message.chatId } });
+            if (!chat) throw new NotFoundException(`Chat not found for message ${message.id}`);
+
+            const isAuthor = message.senderId === userId;
+            const isAdmin = chat.adminId === userId;
+            const canDelete =
+                chat.type === ChatType.PRIVATE ||
+                isAuthor ||
+                ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) && isAdmin);
+
+            if (!canDelete) {
+                throw new ForbiddenException(
+                    `You do not have permission to delete message ${message.id}`
+                );
+            }
+        }
+
+        return await this.prisma.deletedMessage.createMany({
+            data: messageIds.map((id) => ({ userId, messageId: id })),
+            skipDuplicates: true,
+        });
+    }
+
+    async deleteMessagesMany(userId: string, messageIds: string[]) {
+        const messages = await this.prisma.message.findMany({
+            where: { id: { in: messageIds } },
+        });
+        if (messages.length === 0) throw new NotFoundException("Messages do not exist");
+
+        for (const message of messages) {
+            const chat = await this.prisma.chat.findUnique({ where: { id: message.chatId } });
+            if (!chat) throw new NotFoundException(`Chat not found for message ${message.id}`);
+
+            const isAuthor = message.senderId === userId;
+            const isAdmin = chat.adminId === userId;
+            const canDelete =
+                chat.type === ChatType.PRIVATE ||
+                isAuthor ||
+                ((chat.type === ChatType.GROUP || chat.type === ChatType.CHANNEL) && isAdmin);
+
+            if (!canDelete) {
+                throw new ForbiddenException(
+                    `You do not have permission to delete message ${message.id}`
+                );
+            }
+        }
+
+        return await this.prisma.message.updateMany({
+            where: { id: { in: messageIds } },
+            data: { isRevoked: true },
+        });
+    }
 }
