@@ -1,55 +1,43 @@
 "use client";
 
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import {
-    useDeleteMessageForMe,
-    useDeleteMessage,
-    useDeleteMessagesForMe,
-    useDeleteMessages,
-} from "@/features/messages/hooks/useMessages";
+import { useLeaveChat, useDeleteChat } from "@/features/chats/hooks/useChats";
+import { useUnpinAllMessages } from "@/features/messages/hooks/usePinnedMessages";
 import { Button } from "@/shared/components/ui/button";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
+import { ChatEnum } from "@/shared/enums/enums";
 import { useEscapeKeyClose } from "@/shared/hooks";
 import { CloseIcon } from "@/shared/icons";
-import { useSelectionStore } from "@/store";
+import { IPinnedMessage } from "@/shared/interfaces/IMessage";
+import { useNavigationStore } from "@/store";
 import { createPortal } from "react-dom";
 
-interface DeleteMessagesProps {
+interface UnpinAllMessagesProps {
     isOpen: boolean;
     onClose: () => void;
+    pinnedMessages: IPinnedMessage[];
     chatId: string;
 }
 
-export function DeleteMessages({
+export function UnpinAllMessages({
     isOpen,
     onClose,
+    pinnedMessages,
     chatId,
-}: DeleteMessagesProps) {
-    const { selectedMessages } = useSelectionStore();
-    const { data: me } = useProfile();
-
-    const deleteMessagesForMeMutation = useDeleteMessagesForMe();
-    const deleteMessagesMutation = useDeleteMessages();
+}: UnpinAllMessagesProps) {
+    const unpinAllMeessagesMutation = useUnpinAllMessages();
+    const { setChatView } = useNavigationStore();
 
     useEscapeKeyClose({ isOpen, onClose });
-    if (!isOpen || !selectedMessages || !me) return null;
+    if (!isOpen) return null;
 
-    const handleDeleteMessageForMe = () => {
-        if (!selectedMessages) return;
-        deleteMessagesForMeMutation.mutate({
-            chatId,
-            messageIds: selectedMessages,
-        });
+    const handleUnpinAllMessages = () => {
+        if (!chatId) return;
+        unpinAllMeessagesMutation.mutateAsync(chatId);
+        setChatView("messages");
         onClose();
     };
 
-    const handleDeleteMessage = () => {
-        if (!selectedMessages) return;
-        deleteMessagesMutation.mutate({ chatId, messageIds: selectedMessages });
-        onClose();
-    };
-
-    const modalTitle = `Delete ${selectedMessages.length} messages`;
+    const modalTitle = `Unpin All ${pinnedMessages.length} Messages`;
 
     const modalContent = (
         <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
@@ -66,18 +54,20 @@ export function DeleteMessages({
                     The action cannot be undone, all data will be cleared in
                     relation to the selection.
                 </div>
+
                 <div className="flex gap-[10px] flex-wrap">
                     <Button
-                        onClick={handleDeleteMessageForMe}
-                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                        type="button"
+                        onClick={onClose}
+                        className="flex items-center justify-center bg-neutral-800 border border-white/5 cursor-pointer"
                     >
-                        Delete only for me
+                        Cancel
                     </Button>
                     <Button
-                        onClick={handleDeleteMessage}
+                        onClick={handleUnpinAllMessages}
                         className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
                     >
-                        Delete for all
+                        Unpin All
                     </Button>
                 </div>
             </div>

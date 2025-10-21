@@ -12,6 +12,8 @@ export type ModalType =
     | "addMembers"
     | "forwardMessage"
     | "deleteMessages"
+    | "forwardMessages"
+    | "unpinAll"
     | null;
 export type SidebarTabType = "chats" | "contacts" | "profile" | "search";
 export type ChatSidebarTabType = "info" | "editContact" | "editChat";

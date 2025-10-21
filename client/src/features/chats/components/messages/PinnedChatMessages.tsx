@@ -1,33 +1,41 @@
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { PinnedChatMessage } from "@/features/messages/components/PinnedChatMesage";
 import { usePinMessages } from "@/features/messages/hooks/usePinnedMessages";
+import { UnpinAllMessages } from "@/features/sidebar/modals";
 import { ChatEnum } from "@/shared/enums/enums";
 import { usePrivateChat } from "@/shared/hooks";
 import { IChat } from "@/shared/interfaces";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
+import { useModalStore } from "@/store";
 import dayjs from "dayjs";
 
 export default function PinnedChatMessages({
     chat,
-    pinedMessages,
+    pinnedMessages,
 }: {
     chat: IChat;
-    pinedMessages: IPinnedMessage[];
+    pinnedMessages: IPinnedMessage[];
 }) {
     const { data: me } = useProfile();
+
+    const { setActiveModal } = useModalStore();
 
     const { isPrivate, meMember } = usePrivateChat(chat);
     const isGroup = chat?.type === ChatEnum.GROUP;
     const isAdmin = chat.adminId === meMember?.userId;
 
-    const groupedMessages = pinedMessages?.reduce<
-        Record<string, typeof pinedMessages>
+    const groupedMessages = pinnedMessages?.reduce<
+        Record<string, typeof pinnedMessages>
     >((acc, msg) => {
         const dateKey = dayjs(msg.createdAt).format("YYYY-MM-DD");
         if (!acc[dateKey]) acc[dateKey] = [];
         acc[dateKey].push(msg);
         return acc;
     }, {});
+
+    const handleUnpinAll = () => {
+        setActiveModal("unpinAll");
+    };
 
     return (
         <div className="h-full w-full pt-[65px] pb-[20px]">
@@ -89,7 +97,7 @@ export default function PinnedChatMessages({
                     <div className="w-full flex justify-center">
                         <button
                             className="font-semibold bg-purple-gradient px-[20px] py-[15px] rounded-xl"
-                            onClick={() => {}}
+                            onClick={handleUnpinAll}
                         >
                             Unpin All Messages
                         </button>

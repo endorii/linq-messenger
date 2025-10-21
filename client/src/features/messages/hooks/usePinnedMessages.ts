@@ -5,6 +5,7 @@ import {
     fetchCreatePinMessage,
     fetchDeletePinnedMessage,
     fetchPinMessages,
+    fetchUnpinAllMessages,
 } from "../api/pinned-messages.api";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 
@@ -44,6 +45,23 @@ export function useDeletePinnedMessage() {
             queryClient.invalidateQueries({ queryKey: ["pinned-messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useUnpinAllMessages() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (chatId: string) => fetchUnpinAllMessages(chatId),
+        onSuccess: (data, chatId) => {
+            toast.success(data.message);
+            queryClient.invalidateQueries({ queryKey: ["pinned-messages", chatId] });
+            queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
         },
         onError: (error: AxiosError<any>) => {
             const message = (error.response?.data as any)?.message || error.message;

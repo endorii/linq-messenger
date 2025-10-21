@@ -6,4 +6,7 @@ export { DeleteChat } from "./DeleteChat";
 export { DeleteMessage } from "./DeleteMessage";
 export { EditFolder } from "./EditFolder";
 export { MuteChat } from "./MuteChat";
-export { ForwardMessageModal } from "./ForwardMessageModal";
+export { ForwardMessage } from "./ForwardMessage";
+export { DeleteMessages } from "./DeleteMessages";
+export { ForwardMessages } from "./ForwardMessages";
+export { UnpinAllMessages } from "./UnpinAllMessages";

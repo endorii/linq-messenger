@@ -11,13 +11,21 @@ import {
     AddMembersToChat,
     MuteChat,
     DeleteChat,
+    DeleteMessage,
+    DeleteMessages,
+    ForwardMessages,
 } from "../modals";
 import { ChatsTab, ContactsTab, ProfileTab, SearchTab } from "./tabs";
-import { ForwardMessageModal } from "../modals";
+import { ForwardMessage } from "../modals";
 
 export function Sidebar({ user }: { user: IUser }) {
     const { activeModal, setActiveModal } = useModalStore();
-    const { selectedChat, setSelectedChat } = useSelectionStore();
+    const {
+        selectedChat,
+        setSelectedChat,
+        setSelectedMessage,
+        clearSelectedMessages,
+    } = useSelectionStore();
     const { sidebarTab } = useNavigationStore();
 
     const handleCloseModal = () => setActiveModal(null);
@@ -64,8 +72,13 @@ export function Sidebar({ user }: { user: IUser }) {
                 onClose={handleCloseModal}
             />
 
-            <ForwardMessageModal
+            <ForwardMessage
                 isOpen={activeModal === "forwardMessage"}
+                onClose={handleCloseModal}
+            />
+
+            <ForwardMessages
+                isOpen={activeModal === "forwardMessages"}
                 onClose={handleCloseModal}
             />
 
@@ -80,6 +93,22 @@ export function Sidebar({ user }: { user: IUser }) {
                         isOpen={activeModal === "deleteChat"}
                         onClose={handleCloseChatModal}
                         chat={selectedChat}
+                    />
+                    <DeleteMessage
+                        isOpen={activeModal === "deleteMessage"}
+                        onClose={() => {
+                            setActiveModal(null);
+                            setSelectedMessage(null);
+                        }}
+                        chatId={selectedChat.id}
+                    />
+                    <DeleteMessages
+                        isOpen={activeModal === "deleteMessages"}
+                        onClose={() => {
+                            setActiveModal(null);
+                            clearSelectedMessages();
+                        }}
+                        chatId={selectedChat.id}
                     />
                 </>
             )}

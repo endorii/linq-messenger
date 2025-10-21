@@ -1,5 +1,10 @@
 import { httpService } from "@/shared/api/httpService";
-import { ForwardMessagePayload, IMessage, MessagePayload } from "@/shared/interfaces/IMessage";
+import {
+    ForwardMessagePayload,
+    ForwardMessagesPayload,
+    IMessage,
+    MessagePayload,
+} from "@/shared/interfaces/IMessage";
 
 export async function fetchMessages(chatId: string): Promise<IMessage[]> {
     const { data } = await httpService.get(`/chats/${chatId}/messages`);
@@ -21,6 +26,11 @@ export async function fetchUpdateMessage(
 
 export async function fetchForwardMessage(forwardMessagePayload: ForwardMessagePayload) {
     const { data } = await httpService.post(`/messages/forward`, forwardMessagePayload);
+    return data;
+}
+
+export async function fetchForwardMessages(forwardMessagesPayload: ForwardMessagesPayload) {
+    const { data } = await httpService.post(`/messages/forwardMany`, forwardMessagesPayload);
     return data;
 }
 

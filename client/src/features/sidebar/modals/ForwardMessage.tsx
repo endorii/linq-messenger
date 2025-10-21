@@ -15,9 +15,9 @@ interface CreateProps {
     onClose: () => void;
 }
 
-export function ForwardMessageModal({ isOpen, onClose }: CreateProps) {
+export function ForwardMessage({ isOpen, onClose }: CreateProps) {
     const { data: chats } = useChatsForForwardMessage();
-    const { selectedMessage } = useSelectionStore();
+    const { selectedMessage, setSelectedMessage } = useSelectionStore();
 
     const [selectedChats, setSelectedChats] = useState<string[]>([]);
 
@@ -28,6 +28,7 @@ export function ForwardMessageModal({ isOpen, onClose }: CreateProps) {
     const handleClose = () => {
         onClose();
         setSelectedChats([]);
+        setSelectedMessage(null);
     };
 
     const onSubmit = async () => {
@@ -35,7 +36,6 @@ export function ForwardMessageModal({ isOpen, onClose }: CreateProps) {
 
         forwardMessageMutation.mutateAsync({
             chatIds: selectedChats,
-            userId: selectedMessage.senderId,
             messageId: selectedMessage.id,
         });
 

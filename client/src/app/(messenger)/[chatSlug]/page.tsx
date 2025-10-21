@@ -115,7 +115,7 @@ function ChatSlug() {
                                             key={msg.id}
                                             className={`relative flex items-center gap-[20px] p-[5px] ${
                                                 (isSelected &&
-                                                    "bg-white/3 rounded-md") ||
+                                                    "bg-white/5 rounded-md") ||
                                                 (selectedMessages &&
                                                     selectedMessages.length >
                                                         0 &&
