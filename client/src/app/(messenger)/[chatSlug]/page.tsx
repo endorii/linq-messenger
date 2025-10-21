@@ -32,7 +32,7 @@ function ChatSlug() {
         setSelectedMessage,
     } = useSelectionStore();
 
-    if (!chat) return null;
+    if (!chat || !me) return null;
 
     useEffect(() => {
         clearSelectedMessages();
@@ -173,7 +173,7 @@ function ChatSlug() {
             {canSendMessages && selectedMessages.length <= 0 ? (
                 <ChatSentData chatId={chatId} />
             ) : selectedMessages.length > 0 ? (
-                <ChatSelectedMessagesPanel />
+                <ChatSelectedMessagesPanel chat={chat} me={me} />
             ) : null}
         </div>
     );

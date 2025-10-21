@@ -54,6 +54,7 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const toggleMuteMutation = useToggleMuteChat();
 
     const isPrivate = chat.type === ChatEnum.PRIVATE;
+    const isGroup = chat.type === ChatEnum.GROUP;
     const meMember = chat.members.find((m) => m.userId === me?.id);
     const otherMember = isPrivate
         ? chat.members.find((m) => m.userId !== me?.id)
@@ -148,7 +149,19 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                             : "text-neutral-400"
                                     }`}
                                 >
-                                    {chat.lastMessage?.content ?? ""}
+                                    <div className="flex gap-[3px]">
+                                        <div className="font-semibold">
+                                            {isGroup &&
+                                                !!chat.lastMessage?.sender
+                                                    ?.username &&
+                                                chat.lastMessage?.sender
+                                                    ?.username + ":"}
+                                        </div>
+                                        <div className="truncate">
+                                            {chat.lastMessage?.content ??
+                                                "Chat empty"}
+                                        </div>
+                                    </div>
                                 </div>
                                 {meMember?.isMarked ? (
                                     <div

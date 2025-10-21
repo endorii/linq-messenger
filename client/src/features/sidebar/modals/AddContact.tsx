@@ -59,9 +59,7 @@ export function AddContact({ isOpen, onClose }: AddContactProps) {
 
     const onSubmit = async (data: FormData) => {
         try {
-            if (!selectedChat) return;
             await createContactMutation.mutateAsync({
-                chatId: selectedChat.id,
                 contactPayload: {
                     username: data.contactUsername,
                     nickname: data.contactCustomName,

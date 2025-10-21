@@ -23,11 +23,7 @@ export function SidebarChats() {
                     folders={folders}
                     isFoldersPending={isFoldersPending}
                 />
-                <SidebarChatsList
-                    folders={folders}
-                    isFoldersPending={isFoldersPending}
-                    activeTab={activeTab}
-                />
+                <SidebarChatsList folders={folders} activeTab={activeTab} />
             </Tabs>
         </div>
     );

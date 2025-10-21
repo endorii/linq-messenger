@@ -10,13 +10,11 @@ import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 
 interface SidebarChatsListProps {
     folders: IFolder[];
-    isFoldersPending: boolean;
     activeTab: string;
 }
 
 export function SidebarChatsList({
     folders,
-    isFoldersPending,
     activeTab,
 }: SidebarChatsListProps) {
     const { data: chats, isPending: isChatsPending } = useChats();
@@ -24,13 +22,15 @@ export function SidebarChatsList({
     const sortedChats = useMemo(() => {
         if (!chats) return [];
 
-        return chats
-            .filter((chat) => chat.lastMessage)
-            .sort(
-                (a, b) =>
-                    new Date(b.lastMessage?.createdAt ?? 0).getTime() -
-                    new Date(a.lastMessage?.createdAt ?? 0).getTime()
-            );
+        return chats.sort((a, b) => {
+            const dateA = a.lastMessage
+                ? new Date(a.lastMessage.createdAt).getTime()
+                : 0;
+            const dateB = b.lastMessage
+                ? new Date(b.lastMessage.createdAt).getTime()
+                : 0;
+            return dateB - dateA;
+        });
     }, [chats]);
 
     return (
