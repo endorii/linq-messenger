@@ -20,6 +20,11 @@ export class PinnedMessagesService {
                                 forwardedMessage: { include: { sender: true } },
                             },
                         },
+                        reactions: {
+                            include: {
+                                user: true,
+                            },
+                        },
                     },
                 },
             },

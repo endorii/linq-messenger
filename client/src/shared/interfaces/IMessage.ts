@@ -13,9 +13,15 @@ export interface IAttachment {
 export interface IMessageReaction {
     id: string;
     emoji: string;
+    messageId: string;
     createdAt: string;
     userId: string;
     user: IUser;
+}
+
+export interface ReactionPayload {
+    emoji: string;
+    messageId: string;
 }
 
 export interface IMessageRead {

@@ -41,6 +41,11 @@ export class MessagesService {
                 pinnedMessages: true,
                 forwardedMessage: { include: { sender: true } },
                 messagesRead: true,
+                reactions: {
+                    include: {
+                        user: true,
+                    },
+                },
             },
         });
 

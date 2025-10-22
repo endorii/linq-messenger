@@ -265,7 +265,7 @@ model MessageReaction {
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
-    @@unique([userId, messageId, emoji])
+    @@unique([userId, messageId])
     @@index([messageId])
     @@map("message_reactions")
 }

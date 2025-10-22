@@ -11,6 +11,7 @@ import { SearchModule } from './search/search.module';
 import { ChatMembersModule } from './chat-members/chat-members.module';
 import { UserBlocksModule } from './user-blocks/user-blocks.module';
 import { PinnedMessagesModule } from './pinned-messages/pinned-messages.module';
+import { ReactionsModule } from './reactions/reactions.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { PinnedMessagesModule } from './pinned-messages/pinned-messages.module';
         ChatMembersModule,
         UserBlocksModule,
         PinnedMessagesModule,
+        ReactionsModule,
     ],
 })
 export class AppModule {}
