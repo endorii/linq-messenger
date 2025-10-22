@@ -62,26 +62,40 @@ export class ChatsService {
             },
             include: {
                 members: { where: { leftAt: null }, include: { user: true } },
+                folders: true,
                 messages: {
+                    take: 1,
                     where: { isRevoked: false, deletedMessages: { none: { userId } } },
                     orderBy: { createdAt: "desc" },
-                    include: {
-                        sender: true,
-                    },
+                    include: { sender: true },
                 },
-                folders: true,
             },
             orderBy: { updatedAt: "desc" },
         });
 
-        return chats.map((chat) => {
-            const lastMessage = chat.messages[0] || null;
+        const chatsWithUnread = await Promise.all(
+            chats.map(async (chat) => {
+                const member = chat.members.find((m) => m.userId === userId);
+                const lastReadAt = member?.lastReadAt ?? new Date(0);
 
-            return {
-                ...chat,
-                lastMessage,
-            };
-        });
+                const unreadCount = await this.prisma.message.count({
+                    where: {
+                        chatId: chat.id,
+                        isRevoked: false,
+                        createdAt: { gt: lastReadAt },
+                        deletedMessages: { none: { userId } },
+                    },
+                });
+
+                return {
+                    ...chat,
+                    lastMessage: chat.messages[0] || null,
+                    unreadCount,
+                };
+            })
+        );
+
+        return chatsWithUnread;
     }
 
     async getChatsForForward(userId: string) {

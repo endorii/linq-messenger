@@ -55,6 +55,27 @@ export class MessagesService {
         }));
     }
 
+    async markAsRead(userId: string, messageIds: string[]) {
+        await this.prisma.messageRead.createMany({
+            data: messageIds.map((id) => ({ userId, messageId: id })),
+            skipDuplicates: true,
+        });
+
+        const lastMessage = await this.prisma.message.findFirst({
+            where: { id: { in: messageIds } },
+            orderBy: { createdAt: "desc" },
+        });
+
+        if (lastMessage) {
+            await this.prisma.chatMember.updateMany({
+                where: { userId, chatId: lastMessage.chatId },
+                data: { lastReadAt: new Date() },
+            });
+        }
+
+        return { message: "Messages marked as read" };
+    }
+
     async forwardMessage(userId: string, createForwardMessageDto: CreateForwardMessageDto) {
         const original = await this.prisma.message.findUnique({
             where: { id: createForwardMessageDto.messageId },

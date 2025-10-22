@@ -11,6 +11,11 @@ import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 export class MessagesController {
     constructor(private readonly messagesService: MessagesService) {}
 
+    @Patch("read")
+    async markAsRead(@Req() req: AuthenticatedRequest, @Body() body: { messageIds: string[] }) {
+        return this.messagesService.markAsRead(req.user.id, body.messageIds);
+    }
+
     @Post("forward")
     async forwardMessage(
         @Req() req: AuthenticatedRequest,
