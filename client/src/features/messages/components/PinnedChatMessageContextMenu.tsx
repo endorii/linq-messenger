@@ -20,6 +20,9 @@ import {
 } from "../hooks/usePinnedMessages";
 import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
+import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
+import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
+import Image from "next/image";
 
 export function PinnedChatMessageContextMenu({
     msg,
@@ -39,6 +42,7 @@ export function PinnedChatMessageContextMenu({
 
     const createPinMessageMutation = useCreatePinMessage();
     const deletePinnedMessageMutation = useDeletePinnedMessage();
+    const toggleReactionMutation = useToggleReaction();
 
     const handleCopy = async (text: string) => {
         try {
@@ -76,11 +80,21 @@ export function PinnedChatMessageContextMenu({
         setActiveModal("deleteMessage");
     };
 
+    const handleToggleEmoji = (emoji: string) => {
+        toggleReactionMutation.mutateAsync({
+            chatId: msg.message.chatId,
+            reactionPayload: {
+                emoji,
+                messageId: msg.message.id,
+            },
+        });
+    };
+
     return (
         <ContextMenu>
             <ContextMenuTrigger
                 onContextMenu={() => setSelectedMessage(msg.message)}
-                className={`px-[7px] py-[5px] pb-[0px] max-w-[500px] rounded-xl wrap-anywhere ${
+                className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere group relative ${
                     msg.isMine
                         ? "bg-purple-gradient self-end rounded-br-none"
                         : "bg-neutral-800 self-start rounded-bl-none"
@@ -89,17 +103,21 @@ export function PinnedChatMessageContextMenu({
                 <div>
                     {msg.message.forwardedMessageId && (
                         <div className="p-[3px]">
-                            <div className="text-sm">
-                                forwarded from{" "}
-                                <span className="font-semibold">
-                                    {
-                                        msg.message.forwardedMessage?.sender
-                                            .username
-                                    }
-                                </span>
+                            <div className="flex items-center gap-[5px] text-sm">
+                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                <div className="flex gap-[3px]">
+                                    <div>forwarded from</div>
+                                    <span className="font-semibold">
+                                        {
+                                            msg.message.forwardedMessage?.sender
+                                                .username
+                                        }
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     )}
+
                     {msg.message.replyTo && (
                         <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
                             <div className="font-bold text-sm flex gap-[3px]">
@@ -120,35 +138,83 @@ export function PinnedChatMessageContextMenu({
 
                     <div>
                         {msg.message.content}
-                        <div className="flex gap-[3px] justify-end">
-                            <div className="text-xs text-gray-400 ">
+                        <div className="flex gap-[5px] justify-between items-end">
+                            <div className="flex gap-[5px] overflow-y-auto">
+                                {msg.message.reactions &&
+                                    groupReactionsByEmoji(
+                                        msg.message.reactions
+                                    ).map((group) => (
+                                        <div
+                                            key={group.emoji}
+                                            className="flex gap-[5px] items-center px-[6px] py-[3px] bg-white/10 rounded-xl cursor-pointer hover:bg-white/20"
+                                            onClick={() =>
+                                                handleToggleEmoji(group.emoji)
+                                            }
+                                        >
+                                            <div className="text-md">
+                                                {group.emoji}
+                                            </div>
+
+                                            {group.users.length <= 3 ? (
+                                                <div className="flex -space-x-2">
+                                                    {group.users.map((user) => (
+                                                        <Image
+                                                            key={user.id}
+                                                            src={
+                                                                user.avatarUrl ||
+                                                                ""
+                                                            }
+                                                            alt="avatar"
+                                                            width={22}
+                                                            height={22}
+                                                            unoptimized
+                                                            className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-800"
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-gray-300 font-medium">
+                                                    +{group.users.length}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                            </div>
+                            <div>
                                 {msg.message.createdAt !==
                                 msg.message.updatedAt ? (
                                     <div className="text-xs text-gray-400 text-right">
                                         edited
                                     </div>
                                 ) : null}
-                            </div>
-                            <div className="flex items-center gap-[1px]">
-                                {msg.message.pinnedMessages &&
-                                    msg.message.pinnedMessages.length > 0 && (
-                                        <div className="text-xs text-gray-400 text-right">
-                                            <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
-                                        </div>
+                                <div className="flex items-center gap-[1px]">
+                                    {msg.message.pinnedMessages &&
+                                        msg?.message.pinnedMessages?.length >
+                                            0 && (
+                                            <div className="text-xs text-gray-400 text-right">
+                                                <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                            </div>
+                                        )}
+                                    <div className="text-xs text-gray-400 text-right">
+                                        {dayjs(msg.createdAt).format("HH:mm")}
+                                    </div>
+                                    {msg.message.messagesRead &&
+                                    msg.message.messagesRead.length >= 2 ? (
+                                        <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                    ) : (
+                                        <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
                                     )}
-                                <div className="text-xs text-gray-400 text-right">
-                                    {dayjs(msg.createdAt).format("HH:mm")}
                                 </div>
-                                {msg.message.messagesRead &&
-                                msg.message.messagesRead.length >= 2 ? (
-                                    <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
-                                ) : (
-                                    <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
-                                )}
                             </div>
                         </div>
                     </div>
                 </div>
+                <button
+                    className="absolute -right-[10px] -bottom-[10px] opacity-0 group-hover:opacity-100 transition-all duration-200"
+                    onClick={() => handleToggleEmoji("❤️")}
+                >
+                    ❤️
+                </button>
             </ContextMenuTrigger>
 
             <ContextMenuContent className="w-[200px]">
@@ -168,9 +234,7 @@ export function PinnedChatMessageContextMenu({
                             <button
                                 key={emoji}
                                 className="text-2xl hover:scale-110 transition-transform flex-shrink-0"
-                                onClick={() =>
-                                    console.log("Clicked emoji:", emoji)
-                                }
+                                onClick={() => handleToggleEmoji(emoji)}
                             >
                                 {emoji}
                             </button>
