@@ -8,7 +8,10 @@ import { useChat } from "@/features/chats/hooks/useChats";
 import { ChatEmptyWindow } from "@/features/messages/components/ChatEmptyWindow";
 import { ChatMessage } from "@/features/messages/components/ChatMessage";
 import { ChatMessageSystem } from "@/features/messages/components/ChatMessageSystem";
-import { useMessages } from "@/features/messages/hooks/useMessages";
+import {
+    useMessages,
+    useUpdateReadMessages,
+} from "@/features/messages/hooks/useMessages";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { ChatEnum } from "@/shared/enums/enums";
 import { usePrivateChat } from "@/shared/hooks";
@@ -25,6 +28,8 @@ function ChatSlug() {
         useMessages(chatId);
 
     const { data: me, isPending: isMePending } = useProfile();
+
+    const updateReadMessagesMutation = useUpdateReadMessages();
     const {
         selectedMessages,
         toggleSelectedMessage,
@@ -38,6 +43,16 @@ function ChatSlug() {
         clearSelectedMessages();
         setSelectedMessage(null);
     }, [chatId, clearSelectedMessages]);
+
+    useEffect(() => {
+        if (!messages) return;
+        updateReadMessagesMutation.mutateAsync({
+            chatId,
+            updateReadMessagesPayload: {
+                messageIds: messages.map((m) => m.id),
+            },
+        });
+    }, [messages]);
 
     const { isPrivate, meMember } = usePrivateChat(chat);
     const isGroup = chat?.type === ChatEnum.GROUP;

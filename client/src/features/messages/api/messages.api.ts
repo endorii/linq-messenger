@@ -11,6 +11,13 @@ export async function fetchMessages(chatId: string): Promise<IMessage[]> {
     return data;
 }
 
+export async function fetchUpdateReadMessages(fetchUpdateReadMessagesPayload: {
+    messageIds: string[];
+}) {
+    const { data } = await httpService.patch(`/messages/read`, fetchUpdateReadMessagesPayload);
+    return data;
+}
+
 export async function fetchCreateMessage(chatId: string, messagePayload: MessagePayload) {
     const { data } = await httpService.post(`/chats/${chatId}/messages`, messagePayload);
     return data;

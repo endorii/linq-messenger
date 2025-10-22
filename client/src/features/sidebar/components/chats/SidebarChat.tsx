@@ -163,20 +163,28 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                         </div>
                                     </div>
                                 </div>
-                                {meMember?.isMarked ? (
+                                {(chat.unreadCount > 0 ||
+                                    meMember?.isMarked) && (
                                     <div
                                         className={`min-w-[23px] h-[23px] mb-[2px] flex-shrink-0 ${
-                                            meMember.isMuted
-                                                ? "bg-neutral-500"
-                                                : "bg-purple-gradient"
+                                            (chat.unreadCount === 0 &&
+                                                meMember?.isMarked) ||
+                                            (chat.unreadCount > 0 &&
+                                                !meMember?.isMarked)
+                                                ? meMember?.isMuted
+                                                    ? "bg-neutral-500"
+                                                    : "bg-purple-gradient"
+                                                : "bg-neutral-500"
                                         } rounded-full text-xs flex items-center justify-center px-[3px]`}
                                     >
                                         <div className="mt-[1px] mr-[1px] font-semibold">
-                                            {/* Якщо більше 999 то ставити 999+ */}
+                                            {chat.unreadCount > 0
+                                                ? chat.unreadCount > 999
+                                                    ? "999+"
+                                                    : chat.unreadCount
+                                                : null}
                                         </div>
                                     </div>
-                                ) : (
-                                    ""
                                 )}
                             </div>
                         </div>
@@ -247,7 +255,13 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                         })
                     }
                 >
-                    {meMember?.isMarked ? "Unmark" : "Mark"}
+                    {chat.unreadCount > 0 && !meMember?.isMarked
+                        ? "Mark as Read"
+                        : chat.unreadCount > 0 && meMember?.isMarked
+                        ? "Mark as Unread"
+                        : !meMember?.isMarked
+                        ? "Mark as Unread"
+                        : "Mark as Read"}
                 </ContextMenuItem>
 
                 {meMember?.isMuted ? (

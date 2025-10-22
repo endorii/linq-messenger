@@ -34,6 +34,8 @@ export interface IChat {
 
     blockingInfo?: BlockInfo;
     privateChat?: IPrivateChatData | null;
+
+    unreadCount: number;
 }
 
 export interface BlockInfo {

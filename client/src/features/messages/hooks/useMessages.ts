@@ -15,6 +15,7 @@ import {
     fetchForwardMessages,
     fetchMessages,
     fetchUpdateMessage,
+    fetchUpdateReadMessages,
 } from "../api/messages.api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -74,6 +75,27 @@ export function useForwardMessages() {
             variables.chatIds.forEach((chatId) => {
                 queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
             });
+            queryClient.invalidateQueries({ queryKey: ["chats"] });
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = (error.response?.data as any)?.message || error.message;
+            toast.error(message || "An unknown error occurred");
+        },
+    });
+}
+
+export function useUpdateReadMessages() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({
+            chatId,
+            updateReadMessagesPayload,
+        }: {
+            chatId: string;
+            updateReadMessagesPayload: { messageIds: string[] };
+        }) => fetchUpdateReadMessages(updateReadMessagesPayload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
         onError: (error: AxiosError<any>) => {
