@@ -44,8 +44,9 @@ model User {
     deletedChats    DeletedChat[]
     pinnedMessages  PinnedMessage[]
 
-    blockedUsers   UserBlock[] @relation("UserBlocksBlocker")
-    blockedByUsers UserBlock[] @relation("UserBlocksBlocked")
+    blockedUsers    UserBlock[]      @relation("UserBlocksBlocker")
+    blockedByUsers  UserBlock[]      @relation("UserBlocksBlocked")
+    privacySettings PrivacySettings?
 
     @@map("users")
 }
@@ -281,6 +282,27 @@ model MessageRead {
     @@unique([userId, messageId])
     @@index([messageId])
     @@map("message_reads")
+}
+
+model PrivacySettings {
+    id                    String       @id @default(cuid())
+    userId                String       @unique
+    phoneVisibility       PrivacyLevel @default(EVERYBODY)
+    lastSeen              PrivacyLevel @default(MY_CONTACTS)
+    bio                   PrivacyLevel @default(EVERYBODY)
+    dateOfBirth           PrivacyLevel @default(MY_CONTACTS)
+    calls                 PrivacyLevel @default(MY_CONTACTS)
+    voiceMessagesAndVideo PrivacyLevel @default(EVERYBODY)
+    messages              PrivacyLevel @default(EVERYBODY)
+    addMe                 PrivacyLevel @default(EVERYBODY)
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+enum PrivacyLevel {
+    NOBODY
+    MY_CONTACTS
+    EVERYBODY
 }
 
 enum ChatType {
