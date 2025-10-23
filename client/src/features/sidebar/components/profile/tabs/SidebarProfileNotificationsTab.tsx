@@ -1,5 +1,5 @@
 import { useNavigationStore } from "@/store";
-import { SidebarProfileNotifications } from "../notifications/SidebarProfileNotifications";
+import { SidebarProfileNotifications } from "../components/SidebarProfileNotifications";
 import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 
 export function SidebarProfileNotificationsTab() {

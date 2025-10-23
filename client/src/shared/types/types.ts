@@ -21,3 +21,15 @@ export type MemberRole = "OWNER" | "ADMIN" | "MODERATOR" | "MEMBER";
 export type MessageType = "TEXT" | "IMAGE" | "FILE" | "VOICE" | "VIDEO" | "SYSTEM";
 export type ChatSentType = "sent" | "edit" | "reply";
 export type ProfileTabType = "overview" | "notifications" | "privacy" | "language" | "edit";
+export type PrivacyTabType =
+    | "phoneVisibility"
+    | "lastSeen"
+    | "bio"
+    | "dateOfBirth"
+    | "calls"
+    | "voiceMessagesAndVideo"
+    | "messages"
+    | "addMe"
+    | "overview";
+
+export type PrivacyLevel = "NOBODY" | "MY_CONTACTS" | "EVERYBODY";
