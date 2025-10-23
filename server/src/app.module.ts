@@ -12,6 +12,7 @@ import { ChatMembersModule } from './chat-members/chat-members.module';
 import { UserBlocksModule } from './user-blocks/user-blocks.module';
 import { PinnedMessagesModule } from './pinned-messages/pinned-messages.module';
 import { ReactionsModule } from './reactions/reactions.module';
+import { PrivacyModule } from './privacy/privacy.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { ReactionsModule } from './reactions/reactions.module';
         UserBlocksModule,
         PinnedMessagesModule,
         ReactionsModule,
+        PrivacyModule,
     ],
 })
 export class AppModule {}
