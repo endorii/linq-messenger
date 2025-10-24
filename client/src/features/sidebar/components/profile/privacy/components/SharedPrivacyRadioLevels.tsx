@@ -1,13 +1,14 @@
 import { useUpdatePrivacy } from "@/features/sidebar/hooks/usePrivacy";
 import { Label } from "@/shared/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
+import { IPrivacySettings } from "@/shared/interfaces/IPrivacySettings";
 import { PrivacyLevel } from "@/shared/types/types";
 import { useState } from "react";
 
 const values: PrivacyLevel[] = ["EVERYBODY", "MY_CONTACTS", "NOBODY"];
 
 interface SharedPrivacyItemProps {
-    settingKey: string;
+    settingKey: keyof IPrivacySettings;
     privacySetting: PrivacyLevel;
     subtitle: string;
 }

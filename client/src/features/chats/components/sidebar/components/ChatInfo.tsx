@@ -40,6 +40,16 @@ export function ChatInfo({ chat }: { chat: IChat }) {
     const canViewMembers =
         !isPrivate && ((!isChannel && chat.members.length < 50) || isAdmin);
 
+    const showBio =
+        isPrivate &&
+        otherMember?.user?.biography &&
+        (otherMember.user.privacySettings?.bioVisibility === "EVERYBODY" ||
+            (otherMember.user.privacySettings?.bioVisibility ===
+                "MY_CONTACTS" &&
+                otherMember.user.contacts?.some(
+                    (contact) => contact.contactId === meMember?.userId
+                )));
+
     const handleAddContact = () => {
         if (otherMember?.user) {
             setSelectedUser(otherMember.user);
@@ -115,7 +125,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
             </div>
 
             <div className="flex flex-col gap-[5px] px-[20px] py-[10px]">
-                {chat.description && (
+                {chat.description ? (
                     <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
                         <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
@@ -123,7 +133,16 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                             <div className="text-sm text-neutral-400">Info</div>
                         </div>
                     </div>
-                )}
+                ) : showBio ? (
+                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                        <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                        <div className="flex-1 flex flex-col gap-[3px]">
+                            <div>{otherMember.user?.biography}</div>
+                            <div className="text-sm text-neutral-400">Bio</div>
+                        </div>
+                    </div>
+                ) : null}
+
                 {chat.type === ChatEnum.CHANNEL ? (
                     <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
                         <LinkIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />

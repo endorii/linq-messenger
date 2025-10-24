@@ -9,16 +9,15 @@ interface PrivacyItem {
 
 const privacyItems: PrivacyItem[] = [
     { type: "phoneVisibility", title: "Who can see my phone number?" },
-    { type: "lastSeen", title: "Who can see my last seen time?" },
-    { type: "bio", title: "Bio" },
-    { type: "dateOfBirth", title: "Date of Birth" },
-    { type: "calls", title: "Who can call me?" },
+    { type: "lastSeenVisibility", title: "Who can see my last seen time?" },
+    { type: "bioVisibility", title: "Bio" },
     {
         type: "voiceMessagesAndVideo",
         title: "Who can send me voice or video messages?",
     },
     { type: "messages", title: "Who can send me messages?" },
     { type: "addMe", title: "Who can add me?" },
+    { type: "usernameVisibility", title: "Who can find me by username?" },
 ];
 
 const formatPrivacyLevel = (level: PrivacyLevel): string => {
@@ -38,7 +37,7 @@ export function SidebarProfilePrivacy({
     const { setPrivacyTab } = useNavigationStore();
 
     return (
-        <div className="flex flex-col px-2 py-2">
+        <div className="flex flex-col px-2 py-2 overflow-y-auto">
             <div className="px-4 font-semibold text-neutral-400 mb-2">
                 Privacy
             </div>

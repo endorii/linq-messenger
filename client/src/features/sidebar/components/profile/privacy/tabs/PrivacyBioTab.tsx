@@ -11,7 +11,7 @@ export function PrivacyBioTab({
     privacySettings: IPrivacySettings;
 }) {
     const { setPrivacyTab } = useNavigationStore();
-    const settingKey: keyof IPrivacySettings = "bio";
+    const settingKey: keyof IPrivacySettings = "bioVisibility";
     const privacySetting = privacySettings[settingKey];
     return (
         <>

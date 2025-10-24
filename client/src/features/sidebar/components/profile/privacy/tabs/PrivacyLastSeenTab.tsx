@@ -11,7 +11,7 @@ export function PrivacyLastSeenTab({
     privacySettings: IPrivacySettings;
 }) {
     const { setPrivacyTab } = useNavigationStore();
-    const settingKey: keyof IPrivacySettings = "lastSeen";
+    const settingKey: keyof IPrivacySettings = "lastSeenVisibility";
     const privacySetting = privacySettings[settingKey];
     return (
         <>

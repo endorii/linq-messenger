@@ -2,27 +2,27 @@
 
 import { SharedSidebarMenu } from "@/shared/components/SharedSidebarMenu";
 import { useNavigationStore } from "@/store";
-import { SharedPrivacyRadioLevels } from "../components/SharedPrivacyRadioLevels";
 import { IPrivacySettings } from "@/shared/interfaces/IPrivacySettings";
+import { SharedPrivacyRadioLevels } from "../components/SharedPrivacyRadioLevels";
 
-export function PrivacyCallMeTab({
+export function PrivacyUsernameTab({
     privacySettings,
 }: {
     privacySettings: IPrivacySettings;
 }) {
     const { setPrivacyTab } = useNavigationStore();
-    const settingKey: keyof IPrivacySettings = "calls";
+    const settingKey: keyof IPrivacySettings = "usernameVisibility";
     const privacySetting = privacySettings[settingKey];
     return (
         <>
             <SharedSidebarMenu
-                title={"Call Me"}
+                title={"Username"}
                 onClose={() => setPrivacyTab("overview")}
             />
             <SharedPrivacyRadioLevels
                 settingKey={settingKey}
                 privacySetting={privacySetting}
-                subtitle="Who can call me?"
+                subtitle="Who can find me by username?"
             />
         </>
     );

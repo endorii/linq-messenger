@@ -23,13 +23,12 @@ export type ChatSentType = "sent" | "edit" | "reply";
 export type ProfileTabType = "overview" | "notifications" | "privacy" | "language" | "edit";
 export type PrivacyTabType =
     | "phoneVisibility"
-    | "lastSeen"
-    | "bio"
-    | "dateOfBirth"
-    | "calls"
+    | "lastSeenVisibility"
+    | "bioVisibility"
     | "voiceMessagesAndVideo"
     | "messages"
     | "addMe"
+    | "usernameVisibility"
     | "overview";
 
 export type PrivacyLevel = "NOBODY" | "MY_CONTACTS" | "EVERYBODY";

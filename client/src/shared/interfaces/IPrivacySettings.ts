@@ -4,11 +4,10 @@ export interface IPrivacySettings {
     id: string;
     userId: string;
     phoneVisibility: PrivacyLevel;
-    lastSeen: PrivacyLevel;
-    bio: PrivacyLevel;
-    dateOfBirth: PrivacyLevel;
-    calls: PrivacyLevel;
+    lastSeenVisibility: PrivacyLevel;
+    bioVisibility: PrivacyLevel;
     voiceMessagesAndVideo: PrivacyLevel;
     messages: PrivacyLevel;
     addMe: PrivacyLevel;
+    usernameVisibility: PrivacyLevel;
 }

@@ -1,3 +1,6 @@
+import { IContact } from "./IContact";
+import { IPrivacySettings } from "./IPrivacySettings";
+
 export interface IUser {
     id: string;
     username: string;
@@ -12,4 +15,6 @@ export interface IUser {
     createdAt: string;
     updatedAt: string;
     isVerified: boolean;
+    privacySettings?: IPrivacySettings;
+    contacts?: IContact[];
 }
