@@ -139,7 +139,14 @@ export class ChatsService {
             include: {
                 members: {
                     where: { leftAt: null },
-                    include: { user: true },
+                    include: {
+                        user: {
+                            include: {
+                                privacySettings: true,
+                                contacts: true,
+                            },
+                        },
+                    },
                 },
                 pinnedMessages: {
                     include: {

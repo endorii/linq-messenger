@@ -29,9 +29,14 @@ export class ContactsService {
                 where: {
                     username: createContactDto.username,
                 },
+                include: {
+                    privacySettings: true,
+                },
             });
 
             if (!user) throw new NotFoundException("User with this username do not use LINQ yet");
+            if (user.privacySettings?.addMe === "NOBODY")
+                throw new NotFoundException("User not allow to add himself to contacts");
 
             if (user.id === userId)
                 throw new BadRequestException("You cannot add yourself to contacts");

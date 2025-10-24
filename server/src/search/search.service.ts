@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { PrivacyLevel, PrivacySettings } from "generated/prisma";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -10,7 +11,6 @@ export class SearchService {
             return {
                 chats: [],
                 users: [],
-                contacts: [],
                 messages: [],
             };
         }
@@ -95,63 +95,80 @@ export class SearchService {
         });
     }
 
+    private readonly defaultPrivacySettings = {
+        phoneVisibility: "EVERYBODY",
+        addMe: "EVERYBODY",
+        bioVisibility: "EVERYBODY",
+        lastSeenVisibility: "EVERYBODY",
+        messages: "EVERYBODY",
+        usernameVisibility: "EVERYBODY",
+    } as PrivacySettings;
+
     private async searchUsers(query: string, userId: string) {
-        return this.prisma.user.findMany({
+        const queryLower = query.toLowerCase();
+
+        const users = await this.prisma.user.findMany({
             where: {
-                AND: [
-                    {
-                        id: {
-                            not: userId,
-                        },
-                    },
-                    {
-                        OR: [
-                            {
-                                username: {
-                                    contains: query,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                phone: {
-                                    contains: query,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                email: {
-                                    contains: query,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                firstName: {
-                                    contains: query,
-                                    mode: "insensitive",
-                                },
-                            },
-                            {
-                                lastName: {
-                                    contains: query,
-                                    mode: "insensitive",
-                                },
-                            },
-                        ],
-                    },
+                id: { not: userId },
+                OR: [
+                    { username: { contains: query, mode: "insensitive" } },
+                    { phone: { contains: query, mode: "insensitive" } },
+                    { email: { contains: query, mode: "insensitive" } },
                 ],
             },
-            take: 5,
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                avatarUrl: true,
-                isOnline: true,
-                lastSeenAt: true,
+            include: {
+                privacySettings: true,
+                contacts: { where: { contactId: userId } },
             },
+            take: 10,
         });
+
+        return users
+            .filter((user) => {
+                const isContact = user.contacts.length > 0;
+                const privacy = user.privacySettings ?? this.defaultPrivacySettings;
+
+                const usernameVisible =
+                    privacy.usernameVisibility === "EVERYBODY" ||
+                    (privacy.usernameVisibility === "MY_CONTACTS" && isContact);
+                const phoneVisible =
+                    privacy.phoneVisibility === "EVERYBODY" ||
+                    (privacy.phoneVisibility === "MY_CONTACTS" && isContact);
+                const emailVisible =
+                    privacy.addMe === "EVERYBODY" || (privacy.addMe === "MY_CONTACTS" && isContact);
+
+                return (
+                    (usernameVisible && user.username?.toLowerCase().includes(queryLower)) ||
+                    (phoneVisible && user.phone?.includes(query)) ||
+                    (emailVisible && user.email?.toLowerCase().includes(queryLower))
+                );
+            })
+            .map((user) => {
+                const isContact = user.contacts.length > 0;
+                const privacy = user.privacySettings ?? this.defaultPrivacySettings;
+
+                const filterByPrivacy = (level: PrivacyLevel, value: string | null) => {
+                    if (!value) return null;
+                    if (level === "EVERYBODY") return value;
+                    if (level === "MY_CONTACTS" && isContact) return value;
+                    return null;
+                };
+
+                return {
+                    id: user.id,
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    avatarUrl: user.avatarUrl,
+                    isOnline:
+                        privacy.lastSeenVisibility === "EVERYBODY" ||
+                        (privacy.lastSeenVisibility === "MY_CONTACTS" && isContact)
+                            ? user.isOnline
+                            : null,
+                    phone: filterByPrivacy(privacy.phoneVisibility, user.phone || ""),
+                    email: filterByPrivacy(privacy.addMe, user.email),
+                };
+            });
     }
 
     private async searchMessages(query: string, userId: string) {

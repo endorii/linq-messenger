@@ -288,13 +288,12 @@ model PrivacySettings {
     id                    String       @id @default(cuid())
     userId                String       @unique
     phoneVisibility       PrivacyLevel @default(EVERYBODY)
-    lastSeen              PrivacyLevel @default(MY_CONTACTS)
-    bio                   PrivacyLevel @default(EVERYBODY)
-    dateOfBirth           PrivacyLevel @default(MY_CONTACTS)
-    calls                 PrivacyLevel @default(MY_CONTACTS)
+    lastSeenVisibility    PrivacyLevel @default(MY_CONTACTS)
+    bioVisibility         PrivacyLevel @default(EVERYBODY)
     voiceMessagesAndVideo PrivacyLevel @default(EVERYBODY)
     messages              PrivacyLevel @default(EVERYBODY)
     addMe                 PrivacyLevel @default(EVERYBODY)
+    usernameVisibility    PrivacyLevel @default(EVERYBODY)
 
     user User @relation(fields: [userId], references: [id])
 }
