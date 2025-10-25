@@ -316,8 +316,7 @@ export class ChatsService {
                 adminId: userId,
                 avatar:
                     dto.avatar ||
-                    `https://api.dicebear.com/9.x/initials/svg?seed=${dto.name}&backgroundType=gradientLinear&backgroundColor=7C3AED,4F46E5,9333EA,8B5CF6,C026D3,FB7185&fontSize=50&scale=75
-`,
+                    `https://api.dicebear.com/9.x/initials/svg?seed=${dto.name}&backgroundType=gradientLinear&backgroundColor=3B82F6,60A5FA,93C5FD,8B5CF6,A78BFA,C4B5FD&fontSize=50&scale=75`,
                 messages: {
                     create: [
                         { type: MessageType.SYSTEM, content: `${dto.type} "${dto.name}" created` },

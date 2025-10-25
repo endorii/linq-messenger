@@ -60,7 +60,9 @@ export function ForwardMessages({ isOpen, onClose }: CreateProps) {
             <div className="flex flex-col gap-[15px]">
                 <div className="flex flex-col gap-[5px]">
                     {!chats || chats.length === 0 ? (
-                        <div className="text-neutral-400">No chats found</div>
+                        <div className="text-neutral-500 dark:text-neutral-400">
+                            No chats found
+                        </div>
                     ) : (
                         chats.map((chat) => (
                             <ModalChatItem
@@ -77,13 +79,13 @@ export function ForwardMessages({ isOpen, onClose }: CreateProps) {
                     <Button
                         type="button"
                         onClick={handleClose}
-                        className="flex items-center justify-center bg-neutral-800 border border-white/5 cursor-pointer"
+                        className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
                     >
                         Cancel
                     </Button>
                     <Button
                         onClick={onSubmit}
-                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
+                        className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
                     >
                         Forward
                     </Button>

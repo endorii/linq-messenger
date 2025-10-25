@@ -96,15 +96,15 @@ export function PinnedChatMessageContextMenu({
                 onContextMenu={() => setSelectedMessage(msg.message)}
                 className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere group relative ${
                     msg.isMine
-                        ? "bg-purple-gradient self-end rounded-br-none"
-                        : "bg-neutral-800 self-start rounded-bl-none"
+                        ? "bg-theme-gradient self-end rounded-br-none"
+                        : "bg-neutral-200 dark:bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
                 <div>
                     {msg.message.forwardedMessageId && (
                         <div className="p-[3px]">
                             <div className="flex items-center gap-[5px] text-sm">
-                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
                                 <div className="flex gap-[3px]">
                                     <div>forwarded from</div>
                                     <span className="font-semibold">
@@ -119,11 +119,11 @@ export function PinnedChatMessageContextMenu({
                     )}
 
                     {msg.message.replyTo && (
-                        <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
+                        <div className="px-[15px] py-[4px] dark:bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
                             <div className="font-bold text-sm flex gap-[3px]">
                                 {msg.message.replyTo?.sender.username}
                                 {msg.message.replyTo?.forwardedMessageId && (
-                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                    <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
                                 )}
                                 {
                                     msg.message.replyTo.forwardedMessage?.sender
@@ -168,7 +168,7 @@ export function PinnedChatMessageContextMenu({
                                                             width={22}
                                                             height={22}
                                                             unoptimized
-                                                            className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-800"
+                                                            className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-300 dark:border-neutral-800"
                                                         />
                                                     ))}
                                                 </div>
@@ -192,7 +192,7 @@ export function PinnedChatMessageContextMenu({
                                         msg?.message.pinnedMessages?.length >
                                             0 && (
                                             <div className="text-xs text-gray-400 text-right">
-                                                <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                                <PinIcon className="w-[13px] pr-[2px] fill-white/70 stroke-1 stroke-neutral-900 dark:stroke-white/70" />
                                             </div>
                                         )}
                                     <div className="text-xs text-gray-400 text-right">
@@ -200,9 +200,9 @@ export function PinnedChatMessageContextMenu({
                                     </div>
                                     {msg.message.messagesRead &&
                                     msg.message.messagesRead.length >= 2 ? (
-                                        <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                        <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
                                     ) : (
-                                        <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
+                                        <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
                                     )}
                                 </div>
                             </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ChatMessagesWrapper } from "./ChatMessagesWrapper";
 import { ChatPinnedMessagesWrapper } from "./ChatPinnedMessagesWrapper";
+import { useTheme } from "next-themes";
 
 export function ChatLayoutWrapper({
     children,
@@ -17,6 +18,8 @@ export function ChatLayoutWrapper({
     const router = useRouter();
 
     const { data: chat, isPending: isChatPending } = useChat(chatSlug);
+
+    const { theme } = useTheme();
 
     const { setSelectedChat } = useSelectionStore();
     const { chatView } = useNavigationStore();
@@ -43,7 +46,11 @@ export function ChatLayoutWrapper({
             <div
                 className="absolute inset-0"
                 style={{
-                    backgroundImage: `url(${chat?.background || "/BG.png"})`,
+                    backgroundImage: `url(${
+                        chat?.background || theme === "dark"
+                            ? "/bg-dark.png"
+                            : "/bg-light.png"
+                    } )`,
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
                     filter: "blur(0px)", // TODO: зробити перемикач для блюру

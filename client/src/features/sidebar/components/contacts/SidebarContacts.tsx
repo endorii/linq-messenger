@@ -45,7 +45,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                         setSidebarTab("chats");
                     }}
                     key={contact.id}
-                    className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                    className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                 >
                     <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                         {contact.contact?.avatarUrl && (
@@ -68,7 +68,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                             className={`text-sm truncate ${
                                 contact.contact?.isOnline
                                     ? "text-green-500"
-                                    : "text-neutral-400"
+                                    : "text-neutral-500 dark:text-neutral-400"
                             }`}
                         >
                             {contact.contact?.isOnline

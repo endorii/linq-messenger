@@ -48,8 +48,8 @@ export const ModalChatItem = ({
 
     return (
         <div
-            className={`flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
-                isSelected ? "bg-purple-gradient" : "bg-transparent"
+            className={`flex gap-[10px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
+                isSelected ? "bg-theme-gradient" : "bg-transparent"
             }`}
             onClick={() => onSelect(chat.id)}
         >
@@ -68,7 +68,7 @@ export const ModalChatItem = ({
                     </div>
                 </div>
 
-                <div className="text-sm text-neutral-400">
+                <div className="text-sm text-neutral-500 dark:text-neutral-400">
                     {isPrivate && chat.blockingInfo?.isBlockedByOther
                         ? "for a long time"
                         : isPrivate && chat.blockingInfo?.isBlocked

@@ -52,7 +52,7 @@ export function DeleteMessage({ isOpen, onClose, chatId }: DeleteMessageProps) {
                 onClick={onClose}
                 className="absolute top-[10px] right-[10px] cursor-pointer"
             >
-                <CloseIcon className="w-[30px] stroke-3 stroke-white" />
+                <CloseIcon className="w-[30px] stroke-3 stroke-neutral-900 dark:stroke-white" />
             </Button>
 
             <div className="flex flex-col gap-[15px]">

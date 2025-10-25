@@ -107,7 +107,7 @@ export function ChatHeader({
     const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];
 
     return (
-        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-white bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer">
+        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-black bg-neutral-100 dark:text-white dark:dark:bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer border-b border-neutral-300 dark:border-neutral-300 dark:border-neutral-800">
             {isChatPending ? (
                 <div
                     className="flex gap-[20px] w-full"
@@ -146,10 +146,10 @@ export function ChatHeader({
                             <div className="flex gap-[5px] items-center">
                                 <div className="font-semibold">{chatName}</div>
                                 {meMember?.isMuted && (
-                                    <MuteIcon className="w-[15px] fill-neutral-500 stroke-2 stroke-neutral-500 flex-shrink-0 mb-[2px]" />
+                                    <MuteIcon className="w-[15px] fill-neutral-900/70 stroke-2 stroke-neutral-900/70 dark:fill-white/70 dark:stroke-white/70 flex-shrink-0 mb-[2px]" />
                                 )}
                             </div>
-                            <div className="text-sm text-neutral-400">
+                            <div className="text-sm text-neutral-500 dark:text-neutral-400">
                                 {isPrivate &&
                                 chat.blockingInfo?.isBlockedByOther
                                     ? "for a long time"
@@ -164,7 +164,7 @@ export function ChatHeader({
 
                     {chat.blockingInfo?.isBlocked && (
                         <Button
-                            className="mx-[20px] bg-purple-gradient"
+                            className="mx-[20px] bg-theme-gradient"
                             onClick={handleBlockUser}
                         >
                             Unblock User
@@ -173,10 +173,10 @@ export function ChatHeader({
                     {chat.pinnedMessages.length > 0 && (
                         <div className="flex justify-between items-center px-[15px] py-[4px] bg-white/5 w-full max-w-[250px] rounded-xl border-l-4 ">
                             <div>
-                                <div className="font-bold text-sm">
+                                <div className="font-bold text-sm text-blue-500 dark:text-violet-400">
                                     {`Last pinned message`}
                                 </div>
-                                <div className="text-sm text-white">
+                                <div className="text-sm text-black dark:text-white">
                                     {chat.pinnedMessages[
                                         chat.pinnedMessages.length - 1
                                     ]?.message?.content.slice(0, 20) +
@@ -189,13 +189,13 @@ export function ChatHeader({
                             </div>
                             <div className="relative flex group ">
                                 <button
-                                    className="group-hover:bg-white/5 p-[9px] rounded-full"
+                                    className="group-hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[9px] rounded-full"
                                     onClick={() => handleSetChatView("pinned")}
                                 >
-                                    <PinIcon className="w-[22px] stroke-neutral-300 stroke-[1] fill-neutral-300" />
+                                    <PinIcon className="w-[22px] stroke-neutral-800 fill-neutral-800 dark:stroke-neutral-300 stroke-[1] dark:fill-neutral-300" />
                                 </button>
                                 {chat.pinnedMessages.length > 1 && (
-                                    <div className="absolute top-[0px] right-[-2px] bg-purple-gradient rounded-full text-center text-xs w-[17px] h-[17px]">
+                                    <div className="absolute top-[0px] right-[-2px] bg-theme-gradient rounded-full text-center text-xs w-[17px] h-[17px]">
                                         {chat.pinnedMessages.length}
                                     </div>
                                 )}
@@ -206,11 +206,11 @@ export function ChatHeader({
                     <div className="flex gap-[25px]">
                         {isPrivate ? (
                             <button>
-                                <PhoneIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
+                                <PhoneIcon className="w-[24px] stroke-neutral-800 dark:stroke-neutral-300 stroke-[2.5] fill-none" />
                             </button>
                         ) : null}
                         <button>
-                            <SearchIcon className="w-[24px] stroke-neutral-300 stroke-[2.5]" />
+                            <SearchIcon className="w-[24px] stroke-neutral-800 dark:stroke-neutral-300 stroke-[2.5] fill-none" />
                         </button>
                         <ChatHeaderDropdownMenu
                             isPrivate={isPrivate}

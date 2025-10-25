@@ -15,7 +15,7 @@ export function ModalWrapper({
             onClick={onClose}
         >
             <div
-                className="relative flex flex-col gap-[15px] bg-neutral-900 rounded-xl text-white border border-white/5 p-[30px] min-w-auto md:min-w-[400px] max-w-[90vw] h-auto max-h-[80vh] shadow-lg overflow-y-auto cursor-default"
+                className="relative flex flex-col gap-[15px] bg-neutral-200 dark:bg-neutral-900 rounded-xl text-white border border-white/5 p-[30px] min-w-auto md:min-w-[400px] max-w-[90vw] h-auto max-h-[80vh] shadow-lg overflow-y-auto cursor-default"
                 onClick={(e) => e.stopPropagation()}
             >
                 {modalTitle && (

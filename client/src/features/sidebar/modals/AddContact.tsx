@@ -122,7 +122,7 @@ export function AddContact({ isOpen, onClose }: AddContactProps) {
                     </Button>
                     <Button
                         type="submit"
-                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
+                        className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
                     >
                         Add
                     </Button>

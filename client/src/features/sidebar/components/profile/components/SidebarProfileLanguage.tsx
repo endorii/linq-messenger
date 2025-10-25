@@ -12,7 +12,7 @@ export function SidebarProfileLanguage() {
 
     return (
         <div className="flex flex-col gap-[5px] px-[10px] py-[5px]">
-            <div className="px-[15px] font-semibold text-neutral-400">
+            <div className="px-[15px] font-semibold text-neutral-500 dark:text-neutral-400">
                 Interface Language
             </div>
             <RadioGroup
@@ -24,7 +24,7 @@ export function SidebarProfileLanguage() {
                     <div
                         key={value}
                         onClick={() => setSelectedLanguage(value)}
-                        className="flex items-center gap-[20px] p-[15px] hover:bg-white/5 cursor-pointer rounded-xl"
+                        className="flex items-center gap-[20px] p-[15px] hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
                     >
                         <RadioGroupItem value={value} id={value} />
                         <div className="flex flex-col">
@@ -34,7 +34,7 @@ export function SidebarProfileLanguage() {
                             >
                                 {label}
                             </Label>
-                            <div className="text-xs text-neutral-400 text-left">
+                            <div className="text-xs text-neutral-500 dark:text-neutral-400 text-left">
                                 {description}
                             </div>
                         </div>

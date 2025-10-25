@@ -27,10 +27,10 @@ export function ChatSelectedMessagesPanel({
 
     return (
         <div className="w-full px-[15%] flex items-center gap-[10px] justify-center py-[15px] bg-transparent ">
-            <div className="flex justify-between items-center gap-[100px] px-[20px] min-h-[48px] bg-neutral-950 border-2 border-neutral-800 w-auto rounded-xl">
+            <div className="flex justify-between items-center gap-[100px] px-[20px] min-h-[48px] dark:bg-neutral-950 border-2 border-neutral-300 dark:border-neutral-800 w-auto rounded-xl">
                 <div className="flex gap-[20px]">
                     <button onClick={handleClearSelect}>
-                        <CloseIcon className="w-[20px] fill-none stroke-3 stroke-white" />
+                        <CloseIcon className="w-[20px] fill-none stroke-3 stroke-neutral-900 dark:stroke-white" />
                     </button>
                     <div className="font-semibold">
                         {selectedMessages.length} Messsages Selected
@@ -38,7 +38,7 @@ export function ChatSelectedMessagesPanel({
                 </div>
                 <div className="flex gap-[10px]">
                     <button onClick={handleForward}>
-                        <ReplyIcon className="rotate-270 w-[25px] fill-none stroke-3 stroke-white" />
+                        <ReplyIcon className="rotate-270 w-[25px] fill-none stroke-3 stroke-neutral-900 dark:stroke-white" />
                     </button>
                     {(chat.type === ChatEnum.PRIVATE ||
                         (chat.type === ChatEnum.GROUP &&

@@ -55,14 +55,14 @@ const VerifyPage = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen text-white px-[30px]">
-            <div className="flex flex-col gap-[10px] items-center w-full max-w-[500px] rounded-2xl shadow-lg bg-neutral-900 p-[20px] max-h-[90vh] overflow-y-auto">
+            <div className="flex flex-col gap-[10px] items-center w-full max-w-[500px] rounded-2xl shadow-lg bg-neutral-200 dark:bg-neutral-900 p-[20px] max-h-[90vh] overflow-y-auto">
                 <div className="flex gap-[10px] items-center justify-center w-full p-[10px]">
                     <LinqIcon className="w-[150px] h-[150px]" />
                     <h2 className="text-3xl font-bold text-white text-center">
                         Email Verification
                     </h2>
                 </div>
-                <hr className="border-t border-neutral-800 w-full" />
+                <hr className="border-t border-neutral-300 dark:border-neutral-800 w-full" />
                 <div
                     className={`text-lg font-medium p-[15px] w-full text-center ${
                         verifyMutation.isPending
@@ -106,7 +106,7 @@ const VerifyPage = () => {
                         </div>
                         <Button
                             type="submit"
-                            className="w-full bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-800 h-[45px]"
+                            className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px]"
                         >
                             Resend Verification
                         </Button>

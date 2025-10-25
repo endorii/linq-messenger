@@ -46,7 +46,7 @@ export function UnpinAllMessages({
                 onClick={onClose}
                 className="absolute top-[10px] right-[10px] cursor-pointer"
             >
-                <CloseIcon className="w-[30px] stroke-3 stroke-white" />
+                <CloseIcon className="w-[30px] stroke-3 stroke-neutral-900 dark:stroke-white" />
             </Button>
 
             <div className="flex flex-col gap-[15px]">
@@ -59,7 +59,7 @@ export function UnpinAllMessages({
                     <Button
                         type="button"
                         onClick={onClose}
-                        className="flex items-center justify-center bg-neutral-800 border border-white/5 cursor-pointer"
+                        className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
                     >
                         Cancel
                     </Button>

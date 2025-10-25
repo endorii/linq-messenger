@@ -21,7 +21,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
 
     if (!searchValue) {
         return (
-            <div className="text-neutral-400 text-center mt-4">
+            <div className="text-neutral-500 dark:text-neutral-400 text-center mt-4">
                 Type something to search
             </div>
         );
@@ -29,7 +29,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
 
     // if (isLoading) {
     //     return (
-    //         <div className="text-neutral-400 text-center mt-4">Search...</div>
+    //         <div className="text-neutral-500 dark:text-neutral-400 text-center mt-4">Search...</div>
     //     );
     // }
 
@@ -41,13 +41,13 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
         <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto">
             {users.length > 0 && (
                 <>
-                    <div className="text-neutral-400 text-sm px-2 mb-1 mt-2">
+                    <div className="text-neutral-500 dark:text-neutral-400 text-sm px-2 mb-1 mt-2">
                         Users
                     </div>
                     {users.map((user: IUser) => (
                         <div
                             key={user.id}
-                            className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                             onClick={() => {
                                 createPrivateChatMutation.mutateAsync(user.id);
                                 setSidebarTab("chats");
@@ -68,7 +68,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                                     {user.firstName + " " + user.lastName ||
                                         user.username}
                                 </div>
-                                <div className="text-sm text-neutral-400 truncate">
+                                <div className="text-sm text-neutral-500 dark:text-neutral-400 truncate">
                                     {user.isOnline
                                         ? "Online"
                                         : "last seen recently"}
@@ -81,13 +81,13 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
 
             {chats.length > 0 && (
                 <>
-                    <div className="text-neutral-400 text-sm px-2 mb-1 mt-2">
+                    <div className="text-neutral-500 dark:text-neutral-400 text-sm px-2 mb-1 mt-2">
                         Chats
                     </div>
                     {chats.map((chat: IChat) => (
                         <div
                             key={chat.id}
-                            className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                             onClick={() => {
                                 router.push(`/${chat.id}`);
                                 setSidebarTab("chats");
@@ -107,7 +107,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                                 <div className="font-semibold truncate">
                                     {chat.name}
                                 </div>
-                                <div className="text-sm text-neutral-400 truncate">
+                                <div className="text-sm text-neutral-500 dark:text-neutral-400 truncate">
                                     {chat.type
                                         ? "Online"
                                         : "last seen recently"}
@@ -120,7 +120,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
 
             {messages.length > 0 && (
                 <>
-                    <div className="text-neutral-400 text-sm px-2 mb-1 mt-2">
+                    <div className="text-neutral-500 dark:text-neutral-400 text-sm px-2 mb-1 mt-2">
                         Messages
                     </div>
 
@@ -146,7 +146,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                         return (
                             <div
                                 key={message.id}
-                                className="flex gap-[13px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                                className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                                 onClick={() => {
                                     // функція, яка приймає message.id, по chatId вона шукає чат, якому належить перекидає туди і викликає getChats з параметрами
 
@@ -172,7 +172,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                                     <div className="font-semibold truncate">
                                         {displayName}
                                     </div>
-                                    <div className="text-sm text-neutral-400 truncate">
+                                    <div className="text-sm text-neutral-500 dark:text-neutral-400 truncate">
                                         {highlightMatch(
                                             message.content,
                                             searchValue

@@ -95,7 +95,7 @@ function ChatSlug() {
                         .reverse()
                         .map(([date, msgs]) => (
                             <div key={date} className="flex flex-col gap-[5px]">
-                                <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                <div className="sticky top-0 z-10 self-center bg-neutral-200 dark:bg-neutral-900 px-3 py-1 rounded-md text-sm text-black dark:text-gray-300 mb-2">
                                     {dayjs(date).format("D MMMM")}
                                 </div>
                                 {msgs.map((msg, i) => {

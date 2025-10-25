@@ -96,7 +96,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
         <div className="w-full px-[15%] flex items-end gap-[10px] justify-between py-[15px] bg-transparent ">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="bg-purple-gradient rounded-xl p-[11px] cursor-pointer">
+                    <button className="bg-theme-gradient rounded-xl p-[11px] cursor-pointer">
                         <ClipIcon className="w-[24px] h-[24px] fill-white" />
                     </button>
                 </DropdownMenuTrigger>
@@ -106,12 +106,12 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="w-full relative rounded-xl group bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-violet-600 focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
+            <div className="w-full relative rounded-xl group bg-neutral-200 dark:bg-neutral-200 dark:bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-blue-600 focus-within:to-sky-600 dark:focus-within:from-violet-600 dark:focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
                 <div className="flex flex-col w-full gap-[3px]">
                     {chatSentType === "reply" ? (
                         <div className="flex gap-[5px] px-[10px] py-[3px] ">
-                            <ReplyIcon className="w-[30px] stroke-2 stroke-white fill-none mx-[10px]" />
-                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4">
+                            <ReplyIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
+                            <div className="px-[15px] py-[4px] dark:bg-neutral-950/40 w-full rounded-xl border-l-4">
                                 <div className="font-bold text-sm">
                                     {messageForReply?.sender.username}
                                 </div>
@@ -133,14 +133,14 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                     setChatSentType("sent");
                                 }}
                             >
-                                <CloseIcon className="w-[20px] stroke-3 stroke-white fill-none mx-[10px]" />
+                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
                             </button>
                         </div>
                     ) : null}
                     {chatSentType === "edit" ? (
                         <div className="flex gap-[5px] px-[10px] py-[3px] ">
-                            <EditIcon className="w-[30px] stroke-2 stroke-white fill-none mx-[10px]" />
-                            <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4">
+                            <EditIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
+                            <div className="px-[15px] py-[4px] dark:bg-neutral-950/40 w-full rounded-xl border-l-4">
                                 <div className="font-bold text-sm">
                                     Edit message
                                 </div>
@@ -162,7 +162,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                     setChatSentType("sent");
                                 }}
                             >
-                                <CloseIcon className="w-[20px] stroke-3 stroke-white fill-none mx-[10px]" />
+                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
                             </button>
                         </div>
                     ) : null}
@@ -176,7 +176,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button className="absolute bottom-[14px] right-[15px] transition-all duration-300 cursor-pointer">
-                            <EmojiIcon className="w-[20px] h-[20px] fill-neutral-400 group-focus-within:fill-white" />
+                            <EmojiIcon className="w-[20px] h-[20px] fill-white/70 group-focus-within:fill-white" />
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="p-0 border-none shadow-lg">
@@ -191,17 +191,17 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
 
             <button
                 onClick={() => handleSend(inputValue)}
-                className="bg-purple-gradient rounded-xl p-[23px] cursor-pointer flex items-center justify-center"
+                className="bg-theme-gradient rounded-xl p-[23px] cursor-pointer flex items-center justify-center"
             >
                 <SendIcon
-                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-white transition-all duration-200 ${
+                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white transition-all duration-200 ${
                         inputValue.length > 0
                             ? "opacity-100 scale-100"
                             : "opacity-0 scale-75"
                     }`}
                 />
                 <MicrophoneIcon
-                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-white transition-all duration-200 ${
+                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white transition-all duration-200 ${
                         inputValue.length === 0
                             ? "opacity-100 scale-100"
                             : "opacity-0 scale-75"

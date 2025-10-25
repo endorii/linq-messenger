@@ -116,7 +116,7 @@ export function SidebarEditProfile() {
                             placeholder="Bio (Optional)"
                             {...register("biography")}
                         />
-                        <div className="text-sm flex flex-col text-neutral-400">
+                        <div className="text-sm flex flex-col text-neutral-500 dark:text-neutral-400">
                             <div>
                                 Any details such as age, occupation or city.
                             </div>
@@ -127,7 +127,7 @@ export function SidebarEditProfile() {
                     </div>
                 </div>
 
-                <hr className="border-t border-neutral-800" />
+                <hr className="border-t border-neutral-300 dark:border-neutral-800" />
 
                 {/* USERNAME FIELD */}
                 <div className="flex flex-col gap-[7px]">
@@ -164,7 +164,7 @@ export function SidebarEditProfile() {
                             Username "{username}" is available
                         </p>
                     )}
-                    <div className="text-sm flex flex-col gap-[10px] text-neutral-400">
+                    <div className="text-sm flex flex-col gap-[10px] text-neutral-500 dark:text-neutral-400">
                         <div>
                             You can choose a username on <b>LINQ</b>. If you do,
                             people will be able to find you by this username and
@@ -187,10 +187,10 @@ export function SidebarEditProfile() {
 
                 {isFormChanged && (
                     <button
-                        className="absolute bottom-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                        className="absolute bottom-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         // onClick={() => setActiveModal("addContact")}
                     >
-                        <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                        <CheckIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
                     </button>
                 )}
             </form>

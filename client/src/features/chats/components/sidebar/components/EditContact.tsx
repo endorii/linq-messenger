@@ -63,7 +63,7 @@ export function EditContact({ chat }: { chat: IChat }) {
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
                     <button onClick={() => setChatSidebarTab("info")}>
-                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
+                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white cursor-pointer" />
                     </button>
                     <div className="text-xl font-semibold text-nowrap">
                         Edit Contact
@@ -103,21 +103,21 @@ export function EditContact({ chat }: { chat: IChat }) {
                     {isDirty && (
                         <button
                             type="submit"
-                            className="absolute top-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                            className="absolute top-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         >
-                            <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                            <CheckIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
                         </button>
                     )}
                 </form>
 
-                <hr className="border-neutral-800" />
+                <hr className="border-neutral-300 dark:border-neutral-800" />
 
                 {meMember && (
                     <NotificationSwitch chatId={chat.id} meMember={meMember} />
                 )}
 
                 <button
-                    className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
+                    className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
                     onClick={handleDeleteContact}
                 >
                     <TrashIcon className="w-[30px] fill-none stroke-2 stroke-red-600" />

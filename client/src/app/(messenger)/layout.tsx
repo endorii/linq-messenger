@@ -55,7 +55,7 @@ export default function MessengerLayout({
     if (isMePending) {
         return null;
         // return (
-        //     <div className="flex items-center justify-center w-screen h-screen bg-purple-gradient text-white">
+        //     <div className="flex items-center justify-center w-screen h-screen bg-theme-gradient text-white">
         //         <LinqIcon className="w-[100px] h-[100px] animate-ping" />
         //     </div>
         // );
@@ -66,7 +66,7 @@ export default function MessengerLayout({
     }
 
     return (
-        <div className="flex w-screen h-screen bg-neutral-900 text-white overflow-hidden">
+        <div className="flex w-screen h-screen overflow-hidden">
             <ResizablePanelGroup
                 direction="horizontal"
                 className="h-full w-full"
@@ -75,14 +75,14 @@ export default function MessengerLayout({
                     defaultSize={sidebarSize.default}
                     minSize={sidebarSize.min}
                     maxSize={sidebarSize.max}
-                    className="h-full overflow-hidden border-r border-neutral-800"
+                    className="h-full overflow-hidden"
                 >
                     <Sidebar user={me} />
                 </ResizablePanel>
 
-                <ResizableHandle className="bg-neutral-800 hover:bg-neutral-700 transition-colors duration-200" />
+                <ResizableHandle className="bg-neutral-200 dark:bg-neutral-200 dark:bg-neutral-800 transition-colors duration-200" />
 
-                <ResizablePanel className="h-full overflow-hidden flex-1 bg-neutral-950">
+                <ResizablePanel className="h-full overflow-hidden flex-1 dark:bg-neutral-950">
                     <div className="relative h-full w-full">{children}</div>
                 </ResizablePanel>
             </ResizablePanelGroup>

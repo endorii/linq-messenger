@@ -38,18 +38,18 @@ export function SidebarProfilePrivacy({
 
     return (
         <div className="flex flex-col px-2 py-2 overflow-y-auto">
-            <div className="px-4 font-semibold text-neutral-400 mb-2">
+            <div className="px-4 font-semibold text-neutral-500 dark:text-neutral-400 mb-2">
                 Privacy
             </div>
             <div className="flex flex-col gap-[2px] w-full">
                 {privacyItems.map((item) => (
                     <button
                         key={item.type}
-                        className="flex flex-col p-[15px] hover:bg-white/5 cursor-pointer rounded-xl"
+                        className="flex flex-col p-[15px] hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
                         onClick={() => setPrivacyTab(item.type)}
                     >
                         <div className="text-left">{item.title}</div>
-                        <div className="text-sm text-neutral-400 text-left">
+                        <div className="text-sm text-neutral-500 dark:text-neutral-400 text-left">
                             {privacySettings?.[item.type]
                                 ? formatPrivacyLevel(privacySettings[item.type])
                                 : "Loading..."}

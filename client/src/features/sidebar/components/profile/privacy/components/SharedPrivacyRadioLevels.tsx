@@ -31,7 +31,7 @@ export function SharedPrivacyRadioLevels({
 
     return (
         <div className="flex flex-col px-2 py-2">
-            <div className="px-4 font-semibold text-neutral-400 mb-2">
+            <div className="px-4 font-semibold text-neutral-500 dark:text-neutral-400 mb-2">
                 {subtitle}
             </div>
             <RadioGroup
@@ -43,7 +43,7 @@ export function SharedPrivacyRadioLevels({
                     <div
                         key={value}
                         onClick={() => handleChange(value)}
-                        className="flex items-center gap-[20px] p-[15px] hover:bg-white/5 cursor-pointer rounded-xl"
+                        className="flex items-center gap-[20px] p-[15px] hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
                     >
                         <RadioGroupItem value={value} id={value} />
                         <Label

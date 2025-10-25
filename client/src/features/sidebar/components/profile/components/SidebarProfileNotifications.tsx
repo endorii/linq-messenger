@@ -40,19 +40,19 @@ export function SidebarProfileNotifications() {
         <div className="flex flex-col gap-5 px-2 py-2">
             {notificationItems.map((item) => (
                 <div key={item.id}>
-                    <div className="px-4 font-semibold text-neutral-400 mb-2">
+                    <div className="px-4 font-semibold text-neutral-500 dark:text-neutral-400 mb-2">
                         {item.title}
                     </div>
                     <div
                         onClick={() => toggle(item.id)}
-                        className="flex items-center gap-[15px] p-[15px] hover:bg-white/5 cursor-pointer rounded-xl w-full"
+                        className="flex items-center gap-[15px] p-[15px] hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl w-full"
                     >
                         <Checkbox checked={checked[item.id]} />
                         <div className="flex flex-col">
                             <Label className="font-semibold text-base cursor-pointer">
                                 {item.label}
                             </Label>
-                            <div className="text-xs text-neutral-400 text-left">
+                            <div className="text-xs text-neutral-500 dark:text-neutral-400 text-left">
                                 {item.description}
                             </div>
                         </div>

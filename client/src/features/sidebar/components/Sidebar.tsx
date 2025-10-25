@@ -36,7 +36,7 @@ export function Sidebar({ user }: { user: IUser }) {
     };
 
     return (
-        <div className="relative flex flex-col h-full bg-neutral-950 ">
+        <div className="relative flex flex-col h-full bg-neutral-100 dark:dark:bg-neutral-950 ">
             {sidebarTab === "chats" && <ChatsTab user={user} />}
             {sidebarTab === "contacts" && <ContactsTab />}
             {sidebarTab === "profile" && <ProfileTab />}

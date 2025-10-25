@@ -19,16 +19,16 @@ export function SidebarSettingsMenu() {
     };
 
     return (
-        <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
+        <div className="text-black dark:text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <div className="flex gap-[20px] justify-between items-center min-h-[50px]">
                 <button onClick={() => setSidebarTab("chats")}>
-                    <BackIcon className="w-[24px] stroke-white stroke-3" />
+                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
                 </button>
                 <div className="text-xl font-semibold">Settings</div>
             </div>
             <div className="flex gap-[20px] justify-between items-center">
                 <button className="" onClick={() => setProfileTab("edit")}>
-                    <EditIcon className="w-[26px] fill-none stroke-2 stroke-white" />
+                    <EditIcon className="w-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white" />
                 </button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

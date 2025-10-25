@@ -16,30 +16,34 @@ import {
     BurgerMenuIcon,
     AccountIcon,
     OptionsIcon,
-    ThemeIcon,
     LogoutIcon,
     SettingsIcon,
 } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces";
 import { useNavigationStore } from "@/store";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function ChatsDropdownMenu({ user }: { user: IUser }) {
     const { setSidebarTab } = useNavigationStore();
     const logoutUserMutation = useLogoutUser();
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleOpenProfile = () => setSidebarTab("profile");
     const handleOpenContacts = () => setSidebarTab("contacts");
     const handleOpenSettings = () => setSidebarTab("profile");
-    const handleChangeTheme = () => {
-        // TODO: реалізувати зміну теми
-    };
     const handleLogout = () => logoutUserMutation.mutate();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button>
-                    <BurgerMenuIcon className="w-[24px] stroke-3 stroke-white" />
+                    <BurgerMenuIcon className="w-[24px] stroke-3 stroke-neutral-900 dark:stroke-white" />
                 </button>
             </DropdownMenuTrigger>
 
@@ -63,7 +67,7 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                     className="group"
                     onClick={handleOpenContacts}
                 >
-                    <AccountIcon className="stroke-2 stroke-white fill-none group-hover:stroke-black" />
+                    <AccountIcon className="stroke-2 stroke-neutral-900 dark:stroke-white fill-none group-hover:stroke-black" />
                     <div>Contacts</div>
                 </DropdownMenuItem>
 
@@ -71,8 +75,8 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                     className="group"
                     onClick={handleOpenSettings}
                 >
-                    <SettingsIcon className="stroke-2 stroke-white fill-none group-hover:stroke-black" />
-                    <div>Settings</div>
+                    <SettingsIcon className="stroke-2 stroke-neutral-900 dark:stroke-white fill-none group-hover:stroke-black" />
+                    <div className="">Settings</div>
                 </DropdownMenuItem>
 
                 <DropdownMenuSub>
@@ -84,9 +88,23 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                         <DropdownMenuSubContent>
-                            <DropdownMenuItem onClick={handleChangeTheme}>
-                                <ThemeIcon className="stroke-2 stroke-black fill-none group-hover:stroke-white" />
-                                <div>Change theme</div>
+                            <DropdownMenuItem onClick={() => setTheme("light")}>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl">☀️</span>
+                                    <span>Light</span>
+                                    {mounted && theme === "light" && (
+                                        <span className="ml-auto">✓</span>
+                                    )}
+                                </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl">🌙</span>
+                                    <span>Dark</span>
+                                    {mounted && theme === "dark" && (
+                                        <span className="ml-auto">✓</span>
+                                    )}
+                                </div>
                             </DropdownMenuItem>
                         </DropdownMenuSubContent>
                     </DropdownMenuPortal>

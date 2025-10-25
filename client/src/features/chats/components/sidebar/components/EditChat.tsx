@@ -61,7 +61,7 @@ export function EditChat({ chat }: { chat: IChat }) {
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
                     <button onClick={() => setChatSidebarTab("info")}>
-                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
+                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white cursor-pointer" />
                     </button>
                     <div className="text-xl font-semibold text-nowrap">
                         Edit
@@ -115,19 +115,19 @@ export function EditChat({ chat }: { chat: IChat }) {
                     {isDirty && (
                         <button
                             type="submit"
-                            className="absolute top-4 right-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                            className="absolute top-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         >
-                            <PlusIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                            <PlusIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
                         </button>
                     )}
                 </form>
 
-                <hr className="border-neutral-800" />
+                <hr className="border-neutral-300 dark:border-neutral-800" />
 
                 <div className="flex flex-col gap-[10px]">
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
                             <div className="flex flex-col">
                                 <div>Members</div>
                                 <div className="text-sm text-neutral-500">
@@ -137,9 +137,9 @@ export function EditChat({ chat }: { chat: IChat }) {
                         </div>
                     </div>
 
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
                             <div className="flex flex-col">
                                 <div>Administrators</div>
                                 <div className="text-sm text-neutral-500">
@@ -149,9 +149,9 @@ export function EditChat({ chat }: { chat: IChat }) {
                         </div>
                     </div>
 
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
                             <div className="flex flex-col">
                                 <div>Invite links</div>
                                 <div className="text-sm text-neutral-500">
@@ -162,10 +162,10 @@ export function EditChat({ chat }: { chat: IChat }) {
                     </div>
                 </div>
 
-                <hr className="border-neutral-800" />
+                <hr className="border-neutral-300 dark:border-neutral-800" />
 
                 <button
-                    className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
+                    className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
                     onClick={() => {
                         setActiveModal("deleteChat");
                     }}

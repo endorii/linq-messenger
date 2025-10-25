@@ -81,7 +81,7 @@ export function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
                         <Label
                             key={value}
                             htmlFor={value.toString()}
-                            className="flex items-center gap-[20px] p-[15px] hover:bg-white/5 cursor-pointer rounded-xl"
+                            className="flex items-center gap-[20px] p-[15px] hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
                         >
                             <RadioGroupItem
                                 value={value.toString()}
@@ -104,7 +104,7 @@ export function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
                     </Button>
                     <Button
                         onClick={onSubmit}
-                        className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
+                        className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
                     >
                         Mute
                     </Button>

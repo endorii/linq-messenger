@@ -32,11 +32,11 @@ export function NotificationSwitch({
 
     return (
         <div
-            className="p-[10px] hover:bg-white/5 rounded-xl flex gap-[30px] items-center justify-between cursor-pointer"
+            className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl flex gap-[30px] items-center justify-between cursor-pointer"
             onClick={handleToggle}
         >
             <div className="flex gap-[30px] items-center">
-                <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-400 dark:stroke-white/70 fill-none" />
                 <div>Notifications</div>
             </div>
             <Switch

@@ -70,11 +70,11 @@ export function ChatInfo({ chat }: { chat: IChat }) {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-">
             <div className="flex gap-[20px] justify-between p-[18px]">
                 <div className="flex gap-[20px] items-center">
                     <button onClick={() => setChatSidebarOpened(false)}>
-                        <BackIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-white cursor-pointer" />
+                        <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 rotate-180 fill-none" />
                     </button>
                     <div className="text-xl font-semibold text-nowrap">
                         {isPrivate
@@ -89,15 +89,15 @@ export function ChatInfo({ chat }: { chat: IChat }) {
 
                 {isPrivate && contact ? (
                     <button onClick={handleEditContact}>
-                        <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                        <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
                     </button>
                 ) : isPrivate ? (
                     <button onClick={handleAddContact}>
-                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
                     </button>
                 ) : !isPrivate && isAdmin ? (
                     <button onClick={handleEditChat}>
-                        <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                        <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
                     </button>
                 ) : null}
             </div>
@@ -116,7 +116,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">
                     <div className="text-xl font-semibold">{chatName}</div>
-                    <div className="text-sm text-neutral-400">
+                    <div className="text-sm text-neutral-500 dark:text-neutral-400">
                         {isPrivate
                             ? "last seen recently"
                             : `${chat.members?.length || 0} members`}
@@ -126,37 +126,43 @@ export function ChatInfo({ chat }: { chat: IChat }) {
 
             <div className="flex flex-col gap-[5px] px-[20px] py-[10px]">
                 {chat.description ? (
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
-                        <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                        <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 dark:stroke-white/70 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
                             <div>{chat.description}</div>
-                            <div className="text-sm text-neutral-400">Info</div>
+                            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                                Info
+                            </div>
                         </div>
                     </div>
                 ) : showBio ? (
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
-                        <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                        <InfoIcon className="w-[30px] stroke-2 stroke-neutral-400 dark:stroke-white/70 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
                             <div>{otherMember.user?.biography}</div>
-                            <div className="text-sm text-neutral-400">Bio</div>
+                            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                                Bio
+                            </div>
                         </div>
                     </div>
                 ) : null}
 
                 {chat.type === ChatEnum.CHANNEL ? (
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
-                        <LinkIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                        <LinkIcon className="w-[30px] stroke-2 stroke-neutral-400 dark:stroke-white/70 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
                             <div>linq.com/{chat.id}</div>
-                            <div className="text-sm text-neutral-400">Link</div>
+                            <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                                Link
+                            </div>
                         </div>
                     </div>
                 ) : isPrivate && otherMember ? (
-                    <div className="p-[10px] hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
-                        <AtSignIcon className="w-[30px] stroke-2 stroke-neutral-400 fill-none" />
+                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center">
+                        <AtSignIcon className="w-[30px] stroke-2 stroke-neutral-400 dark:stroke-white/70 fill-none" />
                         <div className="flex-1 flex flex-col gap-[3px]">
                             <div>@{otherMember.user?.username}</div>
-                            <div className="text-sm text-neutral-400">
+                            <div className="text-sm text-neutral-500 dark:text-neutral-400">
                                 username
                             </div>
                         </div>
@@ -189,7 +195,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                                 {chat.members?.map((member, i) => (
                                     <div
                                         key={member.userId || i}
-                                        className="flex gap-[10px] p-[10px] items-center hover:bg-white/5 cursor-pointer rounded-xl"
+                                        className="flex gap-[10px] p-[10px] items-center hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
                                         onClick={() =>
                                             handleOpenOrCreatePrivateChat(
                                                 member.userId
@@ -212,7 +218,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                                                     <OwnerIcon className="w-[20px] stroke-2 stroke-violet-500 fill-none" />
                                                 )}
                                             </div>
-                                            <div className="text-neutral-400 text-sm">
+                                            <div className="text-neutral-500 dark:text-neutral-400 text-sm">
                                                 last seen recently
                                             </div>
                                         </div>
@@ -252,10 +258,10 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                 </Tabs>
                 {!isPrivate && (
                     <button
-                        className="absolute bottom-4 left-4 bg-purple-gradient rounded-xl p-[8px] cursor-pointer"
+                        className="absolute bottom-4 left-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         onClick={() => setActiveModal("addMembers")}
                     >
-                        <AddContactIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                        <AddContactIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
                     </button>
                 )}
             </div>

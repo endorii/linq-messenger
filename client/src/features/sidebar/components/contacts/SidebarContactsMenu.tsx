@@ -13,9 +13,9 @@ export function SidebarContactsMenu({
 }) {
     const { setSidebarTab } = useNavigationStore();
     return (
-        <div className="text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
+        <div className="text-black dark:text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <button onClick={() => setSidebarTab("chats")}>
-                <BackIcon className="w-[24px] stroke-white stroke-3" />
+                <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
             </button>
 
             <div className="w-full relative rounded-xl group">
@@ -26,7 +26,7 @@ export function SidebarContactsMenu({
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
 
-                <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-[15px] w-[20px] stroke-neutral-700 fill-none stroke-3 group-focus-within:stroke-neutral-400 transition-colors duration-300" />
+                <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-[15px] w-[20px] stroke-neutral-700 fill-none stroke-3 group-focus-within:stroke-white/70 transition-colors duration-300" />
 
                 <button
                     onClick={() => setSearchValue("")}
@@ -38,7 +38,7 @@ export function SidebarContactsMenu({
                                     : "opacity-0 scale-0"
                             }`}
                 >
-                    <CloseIcon className="w-[17px] stroke-neutral-700 group-focus-within:stroke-neutral-400 stroke-3" />
+                    <CloseIcon className="w-[17px] stroke-neutral-700 group-focus-within:stroke-white/70 stroke-3" />
                 </button>
             </div>
         </div>

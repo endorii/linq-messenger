@@ -33,11 +33,11 @@ export function ChatMessagesSkeleton() {
                             } gap-2`}
                         >
                             {!msg.isMine && (
-                                <div className="absolute bottom-0 left-[-40px] w-8 h-8 bg-neutral-800 rounded-full" />
+                                <div className="absolute bottom-0 left-[-40px] w-8 h-8 bg-neutral-200 dark:bg-neutral-800 rounded-full" />
                             )}
 
                             <div
-                                className={`flex flex-col bg-neutral-900 rounded-xl p-3 ${
+                                className={`flex flex-col bg-neutral-200 dark:bg-neutral-900 rounded-xl p-3 ${
                                     msg.isMine
                                         ? "ml-auto rounded-br-none"
                                         : "rounded-bl-none"
@@ -46,12 +46,12 @@ export function ChatMessagesSkeleton() {
                                 {msg.widths.map((w, idx) => (
                                     <div
                                         key={idx}
-                                        className="h-4 bg-neutral-800 rounded mb-1"
+                                        className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded mb-1"
                                         style={{ width: `${w}px` }}
                                     />
                                 ))}
 
-                                <div className="h-3 w-10 bg-neutral-800 rounded self-end mt-1"></div>
+                                <div className="h-3 w-10 bg-neutral-200 dark:bg-neutral-800 rounded self-end mt-1"></div>
                             </div>
                         </div>
                     </div>
@@ -59,9 +59,9 @@ export function ChatMessagesSkeleton() {
             </div>
 
             <div className="w-full px-[15%] py-[15px] flex items-end gap-[10px] bg-transparent">
-                <div className="w-12 h-12 bg-neutral-800 rounded-xl animate-pulse flex-shrink-0" />
-                <div className="flex-1 flex flex-col gap-2 p-3 bg-neutral-900 rounded-xl animate-pulse min-h-[48px]"></div>
-                <div className="w-12 h-12 bg-neutral-800 rounded-full animate-pulse flex-shrink-0" />
+                <div className="w-12 h-12 bg-neutral-200 dark:bg-neutral-800 rounded-xl animate-pulse flex-shrink-0" />
+                <div className="flex-1 flex flex-col gap-2 p-3 bg-neutral-200 dark:bg-neutral-900 rounded-xl animate-pulse min-h-[48px]"></div>
+                <div className="w-12 h-12 bg-neutral-200 dark:bg-neutral-800 rounded-full animate-pulse flex-shrink-0" />
             </div>
         </div>
     );

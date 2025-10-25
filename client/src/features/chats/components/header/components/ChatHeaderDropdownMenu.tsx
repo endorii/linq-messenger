@@ -41,7 +41,7 @@ export function ChatHeaderDropdownMenu({
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="cursor-pointer">
-                    <OptionsIcon className="w-[21px] fill-neutral-300" />
+                    <OptionsIcon className="w-[21px] fill-neutral-800 dark:fill-neutral-300" />
                 </button>
             </DropdownMenuTrigger>
 

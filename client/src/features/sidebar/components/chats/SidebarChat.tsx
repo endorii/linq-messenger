@@ -53,6 +53,8 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const toggleMarkChatMutation = useToggleMarkChat();
     const toggleMuteMutation = useToggleMuteChat();
 
+    const isActive = chatId === chat.id;
+
     const isPrivate = chat.type === ChatEnum.PRIVATE;
     const isGroup = chat.type === ChatEnum.GROUP;
     const meMember = chat.members.find((m) => m.userId === me?.id);
@@ -108,10 +110,8 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
             <ContextMenuTrigger>
                 <SafeLink href={`/${chat?.id}`}>
                     <div
-                        className={`flex gap-[10px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
-                            chatId === chat.id
-                                ? "bg-purple-gradient"
-                                : "bg-transparent"
+                        className={`flex gap-[10px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
+                            isActive ? "bg-theme-gradient" : "bg-transparent"
                         }`}
                     >
                         <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
@@ -129,12 +129,24 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                         <div className="flex flex-col justify-between flex-1 min-w-0">
                             <div className="flex justify-between gap-[5px]">
                                 <div className="flex gap-[5px] font-semibold truncate items-center">
-                                    <div className="truncate">{chatName}</div>
+                                    <div
+                                        className={`truncate ${
+                                            !isActive &&
+                                            "text-black dark:text-white"
+                                        }`}
+                                    >
+                                        {chatName}
+                                    </div>
                                     {meMember?.isMuted && (
-                                        <MuteIcon className="w-[15px] fill-neutral-500 stroke-2 stroke-neutral-500 flex-shrink-0 mb-[2px]" />
+                                        <MuteIcon className="w-[15px] fill-white/70 stroke-2 stroke-neutral-900 dark:stroke-white/70 flex-shrink-0 mb-[2px]" />
                                     )}
                                 </div>
-                                <div className="text-xs text-neutral-400">
+                                <div
+                                    className={`text-xs font-semibold ${
+                                        !isActive &&
+                                        "text-black dark:text-white"
+                                    }`}
+                                >
                                     {formatSidebarLastMessageDateInChat(
                                         chat.lastMessage?.createdAt ?? ""
                                     )}
@@ -144,9 +156,9 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                             <div className="flex gap-[10px] items-center justify-between">
                                 <div
                                     className={`font-base truncate ${
-                                        chatId === chat.id
+                                        isActive
                                             ? "text-white"
-                                            : "text-neutral-400"
+                                            : "text-neutral-500 dark:text-neutral-400"
                                     }`}
                                 >
                                     <div className="flex gap-[3px]">
@@ -173,7 +185,7 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                                 !meMember?.isMarked)
                                                 ? meMember?.isMuted
                                                     ? "bg-neutral-500"
-                                                    : "bg-purple-gradient"
+                                                    : "bg-theme-gradient"
                                                 : "bg-neutral-500"
                                         } rounded-full text-xs flex items-center justify-center px-[3px]`}
                                     >

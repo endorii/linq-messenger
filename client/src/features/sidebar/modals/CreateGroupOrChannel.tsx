@@ -96,9 +96,9 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                         <div className="flex items-center gap-[15px]">
                             <label
                                 htmlFor="picture"
-                                className="relative bg-neutral-900 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
+                                className="relative bg-neutral-200 dark:bg-neutral-900 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
                             >
-                                <CameraIcon className="w-[40px] h-[40px] fill-none stroke-[1.5] stroke-neutral-300" />
+                                <CameraIcon className="w-[40px] h-[40px] fill-none stroke-[1.5] stroke-neutral-800 dark:stroke-neutral-300" />
                                 <input
                                     id="picture"
                                     type="file"
@@ -142,7 +142,7 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                             </Button>
                             <Button
                                 onClick={nextStep}
-                                className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
+                                className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
                             >
                                 Next
                             </Button>
@@ -157,12 +157,12 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                 ? contacts.map((contact) => (
                                       <div
                                           key={contact.id}
-                                          className={`flex items-center gap-[25px] text-white hover:bg-white/5 p-[10px] rounded-xl cursor-pointer min-w-[320px] ${
+                                          className={`flex items-center gap-[25px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer min-w-[320px] ${
                                               contact.contact?.id &&
                                               selectedContacts.includes(
                                                   contact.contact.id
                                               )
-                                                  ? "bg-purple-gradient"
+                                                  ? "bg-theme-gradient"
                                                   : ""
                                           }`}
                                           onClick={() => {
@@ -202,7 +202,7 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                                   className={` font-base truncate ${
                                                       contact.contact?.isOnline
                                                           ? "text-green-500"
-                                                          : "text-neutral-400"
+                                                          : "text-neutral-500 dark:text-neutral-400"
                                                   }`}
                                               >
                                                   {contact.contact?.isOnline
@@ -225,13 +225,13 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                             <Button
                                 type="button"
                                 onClick={prevStep}
-                                className="flex items-center justify-center bg-neutral-800 border border-white/5 cursor-pointer"
+                                className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
                             >
                                 <div>Go back</div>
                             </Button>
                             <Button
                                 type="submit"
-                                className="cursor-pointer bg-purple-gradient border-none transition-all duration-200"
+                                className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
                             >
                                 Create {entityLabel}
                             </Button>

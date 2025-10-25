@@ -76,7 +76,7 @@ export function SidebarProfile() {
                     <div className="text-lg font-semibold">
                         {`${me.firstName} ${me?.lastName ?? ""} `}
                     </div>
-                    <div className="text-neutral-400">
+                    <div className="text-neutral-500 dark:text-neutral-400">
                         {me.isOnline ? "Online" : "last seen recently"}
                     </div>
                 </div>
@@ -86,27 +86,29 @@ export function SidebarProfile() {
                 {infoButtons.map(({ icon: Icon, label, value }) => (
                     <button
                         key={label}
-                        className="p-[10px] flex gap-[20px] hover:bg-white/5 rounded-xl text-left"
+                        className="p-[10px] flex gap-[20px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl text-left"
                     >
-                        <Icon className="w-[30px] fill-none stroke-2 stroke-neutral-400" />
+                        <Icon className="w-[30px] fill-none stroke-2 stroke-neutral-400 dark:stroke-white/70" />
                         <div className="flex flex-col">
                             <div className="font-semibold text-base">
                                 {value ?? "-"}
                             </div>
-                            <div className="text-neutral-400">{label}</div>
+                            <div className="text-neutral-500 dark:text-neutral-400">
+                                {label}
+                            </div>
                         </div>
                     </button>
                 ))}
             </div>
-            <hr className="w-full border-t border-neutral-800" />
+            <hr className="w-full border-t border-neutral-300 dark:border-neutral-800" />
             <div className="flex flex-col">
                 {settingsButtons.map(({ icon: Icon, label, onClick }) => (
                     <button
                         key={label}
                         onClick={onClick}
-                        className="p-[15px] flex items-center gap-[20px] hover:bg-white/5 rounded-xl w-full"
+                        className="p-[15px] flex items-center gap-[20px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl w-full"
                     >
-                        <Icon className="w-[30px] fill-none stroke-2 stroke-neutral-400" />
+                        <Icon className="w-[30px] fill-none stroke-2 stroke-neutral-400 dark:stroke-white/70" />
                         <div className="font-semibold">{label}</div>
                     </button>
                 ))}

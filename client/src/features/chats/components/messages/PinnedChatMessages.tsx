@@ -50,7 +50,7 @@ export default function PinnedChatMessages({
                                         key={date}
                                         className="flex flex-col gap-[5px]"
                                     >
-                                        <div className="sticky top-0 z-10 self-center bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                        <div className="sticky top-0 z-10 self-center bg-neutral-200 dark:bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
                                             {dayjs(date).format("D MMMM")}
                                         </div>
                                         {msgs.map((msg, i) => {
@@ -96,7 +96,7 @@ export default function PinnedChatMessages({
 
                     <div className="w-full flex justify-center">
                         <button
-                            className="font-semibold bg-purple-gradient px-[20px] py-[15px] rounded-xl"
+                            className="font-semibold bg-theme-gradient px-[20px] py-[15px] rounded-xl"
                             onClick={handleUnpinAll}
                         >
                             Unpin All Messages

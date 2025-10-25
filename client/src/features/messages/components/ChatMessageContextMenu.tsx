@@ -18,6 +18,7 @@ import {
 import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
 import Image from "next/image";
 import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
+import { useTheme } from "next-themes";
 
 export function ChatMessageContextMenu({
     msg,
@@ -40,6 +41,8 @@ export function ChatMessageContextMenu({
     const createPinMessageMutation = useCreatePinMessage();
     const deletePinnedMessageMutation = useDeletePinnedMessage();
     const toggleReactionMutation = useToggleReaction();
+
+    const { theme } = useTheme();
 
     const handleCopy = async (text: string) => {
         try {
@@ -106,15 +109,15 @@ export function ChatMessageContextMenu({
                 onContextMenu={() => setSelectedMessage(msg)}
                 className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere group relative ${
                     msg.isMine
-                        ? "bg-purple-gradient self-end rounded-br-none"
-                        : "bg-neutral-800 self-start rounded-bl-none"
+                        ? "bg-theme-gradient self-end rounded-br-none"
+                        : "bg-neutral-200 dark:bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
                 <div>
                     {msg.forwardedMessageId && (
                         <div className="p-[3px]">
                             <div className="flex items-center gap-[5px] text-sm">
-                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
                                 <div className="flex gap-[3px]">
                                     <div>forwarded from</div>
                                     <span className="font-semibold">
@@ -126,22 +129,32 @@ export function ChatMessageContextMenu({
                     )}
 
                     {msg.replyTo && (
-                        <div className="px-[15px] py-[4px] bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
+                        <div
+                            className={`px-[15px] py-[4px] bg-neutral-950/5 dark:bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px] ${
+                                msg.isMine && theme === "light"
+                                    ? "text-white"
+                                    : msg.isMine && theme === "dark"
+                                    ? "text-white"
+                                    : "null"
+                            }`}
+                        >
                             <div className="font-bold text-sm flex gap-[3px]">
                                 {msg.replyTo?.sender.username}
                                 {msg.replyTo?.forwardedMessageId && (
-                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                    <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
                                 )}
                                 {msg.replyTo.forwardedMessage?.sender.username}
                             </div>
-                            <div className="text-sm">
+                            <div className="text-sm truncate">
                                 {msg.replyTo?.content}
                             </div>
                         </div>
                     )}
 
                     <div>
-                        {msg.content}
+                        <div className={`${msg.isMine ? "text-white" : null}`}>
+                            {msg.content}
+                        </div>
                         <div className="flex gap-[5px] justify-between items-end">
                             <div className="flex gap-[5px] overflow-y-auto">
                                 {msg.reactions &&
@@ -176,13 +189,13 @@ export function ChatMessageContextMenu({
                                                                     width={22}
                                                                     height={22}
                                                                     unoptimized
-                                                                    className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-800"
+                                                                    className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-300 dark:border-neutral-800"
                                                                 />
                                                             )
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <div className="text-sm text-gray-300 font-medium">
+                                                    <div className="text-sm text-white/70 font-medium">
                                                         +{group.users.length}
                                                     </div>
                                                 )}
@@ -190,28 +203,34 @@ export function ChatMessageContextMenu({
                                         )
                                     )}
                             </div>
-                            <div>
+                            <div className="flex items-center gap-[5px]">
                                 {msg.createdAt !== msg.updatedAt ? (
-                                    <div className="text-xs text-gray-400 text-right">
+                                    <div className="text-xs text-white/70 text-right">
                                         edited
                                     </div>
                                 ) : null}
                                 <div className="flex items-center gap-[1px]">
                                     {msg.pinnedMessages &&
                                         msg?.pinnedMessages?.length > 0 && (
-                                            <div className="text-xs text-gray-400 text-right">
-                                                <PinIcon className="w-[13px] pr-[2px] fill-neutral-400 stroke-1 stroke-neutral-400" />
+                                            <div className="text-xs text-white/70 text-right">
+                                                <PinIcon className="w-[13px] pr-[2px] fill-white/70 stroke-1 stroke-neutral-900 dark:stroke-white/70" />
                                             </div>
                                         )}
-                                    <div className="text-xs text-gray-400 text-right">
+                                    <div
+                                        className={`text-xs text-white/70 text-right ${
+                                            !msg.isMine && "text-neutral-500!"
+                                        }`}
+                                    >
                                         {dayjs(msg.createdAt).format("HH:mm")}
                                     </div>
-                                    {msg.messagesRead &&
-                                    msg.messagesRead.length >= 2 ? (
-                                        <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
-                                    ) : (
-                                        <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-400" />
-                                    )}
+                                    {msg.isMine ? (
+                                        msg.messagesRead &&
+                                        msg.messagesRead.length >= 2 ? (
+                                            <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white" />
+                                        ) : (
+                                            <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
+                                        )
+                                    ) : null}
                                 </div>
                             </div>
                         </div>

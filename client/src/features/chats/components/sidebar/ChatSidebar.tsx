@@ -9,7 +9,7 @@ export function ChatSidebar({ chat }: { chat: IChat }) {
 
     return (
         <div
-            className={`overflow-y-auto bg-neutral-950 border-l border-neutral-800 text-white transition-all duration-400 ease-in-out relative ${
+            className={`overflow-y-auto bg-neutral-100 dark:bg-neutral-950 border-l border-neutral-300 dark:border-neutral-300 dark:border-neutral-800 text-black dark:text-white transition-all duration-400 ease-in-out relative ${
                 chatSidebarOpened ? "w-[450px]" : "w-0 border-none"
             }`}
         >
