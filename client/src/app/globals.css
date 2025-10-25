@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  /* Тут можна додати кастомні кольори якщо потрібно */
+}
+
+/* Увімкнути dark mode через клас */
+@variant dark (&:where(.dark, .dark *));
+
 *::-webkit-scrollbar {
   height: 7px;
   width: 7px;
@@ -20,12 +27,24 @@
   background-color: #ffffff30;
 }
 
-.bg-purple-gradient {
-  @apply bg-gradient-to-br from-violet-600 to-indigo-600;
+
+.bg-theme-gradient {
+  @apply bg-gradient-to-br from-blue-600 to-sky-600 transition-all duration-300;
 }
-button.bg-purple-gradient:hover {
-  @apply bg-gradient-to-br from-violet-700 to-indigo-700;
+
+button.bg-theme-gradient:hover {
+  @apply from-blue-500 to-sky-500;
 }
+
+.dark .bg-theme-gradient {
+  @apply from-violet-600 to-indigo-600;
+}
+
+.dark button.bg-theme-gradient:hover {
+  @apply from-violet-700 to-indigo-700;
+}
+
+
 
 button{
   cursor: pointer;
