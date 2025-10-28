@@ -76,7 +76,7 @@ export function ForwardMessage({ isOpen, onClose }: CreateProps) {
                     <Button
                         type="button"
                         onClick={handleClose}
-                        className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>

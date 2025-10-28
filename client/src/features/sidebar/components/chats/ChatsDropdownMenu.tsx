@@ -42,7 +42,7 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button>
+                <button className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-full">
                     <BurgerMenuIcon className="w-[24px] stroke-3 stroke-neutral-900 dark:stroke-white" />
                 </button>
             </DropdownMenuTrigger>
@@ -61,7 +61,7 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                     </div>
                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator className="bg-neutral-700" />
+                <DropdownMenuSeparator />
 
                 <DropdownMenuItem
                     className="group"
@@ -82,7 +82,7 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger className="group">
                         <div className="flex items-center gap-[10px]">
-                            <OptionsIcon className="w-[16px] fill-white group-focus:fill-black" />
+                            <OptionsIcon className="w-[16px] fill-neutral-900 dark:fill-white" />
                             <div>More</div>
                         </div>
                     </DropdownMenuSubTrigger>
@@ -110,7 +110,7 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                     </DropdownMenuPortal>
                 </DropdownMenuSub>
 
-                <DropdownMenuSeparator className="bg-neutral-700" />
+                <DropdownMenuSeparator />
 
                 <DropdownMenuItem
                     variant="destructive"

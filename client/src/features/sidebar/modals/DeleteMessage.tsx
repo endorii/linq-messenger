@@ -6,6 +6,7 @@ import {
     useDeleteMessage,
 } from "@/features/messages/hooks/useMessages";
 import { Button } from "@/shared/components/ui/button";
+import { ButtonActive } from "@/shared/components/ui/buttons";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
 import { useEscapeKeyClose } from "@/shared/hooks";
 import { CloseIcon } from "@/shared/icons";
@@ -47,13 +48,12 @@ export function DeleteMessage({ isOpen, onClose, chatId }: DeleteMessageProps) {
 
     const modalContent = (
         <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
-            <Button
-                type="button"
+            <button
                 onClick={onClose}
                 className="absolute top-[10px] right-[10px] cursor-pointer"
             >
-                <CloseIcon className="w-[30px] stroke-3 stroke-neutral-900 dark:stroke-white" />
-            </Button>
+                <CloseIcon className="w-[20px] stroke-2 stroke-neutral-900 dark:stroke-white" />
+            </button>
 
             <div className="flex flex-col gap-[15px]">
                 <div className="max-w-[400px]">
@@ -63,13 +63,13 @@ export function DeleteMessage({ isOpen, onClose, chatId }: DeleteMessageProps) {
                 <div className="flex gap-[10px] flex-wrap">
                     <Button
                         onClick={handleDeleteMessageForMe}
-                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                        className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                     >
                         Delete only for me
                     </Button>
                     <Button
                         onClick={handleDeleteMessage}
-                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                        className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                     >
                         Delete for all
                     </Button>

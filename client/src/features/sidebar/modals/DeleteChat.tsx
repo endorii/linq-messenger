@@ -3,6 +3,7 @@
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useLeaveChat, useDeleteChat } from "@/features/chats/hooks/useChats";
 import { Button } from "@/shared/components/ui/button";
+import { ButtonActive } from "@/shared/components/ui/buttons";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
 import { ChatEnum } from "@/shared/enums/enums";
 import { usePrivateChat, useEscapeKeyClose } from "@/shared/hooks";
@@ -45,13 +46,12 @@ export function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
 
     const modalContent = (
         <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
-            <Button
-                type="button"
+            <button
                 onClick={onClose}
                 className="absolute top-[10px] right-[10px] cursor-pointer"
             >
-                <CloseIcon className="w-[30px] stroke-3 stroke-neutral-900 dark:stroke-white" />
-            </Button>
+                <CloseIcon className="w-[20px] stroke-2 stroke-neutral-900 dark:stroke-white" />
+            </button>
 
             <div className="flex flex-col gap-[15px]">
                 <div className="max-w-[400px]">
@@ -62,13 +62,13 @@ export function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
                     <div className="flex gap-[10px] flex-wrap">
                         <Button
                             onClick={handleLeaveChat}
-                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                            className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                         >
                             Leave chat
                         </Button>
                         <Button
                             onClick={handleDeleteChat}
-                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                            className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                         >
                             Delete for all
                         </Button>
@@ -80,7 +80,7 @@ export function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
                     <div className="flex flex-col w-full gap-[10px]">
                         <Button
                             onClick={handleLeaveChat}
-                            className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                            className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                         >
                             Leave
                             {chat.type === ChatEnum.GROUP ? "Group" : "Channel"}
@@ -91,7 +91,7 @@ export function DeleteChat({ isOpen, onClose, chat }: DeleteChatProps) {
                                 chat.type === ChatEnum.CHANNEL) && (
                                 <Button
                                     onClick={handleDeleteChat}
-                                    className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                                    className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                                 >
                                     Delete{" "}
                                     {chat.type === ChatEnum.GROUP

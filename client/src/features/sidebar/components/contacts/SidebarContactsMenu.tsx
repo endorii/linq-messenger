@@ -1,5 +1,6 @@
 "use client";
 
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 import { Input } from "@/shared/components/ui/input";
 import { SearchIcon, CloseIcon, BackIcon } from "@/shared/icons";
 import { useNavigationStore } from "@/store";
@@ -13,10 +14,10 @@ export function SidebarContactsMenu({
 }) {
     const { setSidebarTab } = useNavigationStore();
     return (
-        <div className="text-black dark:text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
-            <button onClick={() => setSidebarTab("chats")}>
-                <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
-            </button>
+        <div className="text-black dark:text-white flex gap-[20px] justify-between items-center py-[10px] px-[20px]">
+            <ButtonIcon onClick={() => setSidebarTab("chats")}>
+                <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none" />
+            </ButtonIcon>
 
             <div className="w-full relative rounded-xl group">
                 <Input
@@ -26,7 +27,7 @@ export function SidebarContactsMenu({
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
 
-                <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-[15px] w-[20px] stroke-neutral-700 fill-none stroke-3 group-focus-within:stroke-white/70 transition-colors duration-300" />
+                <SearchIcon className="absolute top-[50%] translate-y-[-50%] left-4 w-[20px] stroke-neutral-600 fill-none stroke-3 group-focus-within:stroke-neutral-800 dark:group-focus-within:stroke-white/70 transition-colors duration-300" />
 
                 <button
                     onClick={() => setSearchValue("")}

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/shared/components/providers/QueryProvider";
-import { Toaster } from "sonner";
 import { ThemeProvider } from "./providers/theme-provider";
+import { ClientToaster } from "@/shared/components/ClientToaster";
 
 const roboto = Roboto({});
 
@@ -20,7 +20,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${roboto.className} bg-neutral-200 dark:bg-neutral-800 selection:bg-purple-900 selection:text-white`}
+                className={`${roboto.className} bg-neutral-200 dark:bg-neutral-800 selection:bg-blue-700 dark:selection:bg-purple-800 selection:text-white`}
             >
                 <QueryProvider>
                     <ThemeProvider
@@ -29,7 +29,7 @@ export default function RootLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        <Toaster theme="dark" />
+                        <ClientToaster />
                         {children}
                     </ThemeProvider>
                 </QueryProvider>

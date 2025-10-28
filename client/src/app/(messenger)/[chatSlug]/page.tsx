@@ -128,13 +128,11 @@ function ChatSlug() {
                                     return (
                                         <div
                                             key={msg.id}
-                                            className={`relative flex items-center gap-[20px] p-[5px] ${
+                                            className={`relative flex items-center gap-[20px] p-[5px]  cursor-pointer ${
                                                 (isSelected &&
-                                                    "bg-white/5 rounded-md") ||
+                                                    "bg-neutral-900/10 dark:bg-white/5 rounded-md") ||
                                                 (selectedMessages &&
-                                                    selectedMessages.length >
-                                                        0 &&
-                                                    " cursor-pointer")
+                                                    selectedMessages.length > 0)
                                             }`}
                                             onClick={() => {
                                                 if (

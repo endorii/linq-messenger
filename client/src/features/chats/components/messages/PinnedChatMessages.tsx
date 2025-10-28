@@ -38,9 +38,9 @@ export default function PinnedChatMessages({
     };
 
     return (
-        <div className="h-full w-full pt-[65px] pb-[20px]">
+        <div className="h-full w-full pb-[20px]">
             <div className="flex flex-col h-full w-full relative">
-                <div className="relative flex flex-col h-full w-full pt-[65px] z-10">
+                <div className="relative flex flex-col h-full w-full pt-[65px]">
                     <div className="flex-1 flex flex-col-reverse gap-[10px] h-full w-full overflow-y-auto px-[15%] py-[20px]">
                         {groupedMessages &&
                             Object.entries(groupedMessages)
@@ -50,7 +50,7 @@ export default function PinnedChatMessages({
                                         key={date}
                                         className="flex flex-col gap-[5px]"
                                     >
-                                        <div className="sticky top-0 z-10 self-center bg-neutral-200 dark:bg-neutral-900 px-3 py-1 rounded-md text-sm text-gray-300 mb-2">
+                                        <div className="sticky top-0 z-10 self-center bg-neutral-200 dark:bg-neutral-900 px-3 py-1 rounded-md text-sm text-black dark:text-gray-300 mb-2">
                                             {dayjs(date).format("D MMMM")}
                                         </div>
                                         {msgs.map((msg, i) => {
@@ -94,9 +94,9 @@ export default function PinnedChatMessages({
                                 ))}
                     </div>
 
-                    <div className="w-full flex justify-center">
+                    <div className="w-full flex justify-center pt-[15px]">
                         <button
-                            className="font-semibold bg-theme-gradient px-[20px] py-[15px] rounded-xl"
+                            className="text-white font-semibold bg-theme-gradient px-[20px] py-[15px] rounded-xl"
                             onClick={handleUnpinAll}
                         >
                             Unpin All Messages

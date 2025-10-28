@@ -1,4 +1,5 @@
 import { useLogoutUser } from "@/features/auth/hooks/useAuth";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,9 +22,9 @@ export function SidebarSettingsMenu() {
     return (
         <div className="text-black dark:text-white flex gap-[25px] justify-between items-center py-[10px] px-[25px]">
             <div className="flex gap-[20px] justify-between items-center min-h-[50px]">
-                <button onClick={() => setSidebarTab("chats")}>
-                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
-                </button>
+                <ButtonIcon onClick={() => setSidebarTab("chats")}>
+                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none" />
+                </ButtonIcon>
                 <div className="text-xl font-semibold">Settings</div>
             </div>
             <div className="flex gap-[20px] justify-between items-center">

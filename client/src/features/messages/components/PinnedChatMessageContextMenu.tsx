@@ -1,3 +1,5 @@
+"use client";
+
 import {
     ContextMenu,
     ContextMenuContent,
@@ -119,7 +121,13 @@ export function PinnedChatMessageContextMenu({
                     )}
 
                     {msg.message.replyTo && (
-                        <div className="px-[15px] py-[4px] dark:bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px]">
+                        <div
+                            className={`px-[15px] py-[4px] text-white  w-full rounded-xl border-l-4 mb-[10px] ${
+                                msg.isMine
+                                    ? " bg-blue-100/20 dark:bg-purple-100/20"
+                                    : "bg-blue-500 dark:bg-indigo-500 "
+                            }`}
+                        >
                             <div className="font-bold text-sm flex gap-[3px]">
                                 {msg.message.replyTo?.sender.username}
                                 {msg.message.replyTo?.forwardedMessageId && (
@@ -130,14 +138,17 @@ export function PinnedChatMessageContextMenu({
                                         .username
                                 }
                             </div>
-                            <div className="text-sm">
+                            <div className="text-sm truncate">
                                 {msg.message.replyTo?.content}
                             </div>
                         </div>
                     )}
 
                     <div>
-                        {msg.message.content}
+                        <div className={`${msg.isMine ? "text-white" : ""}`}>
+                            {msg.message.content}
+                        </div>
+
                         <div className="flex gap-[5px] justify-between items-end">
                             <div className="flex gap-[5px] overflow-y-auto">
                                 {msg.message.reactions &&
@@ -173,42 +184,55 @@ export function PinnedChatMessageContextMenu({
                                                     ))}
                                                 </div>
                                             ) : (
-                                                <div className="text-sm text-gray-300 font-medium">
+                                                <div className="text-sm text-white/70 font-medium">
                                                     +{group.users.length}
                                                 </div>
                                             )}
                                         </div>
                                     ))}
                             </div>
-                            <div>
+
+                            <div className="flex items-center gap-[5px]">
                                 {msg.message.createdAt !==
                                 msg.message.updatedAt ? (
-                                    <div className="text-xs text-gray-400 text-right">
+                                    <div className="text-xs text-white/70 text-right">
                                         edited
                                     </div>
                                 ) : null}
+
                                 <div className="flex items-center gap-[1px]">
                                     {msg.message.pinnedMessages &&
-                                        msg?.message.pinnedMessages?.length >
+                                        msg.message.pinnedMessages.length >
                                             0 && (
-                                            <div className="text-xs text-gray-400 text-right">
-                                                <PinIcon className="w-[13px] pr-[2px] fill-white/70 stroke-1 stroke-neutral-900 dark:stroke-white/70" />
-                                            </div>
+                                            <PinIcon
+                                                className={`w-[13px] pr-[2px] stroke-1 ${
+                                                    !msg.isMine
+                                                        ? "fill-neutral-500 stroke-neutral-500 "
+                                                        : "fill-white/70 stroke-white/70 dark:fill-neutral-100  dark:stroke-neutral-100"
+                                                }`}
+                                            />
                                         )}
-                                    <div className="text-xs text-gray-400 text-right">
+                                    <div
+                                        className={`text-xs text-white/70 text-right ${
+                                            !msg.isMine && "text-neutral-500!"
+                                        }`}
+                                    >
                                         {dayjs(msg.createdAt).format("HH:mm")}
                                     </div>
-                                    {msg.message.messagesRead &&
-                                    msg.message.messagesRead.length >= 2 ? (
-                                        <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
-                                    ) : (
-                                        <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
-                                    )}
+                                    {msg.isMine ? (
+                                        msg.message.messagesRead &&
+                                        msg.message.messagesRead.length >= 2 ? (
+                                            <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-white" />
+                                        ) : (
+                                            <CheckIcon className="w-[20px] fill-none stroke-2 stroke-white" />
+                                        )
+                                    ) : null}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <button
                     className="absolute -right-[10px] -bottom-[10px] opacity-0 group-hover:opacity-100 transition-all duration-200"
                     onClick={() => handleToggleEmoji("❤️")}
@@ -253,8 +277,9 @@ export function PinnedChatMessageContextMenu({
                 >
                     Copy
                 </ContextMenuItem>
+
                 {msg.message.pinnedMessages &&
-                msg.message.pinnedMessages?.length > 0 &&
+                msg.message.pinnedMessages.length > 0 &&
                 (isAdmin || isPrivate) ? (
                     <ContextMenuItem
                         variant="destructive"

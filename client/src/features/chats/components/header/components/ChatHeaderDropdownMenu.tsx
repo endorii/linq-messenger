@@ -40,7 +40,7 @@ export function ChatHeaderDropdownMenu({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="cursor-pointer">
+                <button className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-full">
                     <OptionsIcon className="w-[21px] fill-neutral-800 dark:fill-neutral-300" />
                 </button>
             </DropdownMenuTrigger>

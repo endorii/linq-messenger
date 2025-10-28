@@ -4,7 +4,7 @@ import { IMessage, IUser } from "@/shared/interfaces";
 
 export function ChatMessage({
     msg,
-    isSameSenderAsPrev,
+
     isSameSenderAsNext,
     me,
     isAdmin,

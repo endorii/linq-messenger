@@ -58,21 +58,17 @@ export function AddContact({ isOpen, onClose }: AddContactProps) {
     const { selectedChat } = useSelectionStore();
 
     const onSubmit = async (data: FormData) => {
-        try {
-            await createContactMutation.mutateAsync({
-                contactPayload: {
-                    username: data.contactUsername,
-                    nickname: data.contactCustomName,
-                },
-            });
-            setSelectedUser(null);
-            reset();
-            handleClose();
-        } catch (error: any) {
-            setModalMessage(
-                error.response.data.message || "Error during adding contact"
-            );
-        }
+        if (!selectedChat) return;
+        await createContactMutation.mutateAsync({
+            chatId: selectedChat?.id,
+            contactPayload: {
+                username: data.contactUsername,
+                nickname: data.contactCustomName,
+            },
+        });
+        setSelectedUser(null);
+        reset();
+        handleClose();
     };
 
     useEscapeKeyClose({ isOpen, onClose });
@@ -116,7 +112,7 @@ export function AddContact({ isOpen, onClose }: AddContactProps) {
                     <Button
                         type="button"
                         onClick={handleClose}
-                        className="cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>

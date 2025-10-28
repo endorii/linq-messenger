@@ -20,9 +20,15 @@ export function useContacts() {
 export function useCreateContact() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ contactPayload }: { contactPayload: ContactPayload }) =>
-            fetchAddContact(contactPayload),
-        onSuccess: (data) => {
+        mutationFn: ({
+            chatId,
+            contactPayload,
+        }: {
+            chatId: string;
+            contactPayload: ContactPayload;
+        }) => fetchAddContact(contactPayload),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
         },

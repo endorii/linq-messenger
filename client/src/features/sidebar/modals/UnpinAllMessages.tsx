@@ -1,10 +1,9 @@
 "use client";
 
-import { useLeaveChat, useDeleteChat } from "@/features/chats/hooks/useChats";
 import { useUnpinAllMessages } from "@/features/messages/hooks/usePinnedMessages";
 import { Button } from "@/shared/components/ui/button";
+import { ButtonActive } from "@/shared/components/ui/buttons";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
-import { ChatEnum } from "@/shared/enums/enums";
 import { useEscapeKeyClose } from "@/shared/hooks";
 import { CloseIcon } from "@/shared/icons";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
@@ -41,13 +40,12 @@ export function UnpinAllMessages({
 
     const modalContent = (
         <ModalWrapper onClose={onClose} modalTitle={modalTitle}>
-            <Button
-                type="button"
+            <button
                 onClick={onClose}
                 className="absolute top-[10px] right-[10px] cursor-pointer"
             >
-                <CloseIcon className="w-[30px] stroke-3 stroke-neutral-900 dark:stroke-white" />
-            </Button>
+                <CloseIcon className="w-[20px] stroke-2 stroke-neutral-900 dark:stroke-white" />
+            </button>
 
             <div className="flex flex-col gap-[15px]">
                 <div className="max-w-[400px]">
@@ -59,13 +57,13 @@ export function UnpinAllMessages({
                     <Button
                         type="button"
                         onClick={onClose}
-                        className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>
                     <Button
                         onClick={handleUnpinAllMessages}
-                        className="flex-1 border-2 border-red-900 text-red-500 hover:border-transparent hover:text-white hover:bg-red-700 transition-all duration-200"
+                        className="flex-1 text-white bg-red-700 hover:bg-red-800 transition-all duration-200"
                     >
                         Unpin All
                     </Button>

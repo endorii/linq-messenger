@@ -9,15 +9,29 @@ export function useEscapeKeyNavigate() {
 
     useEffect(() => {
         const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape" && pathname !== "/") {
-                router.push("/");
-            }
+            if (event.key !== "Escape" || pathname === "/") return;
+
+            const activeEl = document.activeElement;
+            const isTyping =
+                activeEl &&
+                (activeEl.tagName === "INPUT" ||
+                    activeEl.tagName === "TEXTAREA" ||
+                    activeEl.getAttribute("contenteditable") === "true");
+
+            const modalOpen = !!document.querySelector(
+                ".modal-wrapper, [data-modal-wrapper], [role='dialog'], [role='alertdialog'], [data-state='open']"
+            );
+
+            const dropdownOpen = !!document.querySelector(
+                ".dropdown, [data-dropdown], .context-menu, [data-context-menu], .menu, [data-menu], [role='menu'], [data-state='open'], [aria-expanded='true']"
+            );
+
+            if (isTyping || modalOpen || dropdownOpen) return;
+
+            router.push("/");
         };
 
         document.addEventListener("keydown", handleEscape);
-
-        return () => {
-            document.removeEventListener("keydown", handleEscape);
-        };
+        return () => document.removeEventListener("keydown", handleEscape);
     }, [router, pathname]);
 }

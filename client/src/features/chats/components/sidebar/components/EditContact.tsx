@@ -6,13 +6,14 @@ import {
 } from "@/features/contacts/hooks/useContacts";
 import { Input } from "@/shared/components/ui/input";
 import { usePrivateChat } from "@/shared/hooks";
-import { CheckIcon, CloseIcon, PlusIcon, TrashIcon } from "@/shared/icons";
+import { CheckIcon, CloseIcon, TrashIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore } from "@/store";
 import { Label } from "@radix-ui/react-dropdown-menu";
 
 import { useForm } from "react-hook-form";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function EditContact({ chat }: { chat: IChat }) {
     const useUpdateContactMutation = useUpdateContact();
@@ -60,11 +61,11 @@ export function EditContact({ chat }: { chat: IChat }) {
 
     return (
         <div className="relative flex flex-col h-full">
-            <div className="flex gap-[20px] justify-between p-[18px]">
+            <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
-                    <button onClick={() => setChatSidebarTab("info")}>
-                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white cursor-pointer" />
-                    </button>
+                    <ButtonIcon onClick={() => setChatSidebarTab("info")}>
+                        <CloseIcon className="w-[24px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white cursor-pointer" />
+                    </ButtonIcon>
                     <div className="text-xl font-semibold text-nowrap">
                         Edit Contact
                     </div>

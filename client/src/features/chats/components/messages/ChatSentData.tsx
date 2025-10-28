@@ -23,6 +23,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
+import { useTheme } from "next-themes";
 
 interface ChatSentDataProps {
     chatId: string;
@@ -32,6 +34,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
 
     const createMessageMutation = useCreateMessage();
+    const { theme } = useTheme();
 
     const {
         chatSentType,
@@ -106,7 +109,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="w-full relative rounded-xl group bg-neutral-200 dark:bg-neutral-200 dark:bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-blue-600 focus-within:to-sky-600 dark:focus-within:from-violet-600 dark:focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
+            <div className="w-full relative rounded-xl group bg-neutral-200 dark:bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-blue-600 focus-within:to-sky-600 dark:focus-within:from-violet-600 dark:focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
                 <div className="flex flex-col w-full gap-[3px]">
                     {chatSentType === "reply" ? (
                         <div className="flex gap-[5px] px-[10px] py-[3px] ">
@@ -126,15 +129,15 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                     }`}
                                 </div>
                             </div>
-                            <button
+                            <ButtonIcon
                                 onClick={() => {
                                     setInputValue("");
                                     setMessageForEdit(null);
                                     setChatSentType("sent");
                                 }}
                             >
-                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
-                            </button>
+                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[4px]" />
+                            </ButtonIcon>
                         </div>
                     ) : null}
                     {chatSentType === "edit" ? (
@@ -155,15 +158,15 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                     }`}
                                 </div>
                             </div>
-                            <button
+                            <ButtonIcon
                                 onClick={() => {
                                     setInputValue("");
                                     setMessageForEdit(null);
                                     setChatSentType("sent");
                                 }}
                             >
-                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
-                            </button>
+                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[4px]" />
+                            </ButtonIcon>
                         </div>
                     ) : null}
                     <ChatTextarea
@@ -176,38 +179,44 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button className="absolute bottom-[14px] right-[15px] transition-all duration-300 cursor-pointer">
-                            <EmojiIcon className="w-[20px] h-[20px] fill-white/70 group-focus-within:fill-white" />
+                            <EmojiIcon className="w-[20px] h-[20px] fill-neutral-400 dark:fill-white group-focus-within:fill-neutral-800 dark:group-focus-within:fill-white" />
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="p-0 border-none shadow-lg">
                         <EmojiPicker
                             onEmojiClick={handleEmojiClick}
                             autoFocusSearch={false}
-                            theme={Theme.DARK}
+                            theme={
+                                theme === "dark"
+                                    ? Theme.DARK
+                                    : theme === "light"
+                                    ? Theme.LIGHT
+                                    : Theme.AUTO
+                            }
                         />
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
 
-            <button
-                onClick={() => handleSend(inputValue)}
-                className="bg-theme-gradient rounded-xl p-[23px] cursor-pointer flex items-center justify-center"
-            >
-                <SendIcon
-                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white transition-all duration-200 ${
-                        inputValue.length > 0
-                            ? "opacity-100 scale-100"
-                            : "opacity-0 scale-75"
-                    }`}
-                />
-                <MicrophoneIcon
-                    className={`absolute w-[26px] h-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white transition-all duration-200 ${
-                        inputValue.length === 0
-                            ? "opacity-100 scale-100"
-                            : "opacity-0 scale-75"
-                    }`}
-                />
-            </button>
+            {inputValue.length > 0 ? (
+                <ButtonActive
+                    onClick={() => handleSend(inputValue)}
+                    className="relative! flex items-center justify-center h-full w-full"
+                >
+                    <SendIcon
+                        className={`w-[28px] fill-none stroke-2 stroke-white`}
+                    />
+                </ButtonActive>
+            ) : (
+                <ButtonActive
+                    onClick={() => console.log("voice")}
+                    className="relative! flex items-center justify-center h-full w-full"
+                >
+                    <MicrophoneIcon
+                        className={`w-[28px] fill-none stroke-2 stroke-white`}
+                    />
+                </ButtonActive>
+            )}
         </div>
     );
 }

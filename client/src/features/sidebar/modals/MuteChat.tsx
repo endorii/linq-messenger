@@ -98,7 +98,7 @@ export function MuteChat({ isOpen, onClose }: CreateNewChannelProps) {
                     <Button
                         type="button"
                         onClick={handleClose}
-                        className="cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>

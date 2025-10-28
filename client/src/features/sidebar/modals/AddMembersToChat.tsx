@@ -57,12 +57,12 @@ export function AddMembersToChat({ isOpen, onClose }: CreateProps) {
                         availableContacts.map((contact) => (
                             <div
                                 key={contact.id}
-                                className={`flex items-center gap-[25px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer min-w-[320px] ${
+                                className={`flex items-center gap-[25px]  hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer min-w-[320px] ${
                                     selectedContacts.includes(
                                         contact.contact!.id
                                     )
-                                        ? "bg-theme-gradient"
-                                        : ""
+                                        ? "bg-theme-gradient text-white"
+                                        : " text-black dark:text-white"
                                 }`}
                                 onClick={() => {
                                     const userId = contact.contact?.id;
@@ -93,7 +93,11 @@ export function AddMembersToChat({ isOpen, onClose }: CreateProps) {
                                     <div
                                         className={`font-base truncate ${
                                             contact.contact?.isOnline
-                                                ? "text-green-500"
+                                                ? "text-green-600"
+                                                : selectedContacts.includes(
+                                                      contact.contact!.id
+                                                  )
+                                                ? "text-white dark:text-neutral-400"
                                                 : "text-neutral-500 dark:text-neutral-400"
                                         }`}
                                     >
@@ -111,7 +115,7 @@ export function AddMembersToChat({ isOpen, onClose }: CreateProps) {
                     <Button
                         type="button"
                         onClick={handleClose}
-                        className="flex items-center justify-center bg-neutral-200 dark:bg-neutral-800 border border-white/5 cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>

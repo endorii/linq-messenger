@@ -16,6 +16,7 @@ import {
 } from "@/store";
 import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 import { ChatHeaderDropdownMenu } from "./components/ChatHeaderDropdownMenu";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function ChatHeader({
     chat,
@@ -107,7 +108,7 @@ export function ChatHeader({
     const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];
 
     return (
-        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-black bg-neutral-100 dark:text-white dark:dark:bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer border-b border-neutral-300 dark:border-neutral-300 dark:border-neutral-800">
+        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-black bg-neutral-100 dark:text-white dark:dark:bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer border-b border-neutral-200 dark:border-neutral-800">
             {isChatPending ? (
                 <div
                     className="flex gap-[20px] w-full"
@@ -146,7 +147,7 @@ export function ChatHeader({
                             <div className="flex gap-[5px] items-center">
                                 <div className="font-semibold">{chatName}</div>
                                 {meMember?.isMuted && (
-                                    <MuteIcon className="w-[15px] fill-neutral-900/70 stroke-2 stroke-neutral-900/70 dark:fill-white/70 dark:stroke-white/70 flex-shrink-0 mb-[2px]" />
+                                    <MuteIcon className="w-[15px] fill-neutral-800 stroke-neutral-800 dark:fill-white dark:stroke-white flex-shrink-0 mb-[1px]" />
                                 )}
                             </div>
                             <div className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -187,15 +188,14 @@ export function ChatHeader({
                                             : "")}
                                 </div>
                             </div>
-                            <div className="relative flex group ">
-                                <button
-                                    className="group-hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[9px] rounded-full"
+                            <div className="relative flex group">
+                                <ButtonIcon
                                     onClick={() => handleSetChatView("pinned")}
                                 >
                                     <PinIcon className="w-[22px] stroke-neutral-800 fill-neutral-800 dark:stroke-neutral-300 stroke-[1] dark:fill-neutral-300" />
-                                </button>
+                                </ButtonIcon>
                                 {chat.pinnedMessages.length > 1 && (
-                                    <div className="absolute top-[0px] right-[-2px] bg-theme-gradient rounded-full text-center text-xs w-[17px] h-[17px]">
+                                    <div className="text-white absolute top-[0px] right-[-2px] bg-theme-gradient rounded-full text-center text-xs w-[18px] h-[18px] pt-px">
                                         {chat.pinnedMessages.length}
                                     </div>
                                 )}
@@ -203,15 +203,15 @@ export function ChatHeader({
                         </div>
                     )}
 
-                    <div className="flex gap-[25px]">
+                    <div className="flex gap-[5px]">
                         {isPrivate ? (
-                            <button>
+                            <ButtonIcon>
                                 <PhoneIcon className="w-[24px] stroke-neutral-800 dark:stroke-neutral-300 stroke-[2.5] fill-none" />
-                            </button>
+                            </ButtonIcon>
                         ) : null}
-                        <button>
+                        <ButtonIcon>
                             <SearchIcon className="w-[24px] stroke-neutral-800 dark:stroke-neutral-300 stroke-[2.5] fill-none" />
-                        </button>
+                        </ButtonIcon>
                         <ChatHeaderDropdownMenu
                             isPrivate={isPrivate}
                             meId={me?.id}

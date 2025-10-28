@@ -100,7 +100,7 @@ export function EditFolder({ isOpen, onClose }: CreateNewChannelProps) {
                             onClose();
                             reset();
                         }}
-                        className=" cursor-pointer"
+                        className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                     >
                         Cancel
                     </Button>

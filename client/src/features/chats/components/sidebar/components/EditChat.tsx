@@ -3,19 +3,18 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Switch } from "@/shared/components/ui/switch";
 import {
+    CheckIcon,
     CloseIcon,
     NotifcationIcon,
-    PlusIcon,
     TrashIcon,
 } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
-
 import { useUpdateChat } from "../../../hooks/useChats";
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useModalStore, useChatSidebarStore } from "@/store";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 interface FormData {
     name: string;
@@ -23,17 +22,16 @@ interface FormData {
 }
 
 export function EditChat({ chat }: { chat: IChat }) {
-    const useUpdateChatMutation = useUpdateChat();
+    const updateChatMutation = useUpdateChat();
     const { setActiveModal } = useModalStore();
-
     const { setChatSidebarTab } = useChatSidebarStore();
-
     const { data: me } = useProfile();
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
 
     const {
         handleSubmit,
         register,
+        reset, // 👈 додано
         formState: { errors, isDirty },
     } = useForm<FormData>({
         defaultValues: {
@@ -42,15 +40,17 @@ export function EditChat({ chat }: { chat: IChat }) {
         },
     });
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = async (data: FormData) => {
         try {
-            useUpdateChatMutation.mutateAsync({
+            await updateChatMutation.mutateAsync({
                 chatId: chat.id,
                 updateChatPayload: {
                     name: data.name,
                     description: data.description,
                 },
             });
+
+            reset(data);
         } catch (error: any) {
             console.log(error);
         }
@@ -58,11 +58,11 @@ export function EditChat({ chat }: { chat: IChat }) {
 
     return (
         <div className="relative flex flex-col h-full">
-            <div className="flex gap-[20px] justify-between p-[18px]">
+            <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
-                    <button onClick={() => setChatSidebarTab("info")}>
-                        <CloseIcon className="rotate-180 w-[26px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white cursor-pointer" />
-                    </button>
+                    <ButtonIcon onClick={() => setChatSidebarTab("info")}>
+                        <CloseIcon className="w-[24px] fill-none stroke-2 stroke-neutral-800 dark:stroke-white " />
+                    </ButtonIcon>
                     <div className="text-xl font-semibold text-nowrap">
                         Edit
                     </div>
@@ -112,12 +112,14 @@ export function EditChat({ chat }: { chat: IChat }) {
                             errorMessage={errors.description?.message}
                         />
                     </div>
+
+                    {/* 👇 Кнопка показується тільки коли є зміни */}
                     {isDirty && (
                         <button
                             type="submit"
                             className="absolute top-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         >
-                            <PlusIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
+                            <CheckIcon className="w-[30px] stroke-2 stroke-white fill-none" />
                         </button>
                     )}
                 </form>
@@ -166,9 +168,7 @@ export function EditChat({ chat }: { chat: IChat }) {
 
                 <button
                     className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
-                    onClick={() => {
-                        setActiveModal("deleteChat");
-                    }}
+                    onClick={() => setActiveModal("deleteChat")}
                 >
                     <TrashIcon className="w-[30px] fill-none stroke-2 stroke-red-600" />
                     <div className="text-red-600 bg-transparent font-medium">

@@ -51,7 +51,7 @@ export function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
             value={value}
             onChange={handleChange}
             placeholder="Write your message..."
-            className="py-[10px] px-[20px] rounded-xl w-full bg-neutral-100  dark:dark:bg-neutral-950 dark:focus:dark:bg-neutral-950 border-none pr-[60px] outline-0 resize-none text-base overflow-y-auto h-[40px]"
+            className="py-[10px] px-[20px] rounded-xl w-full bg-white  dark:dark:bg-neutral-950 dark:focus:dark:bg-neutral-950 border-none pr-[60px] outline-0 resize-none text-base overflow-y-auto h-[40px]"
             onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();

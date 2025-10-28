@@ -106,6 +106,7 @@ export function ChatMessageContextMenu({
     return (
         <ContextMenu>
             <ContextMenuTrigger
+                asChild
                 onContextMenu={() => setSelectedMessage(msg)}
                 className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere group relative ${
                     msg.isMine
@@ -113,7 +114,7 @@ export function ChatMessageContextMenu({
                         : "bg-neutral-200 dark:bg-neutral-800 self-start rounded-bl-none"
                 }`}
             >
-                <div>
+                <div onDoubleClick={() => toggleSelectedMessage(msg.id)}>
                     {msg.forwardedMessageId && (
                         <div className="p-[3px]">
                             <div className="flex items-center gap-[5px] text-sm">
@@ -130,12 +131,10 @@ export function ChatMessageContextMenu({
 
                     {msg.replyTo && (
                         <div
-                            className={`px-[15px] py-[4px] bg-neutral-950/5 dark:bg-neutral-950/40 w-full rounded-xl border-l-4 mb-[10px] ${
-                                msg.isMine && theme === "light"
-                                    ? "text-white"
-                                    : msg.isMine && theme === "dark"
-                                    ? "text-white"
-                                    : "null"
+                            className={`px-[15px] py-[4px] text-white  w-full rounded-xl border-l-4 mb-[10px] ${
+                                msg.isMine
+                                    ? " bg-blue-100/20 dark:bg-purple-100/20"
+                                    : "bg-blue-500 dark:bg-indigo-500 "
                             }`}
                         >
                             <div className="font-bold text-sm flex gap-[3px]">
@@ -213,7 +212,13 @@ export function ChatMessageContextMenu({
                                     {msg.pinnedMessages &&
                                         msg?.pinnedMessages?.length > 0 && (
                                             <div className="text-xs text-white/70 text-right">
-                                                <PinIcon className="w-[13px] pr-[2px] fill-white/70 stroke-1 stroke-neutral-900 dark:stroke-white/70" />
+                                                <PinIcon
+                                                    className={`w-[13px] pr-[2px] stroke-1 ${
+                                                        !msg.isMine
+                                                            ? "fill-neutral-500 stroke-neutral-500 "
+                                                            : "fill-white/70 stroke-white/70 dark:fill-neutral-100  dark:stroke-neutral-100"
+                                                    }`}
+                                                />
                                             </div>
                                         )}
                                     <div
@@ -226,22 +231,22 @@ export function ChatMessageContextMenu({
                                     {msg.isMine ? (
                                         msg.messagesRead &&
                                         msg.messagesRead.length >= 2 ? (
-                                            <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white" />
+                                            <CheckBothIcon className="w-[20px] fill-none stroke-2 stroke-white" />
                                         ) : (
-                                            <CheckIcon className="w-[20px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white/70" />
+                                            <CheckIcon className="w-[20px] fill-none stroke-2 stroke-white" />
                                         )
                                     ) : null}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <button
+                        className="absolute -right-[10px] -bottom-[10px] opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        onClick={() => handleToggleEmoji("❤️")}
+                    >
+                        ❤️
+                    </button>
                 </div>
-                <button
-                    className="absolute -right-[10px] -bottom-[10px] opacity-0 group-hover:opacity-100 transition-all duration-200"
-                    onClick={() => handleToggleEmoji("❤️")}
-                >
-                    ❤️
-                </button>
             </ContextMenuTrigger>
 
             <ContextMenuContent className="w-[200px]">

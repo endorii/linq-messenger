@@ -110,7 +110,7 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
             <ContextMenuTrigger>
                 <SafeLink href={`/${chat?.id}`}>
                     <div
-                        className={`flex gap-[10px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
+                        className={`flex gap-[10px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer ${
                             isActive ? "bg-theme-gradient" : "bg-transparent"
                         }`}
                     >
@@ -131,20 +131,26 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                 <div className="flex gap-[5px] font-semibold truncate items-center">
                                     <div
                                         className={`truncate ${
-                                            !isActive &&
-                                            "text-black dark:text-white"
+                                            isActive ? "text-white" : ""
                                         }`}
                                     >
                                         {chatName}
                                     </div>
                                     {meMember?.isMuted && (
-                                        <MuteIcon className="w-[15px] fill-white/70 stroke-2 stroke-neutral-900 dark:stroke-white/70 flex-shrink-0 mb-[2px]" />
+                                        <MuteIcon
+                                            className={`w-[15px] stroke-2 dark:stroke-white dark:fill-white flex-shrink-0 mb-[2px] ${
+                                                isActive
+                                                    ? "fill-white stroke-white"
+                                                    : "stroke-neutral-800 fill-neutral-800"
+                                            }`}
+                                        />
                                     )}
                                 </div>
                                 <div
-                                    className={`text-xs font-semibold ${
-                                        !isActive &&
-                                        "text-black dark:text-white"
+                                    className={`text-xs font-medium ${
+                                        isActive
+                                            ? "text-white"
+                                            : "text-black dark:text-white/70"
                                     }`}
                                 >
                                     {formatSidebarLastMessageDateInChat(

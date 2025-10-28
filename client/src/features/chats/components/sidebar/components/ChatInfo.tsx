@@ -21,6 +21,7 @@ import { IChat } from "@/shared/interfaces";
 import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
 import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
+import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function ChatInfo({ chat }: { chat: IChat }) {
     const { isPrivate, meMember, otherMember, contact, chatName } =
@@ -71,11 +72,11 @@ export function ChatInfo({ chat }: { chat: IChat }) {
 
     return (
         <div className="flex flex-col h-full bg-">
-            <div className="flex gap-[20px] justify-between p-[18px]">
+            <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
-                    <button onClick={() => setChatSidebarOpened(false)}>
-                        <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 rotate-180 fill-none" />
-                    </button>
+                    <ButtonIcon onClick={() => setChatSidebarOpened(false)}>
+                        <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] rotate-180 fill-none" />
+                    </ButtonIcon>
                     <div className="text-xl font-semibold text-nowrap">
                         {isPrivate
                             ? "User information"
@@ -88,17 +89,17 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                 </div>
 
                 {isPrivate && contact ? (
-                    <button onClick={handleEditContact}>
+                    <ButtonIcon onClick={handleEditContact}>
                         <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
-                    </button>
+                    </ButtonIcon>
                 ) : isPrivate ? (
-                    <button onClick={handleAddContact}>
-                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
-                    </button>
+                    <ButtonIcon onClick={handleAddContact}>
+                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                    </ButtonIcon>
                 ) : !isPrivate && isAdmin ? (
-                    <button onClick={handleEditChat}>
+                    <ButtonIcon onClick={handleEditChat}>
                         <EditIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
-                    </button>
+                    </ButtonIcon>
                 ) : null}
             </div>
 
@@ -215,7 +216,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                                                     {member.user?.username}
                                                 </div>
                                                 {member.role === "OWNER" && (
-                                                    <OwnerIcon className="w-[20px] stroke-2 stroke-violet-500 fill-none" />
+                                                    <OwnerIcon className="w-[20px] stroke-2 stroke-blue-500 dark:stroke-violet-500 fill-none" />
                                                 )}
                                             </div>
                                             <div className="text-neutral-500 dark:text-neutral-400 text-sm">
@@ -257,12 +258,12 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                     </TabsContent>
                 </Tabs>
                 {!isPrivate && (
-                    <button
-                        className="absolute bottom-4 left-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
+                    <ButtonActive
+                        className="bottom-4 left-4"
                         onClick={() => setActiveModal("addMembers")}
                     >
-                        <AddContactIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
-                    </button>
+                        <AddContactIcon className="w-[30px] stroke-white stroke-2 fill-none" />
+                    </ButtonActive>
                 )}
             </div>
         </div>

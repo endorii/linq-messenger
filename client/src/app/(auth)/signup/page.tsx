@@ -215,7 +215,7 @@ function SignUp() {
                                     onClick={prevStep}
                                     className="w-1/7 items-center dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl border border-neutral-300 dark:border-neutral-800 h-[45px]"
                                 >
-                                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
+                                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none" />
                                 </Button>
                                 <Button
                                     type="submit"
