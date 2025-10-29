@@ -34,7 +34,7 @@ export function SidebarSettingsMenu() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button>
-                            <OptionsIcon className="w-[21px] fill-white" />
+                            <OptionsIcon className="w-[21px] fill-neutral-900 dark:fill-white" />
                         </button>
                     </DropdownMenuTrigger>
 

@@ -184,16 +184,14 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                 {(chat.unreadCount > 0 ||
                                     meMember?.isMarked) && (
                                     <div
-                                        className={`min-w-[23px] h-[23px] mb-[2px] flex-shrink-0 ${
-                                            (chat.unreadCount === 0 &&
-                                                meMember?.isMarked) ||
-                                            (chat.unreadCount > 0 &&
-                                                !meMember?.isMarked)
-                                                ? meMember?.isMuted
-                                                    ? "bg-neutral-500"
-                                                    : "bg-theme-gradient"
+                                        className={`text-white min-w-[23px] h-[23px] mb-[2px] flex-shrink-0 rounded-full text-xs flex items-center justify-center px-[3px] ${
+                                            meMember?.isMuted
+                                                ? "bg-neutral-500"
+                                                : chat.unreadCount > 0 ||
+                                                  meMember?.isMarked
+                                                ? "bg-theme-gradient"
                                                 : "bg-neutral-500"
-                                        } rounded-full text-xs flex items-center justify-center px-[3px]`}
+                                        }`}
                                     >
                                         <div className="mt-[1px] mr-[1px] font-semibold">
                                             {chat.unreadCount > 0

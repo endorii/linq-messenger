@@ -45,7 +45,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                         setSidebarTab("chats");
                     }}
                     key={contact.id}
-                    className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                    className="flex gap-[13px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                 >
                     <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                         {contact.contact?.avatarUrl && (

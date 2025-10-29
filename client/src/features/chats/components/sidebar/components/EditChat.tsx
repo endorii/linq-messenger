@@ -31,7 +31,7 @@ export function EditChat({ chat }: { chat: IChat }) {
     const {
         handleSubmit,
         register,
-        reset, // 👈 додано
+        reset,
         formState: { errors, isDirty },
     } = useForm<FormData>({
         defaultValues: {
@@ -113,7 +113,6 @@ export function EditChat({ chat }: { chat: IChat }) {
                         />
                     </div>
 
-                    {/* 👇 Кнопка показується тільки коли є зміни */}
                     {isDirty && (
                         <button
                             type="submit"

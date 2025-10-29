@@ -74,13 +74,11 @@ export interface IPinnedMessage {
 export interface ForwardMessagePayload {
     chatIds: string[];
     messageId: string;
-    // userId: string;
 }
 
 export interface ForwardMessagesPayload {
     chatIds: string[];
     messageIds: string[];
-    // userId: string;
 }
 
 export interface MessagePayload {

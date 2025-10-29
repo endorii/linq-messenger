@@ -216,7 +216,7 @@ export class ChatsService {
     }
 
     async getChatsByFolder(userId: string, folderId: string) {
-        const chats = await this.prisma.folderChat.findMany({
+        const folderChats = await this.prisma.folderChat.findMany({
             where: {
                 folderId,
                 chat: {
@@ -231,8 +231,13 @@ export class ChatsService {
                     include: {
                         members: { where: { leftAt: null }, include: { user: true } },
                         messages: {
-                            where: { isRevoked: false, deletedMessages: { none: { userId } } },
+                            take: 1,
+                            where: {
+                                isRevoked: false,
+                                deletedMessages: { none: { userId } },
+                            },
                             orderBy: { createdAt: "desc" },
+                            include: { sender: true },
                         },
                     },
                 },
@@ -244,14 +249,30 @@ export class ChatsService {
             },
         });
 
-        return chats.map((chat) => {
-            const lastMessage = chat.chat.messages[0] || null;
+        const chatsWithUnread = await Promise.all(
+            folderChats.map(async (folderChat) => {
+                const chat = folderChat.chat;
+                const member = chat.members.find((m) => m.userId === userId);
+                const lastReadAt = member?.lastReadAt ?? new Date(0);
 
-            return {
-                ...chat.chat,
-                lastMessage,
-            };
-        });
+                const unreadCount = await this.prisma.message.count({
+                    where: {
+                        chatId: chat.id,
+                        isRevoked: false,
+                        createdAt: { gt: lastReadAt },
+                        deletedMessages: { none: { userId } },
+                    },
+                });
+
+                return {
+                    ...chat,
+                    lastMessage: chat.messages[0] || null,
+                    unreadCount,
+                };
+            })
+        );
+
+        return chatsWithUnread;
     }
 
     async createPrivateChat(userId: string, { otherUserId }: CreatePrivateChatDto) {

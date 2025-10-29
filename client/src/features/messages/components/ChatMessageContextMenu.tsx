@@ -140,7 +140,7 @@ export function ChatMessageContextMenu({
                             <div className="font-bold text-sm flex gap-[3px]">
                                 {msg.replyTo?.sender.username}
                                 {msg.replyTo?.forwardedMessageId && (
-                                    <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
+                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
                                 )}
                                 {msg.replyTo.forwardedMessage?.sender.username}
                             </div>

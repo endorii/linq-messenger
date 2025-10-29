@@ -68,7 +68,6 @@ export function SidebarEditProfile() {
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col gap-[20px] p-[15px]"
             >
-                {/* BASIC INFO */}
                 <div className="flex flex-col gap-[15px]">
                     <div className="flex flex-col gap-[7px]">
                         <Label>First Name*</Label>
@@ -129,7 +128,6 @@ export function SidebarEditProfile() {
 
                 <hr className="border-t border-neutral-300 dark:border-neutral-800" />
 
-                {/* USERNAME FIELD */}
                 <div className="flex flex-col gap-[7px]">
                     <Label>Username*</Label>
                     <Input
@@ -188,9 +186,9 @@ export function SidebarEditProfile() {
                 {isFormChanged && (
                     <button
                         className="absolute bottom-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
-                        // onClick={() => setActiveModal("addContact")}
+                        type="submit"
                     >
-                        <CheckIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
+                        <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
                     </button>
                 )}
             </form>

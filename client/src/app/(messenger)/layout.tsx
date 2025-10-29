@@ -80,7 +80,7 @@ export default function MessengerLayout({
                     <Sidebar user={me} />
                 </ResizablePanel>
 
-                <ResizableHandle className="bg-neutral-200 dark:bg-neutral-200 dark:bg-neutral-800 transition-colors duration-200" />
+                <ResizableHandle className="bg-neutral-200 dark:bg-neutral-800 transition-colors duration-200" />
 
                 <ResizablePanel className="h-full overflow-hidden flex-1 dark:bg-neutral-950">
                     <div className="relative h-full w-full">{children}</div>

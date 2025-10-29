@@ -16,6 +16,7 @@ export function ChatsDropdownPlus() {
 
     const handleCreateFolder = () => setActiveModal("addFolder");
     const handleCreateChannel = () => setActiveModal("addNewChannel");
+    const handleAddContact = () => setActiveModal("addContact");
     const handleCreateGroup = () => setActiveModal("addNewGroup");
 
     return (
@@ -33,7 +34,10 @@ export function ChatsDropdownPlus() {
                 <DropdownMenuItem onClick={handleCreateFolder}>
                     New folder
                 </DropdownMenuItem>
-
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleAddContact}>
+                    New contact
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem onClick={handleCreateChannel}>

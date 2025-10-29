@@ -131,7 +131,7 @@ export function PinnedChatMessageContextMenu({
                             <div className="font-bold text-sm flex gap-[3px]">
                                 {msg.message.replyTo?.sender.username}
                                 {msg.message.replyTo?.forwardedMessageId && (
-                                    <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
+                                    <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
                                 )}
                                 {
                                     msg.message.replyTo.forwardedMessage?.sender

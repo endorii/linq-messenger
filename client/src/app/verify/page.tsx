@@ -117,7 +117,6 @@ const VerifyPage = () => {
                     Remember your account?{" "}
                     <Button
                         onClick={() => router.push("/signin")}
-                        variant="link"
                         className="text-white hover:underline p-0"
                     >
                         Sign In

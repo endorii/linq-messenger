@@ -11,7 +11,7 @@ export function highlightMatch(text: string, query: string): JSX.Element {
                 regex.test(part) ? (
                     <div
                         key={i}
-                        className="inline bg-violet-800/50 text-violet-400 font-semibold"
+                        className="inline bg-blue-500 dark:bg-violet-800/50 text-white font-semibold"
                     >
                         {part}
                     </div>

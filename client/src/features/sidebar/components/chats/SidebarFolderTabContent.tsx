@@ -19,17 +19,16 @@ export function SidebarFolderTabContent({
 
     const sortedFolderChats = useMemo(() => {
         if (!folderChats) return [];
-        return folderChats
-            .filter((chat) => chat.messages?.length > 0)
-            .map((chat) => ({
-                ...chat,
-                lastMessageDate: chat.messages?.[0]?.createdAt ?? 0,
-            }))
-            .sort(
-                (a, b) =>
-                    new Date(b.lastMessageDate).getTime() -
-                    new Date(a.lastMessageDate).getTime()
-            );
+
+        return folderChats.sort((a, b) => {
+            const dateA = a.lastMessage
+                ? new Date(a.lastMessage.createdAt).getTime()
+                : 0;
+            const dateB = b.lastMessage
+                ? new Date(b.lastMessage.createdAt).getTime()
+                : 0;
+            return dateB - dateA;
+        });
     }, [folderChats]);
 
     return (

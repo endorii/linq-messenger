@@ -230,19 +230,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                     )}
 
                     <TabsContent value="media" className="h-full">
-                        <div className="flex flex-wrap w-full">
-                            {/* {Array.from({ length: 9 }).map((_, i) => (
-                                <Image
-                                    key={i}
-                                    src="https://onetreeplanted.org/cdn/shop/articles/nature_facts_600x.jpg?v=1705008496"
-                                    alt="image"
-                                    width={500}
-                                    height={500}
-                                    className="object-cover w-1/3 aspect-square p-[1px]"
-                                />
-                            ))} */}
-                            media
-                        </div>
+                        <div className="flex flex-wrap w-full">media</div>
                     </TabsContent>
                     <TabsContent value="files" className="h-full">
                         <div className="flex flex-wrap w-full">files</div>

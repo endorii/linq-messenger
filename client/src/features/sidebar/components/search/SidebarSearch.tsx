@@ -10,10 +10,12 @@ import { useGlobalSearch } from "../../hooks/useSearch";
 import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { useRouter } from "next/navigation";
 import { useNavigationStore } from "@/store";
+import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 
 export function SidebarSearch({ searchValue }: { searchValue: string }) {
     const { setSidebarTab } = useNavigationStore();
-    const { data: searchData, isLoading } = useGlobalSearch(searchValue);
+    const { data: searchData, isPending: isSearchPending } =
+        useGlobalSearch(searchValue);
     const { data: me } = useProfile();
     const router = useRouter();
 
@@ -27,18 +29,16 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
         );
     }
 
-    // if (isLoading) {
-    //     return (
-    //         <div className="text-neutral-500 dark:text-neutral-400 text-center mt-4">Search...</div>
-    //     );
-    // }
+    if (isSearchPending) {
+        return <ChatListSkeleton />;
+    }
 
     if (!searchData) return null;
 
     const { users, chats, messages } = searchData;
 
     return (
-        <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto">
+        <div className="text-black dark:text-white flex flex-col px-[10px] py-[5px] overflow-y-auto">
             {users.length > 0 && (
                 <>
                     <div className="text-neutral-500 dark:text-neutral-400 text-sm px-2 mb-1 mt-2">
@@ -47,7 +47,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                     {users.map((user: IUser) => (
                         <div
                             key={user.id}
-                            className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            className="flex gap-[13px] hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                             onClick={() => {
                                 createPrivateChatMutation.mutateAsync(user.id);
                                 setSidebarTab("chats");
@@ -87,7 +87,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                     {chats.map((chat: IChat) => (
                         <div
                             key={chat.id}
-                            className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                            className="flex gap-[13px] hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                             onClick={() => {
                                 router.push(`/${chat.id}`);
                                 setSidebarTab("chats");
@@ -146,7 +146,7 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
                         return (
                             <div
                                 key={message.id}
-                                className="flex gap-[13px] text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                                className="flex gap-[13px] hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
                                 onClick={() => {
                                     // функція, яка приймає message.id, по chatId вона шукає чат, якому належить перекидає туди і викликає getChats з параметрами
 
