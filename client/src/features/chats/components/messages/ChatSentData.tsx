@@ -32,6 +32,7 @@ interface ChatSentDataProps {
 
 export function ChatSentData({ chatId }: ChatSentDataProps) {
     const [inputValue, setInputValue] = useState<string>("");
+    const [isFocused, setIsFocused] = useState(false);
 
     const createMessageMutation = useCreateMessage();
     const { theme } = useTheme();
@@ -113,8 +114,20 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 <div className="flex flex-col w-full gap-[3px]">
                     {chatSentType === "reply" ? (
                         <div className="flex gap-[5px] px-[10px] py-[3px] ">
-                            <ReplyIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none mx-[10px]" />
-                            <div className="px-[15px] py-[4px] dark:bg-neutral-950/40 w-full rounded-xl border-l-4">
+                            <ReplyIcon
+                                className={`w-[30px] stroke-2 fill-none mx-[10px] ${
+                                    isFocused
+                                        ? "stroke-white"
+                                        : "stroke-neutral-900 dark:stroke-white "
+                                }`}
+                            />
+                            <div
+                                className={`px-[15px] py-[4px] bg-blue-100/20 dark:bg-purple-100/20 w-full rounded-xl border-l-4 transition-colors duration-300 ${
+                                    isFocused
+                                        ? "text-white"
+                                        : "text-neutral-900 dark:text-white"
+                                }`}
+                            >
                                 <div className="font-bold text-sm">
                                     {messageForReply?.sender.username}
                                 </div>
@@ -136,7 +149,13 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                     setChatSentType("sent");
                                 }}
                             >
-                                <CloseIcon className="w-[20px] stroke-3 stroke-neutral-900 dark:stroke-white fill-none mx-[4px]" />
+                                <CloseIcon
+                                    className={`w-[20px] stroke-3 fill-none mx-[4px] ${
+                                        isFocused
+                                            ? "stroke-white"
+                                            : "stroke-neutral-900 dark:stroke-white "
+                                    }`}
+                                />
                             </ButtonIcon>
                         </div>
                     ) : null}
@@ -173,6 +192,8 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                         value={inputValue}
                         onChange={setInputValue}
                         onEnter={() => handleSend(inputValue)}
+                        onFocus={() => setIsFocused(true)}
+                        onBlur={() => setIsFocused(false)}
                     />
                 </div>
 

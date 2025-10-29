@@ -7,9 +7,17 @@ interface ChatTextareaProps {
     value: string;
     onChange: (value: string) => void;
     onEnter: () => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
-export function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
+export function ChatTextarea({
+    value,
+    onChange,
+    onEnter,
+    onFocus,
+    onBlur,
+}: ChatTextareaProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const { chatSentType } = useChatInputStore();
 
@@ -58,6 +66,8 @@ export function ChatTextarea({ value, onChange, onEnter }: ChatTextareaProps) {
                     onEnter();
                 }
             }}
+            onFocus={onFocus}
+            onBlur={onBlur}
         />
     );
 }

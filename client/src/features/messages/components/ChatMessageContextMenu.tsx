@@ -118,8 +118,8 @@ export function ChatMessageContextMenu({
                     {msg.forwardedMessageId && (
                         <div className="p-[3px]">
                             <div className="flex items-center gap-[5px] text-sm">
-                                <ReplyIcon className="w-[16px] fill-none stroke-neutral-900 dark:stroke-white stroke-3 rotate-270" />
-                                <div className="flex gap-[3px]">
+                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
+                                <div className="text-white flex gap-[3px]">
                                     <div>forwarded from</div>
                                     <span className="font-semibold">
                                         {msg.forwardedMessage?.sender.username}
