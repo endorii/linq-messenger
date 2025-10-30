@@ -26,6 +26,7 @@ export class PinnedMessagesService {
                             },
                         },
                         messagesRead: true,
+                        attachments: true,
                     },
                 },
             },

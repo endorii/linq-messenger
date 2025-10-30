@@ -67,7 +67,7 @@ export class ChatsService {
                     take: 1,
                     where: { isRevoked: false, deletedMessages: { none: { userId } } },
                     orderBy: { createdAt: "desc" },
-                    include: { sender: true },
+                    include: { sender: true, attachments: true },
                 },
             },
             orderBy: { updatedAt: "desc" },

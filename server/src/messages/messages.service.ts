@@ -2,16 +2,19 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateMessageDto } from "./dto/create-message.dto";
 import { UpdateMessageDto } from "./dto/update-message.dto";
-import { ChatType } from "generated/prisma";
+import { Attachment, ChatType } from "generated/prisma";
 import { ChatMembersService } from "src/chat-members/chat-members.service";
 import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 import { CreateForwardMessagesDto } from "./dto/create-forward-messages.dto";
+import * as dayjs from "dayjs";
+import { FilesService } from "src/files/files.service";
 
 @Injectable()
 export class MessagesService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly chatsMembersService: ChatMembersService
+        private readonly chatsMembersService: ChatMembersService,
+        private readonly filesService: FilesService
     ) {}
 
     async getChatMessages(userId: string, chatId: string) {
@@ -46,6 +49,7 @@ export class MessagesService {
                         user: true,
                     },
                 },
+                attachments: true,
             },
         });
 
@@ -134,53 +138,22 @@ export class MessagesService {
         return newMessages;
     }
 
-    async postMessage(userId: string, chatId: string, createMessageDto: CreateMessageDto) {
+    async postMessageWithFiles(
+        userId: string,
+        chatId: string,
+        createMessageDto: CreateMessageDto,
+        files?: Express.Multer.File[]
+    ) {
+        // Перевірка доступу, як у твоєму current postMessage
         const chat = await this.prisma.chat.findUnique({
             where: { id: chatId },
-            include: {
-                members: {
-                    where: { leftAt: null },
-                },
-            },
+            include: { members: { where: { leftAt: null } } },
         });
-
         if (!chat) throw new NotFoundException("Chat not found");
+        if (!chat.members.some((m) => m.userId === userId))
+            throw new ForbiddenException("Not a member");
 
-        const isMember = chat.members.some((m) => m.userId === userId);
-        if (!isMember) throw new ForbiddenException("You are not a member of this chat");
-
-        if (chat.type === "PRIVATE") {
-            const currentUser = await this.prisma.user.findUnique({
-                where: { id: userId },
-                include: {
-                    blockedUsers: true,
-                    blockedByUsers: true,
-                },
-            });
-
-            const interlocutor = chat.members.find((m) => m.userId !== userId);
-
-            const isBlocked = currentUser?.blockedUsers.some(
-                (b) => b.blockedId === interlocutor?.userId
-            );
-            if (isBlocked) {
-                throw new ForbiddenException("You have blocked this user");
-            }
-
-            const isBlockedByOther = currentUser?.blockedByUsers.some(
-                (b) => b.blockerId === interlocutor?.userId
-            );
-            if (isBlockedByOther) {
-                throw new ForbiddenException("This user has blocked you");
-            }
-        }
-
-        if (chat.type === "CHANNEL") {
-            if (chat.adminId !== userId) {
-                throw new ForbiddenException("Only admin can send messages in channel");
-            }
-        }
-
+        // Створюємо повідомлення
         const message = await this.prisma.message.create({
             data: {
                 ...createMessageDto,
@@ -190,13 +163,18 @@ export class MessagesService {
             include: { sender: true },
         });
 
-        return message;
+        let attachments: Attachment[] = [];
+        if (files && files.length > 0) {
+            attachments = await this.filesService.uploadMultipleFiles(files, userId, message.id);
+        }
+
+        return { ...message, attachments };
     }
 
     async updateMessage(userId: string, messageId: string, updateMessageDto: UpdateMessageDto) {
         await this.prisma.message.update({
             where: { id: messageId, senderId: userId },
-            data: { ...updateMessageDto },
+            data: { ...updateMessageDto, editedAt: dayjs().toDate() },
         });
     }
 

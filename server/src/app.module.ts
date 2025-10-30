@@ -13,6 +13,7 @@ import { UserBlocksModule } from './user-blocks/user-blocks.module';
 import { PinnedMessagesModule } from './pinned-messages/pinned-messages.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { PrivacyModule } from './privacy/privacy.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { PrivacyModule } from './privacy/privacy.module';
         PinnedMessagesModule,
         ReactionsModule,
         PrivacyModule,
+        FilesModule,
     ],
 })
 export class AppModule {}

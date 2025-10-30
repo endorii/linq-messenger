@@ -81,8 +81,16 @@ export interface ForwardMessagesPayload {
     messageIds: string[];
 }
 
-export interface MessagePayload {
+export interface Attachment {
+    url: string;
+    fileName: string;
+    fileSize: number;
+    mimetype: string;
+}
+
+export interface CreateMessagePayload {
     content: string;
     type?: MessageType;
     replyToId?: string;
+    attachments?: Attachment[];
 }

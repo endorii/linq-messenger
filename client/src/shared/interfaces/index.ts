@@ -8,6 +8,6 @@ export type {
     IAttachment,
     IMessageRead,
     IMessageReaction,
-    MessagePayload,
+    CreateMessagePayload,
 } from "./IMessage";
 export type { IUser } from "./IUser";

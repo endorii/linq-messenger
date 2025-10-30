@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsEnum } from "class-validator";
+import { IsOptional, IsString, IsEnum } from "class-validator";
 
 export enum MessageType {
     TEXT = "TEXT",
@@ -8,9 +8,8 @@ export enum MessageType {
 }
 
 export class CreateMessageDto {
-    @IsNotEmpty()
     @IsString()
-    content: string;
+    content?: string;
 
     @IsOptional()
     @IsEnum(MessageType)

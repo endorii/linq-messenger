@@ -25,6 +25,8 @@ import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
 import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
 import Image from "next/image";
+import Link from "next/link";
+import { FileIcon } from "lucide-react";
 
 export function PinnedChatMessageContextMenu({
     msg,
@@ -143,6 +145,65 @@ export function PinnedChatMessageContextMenu({
                             </div>
                         </div>
                     )}
+                    {msg.message.attachments &&
+                        msg.message.attachments.length > 0 && (
+                            <div
+                                className={`flex flex-wrap gap-[5px] px-[15px] py-[4px] text-white w-full rounded-xl border-l-4 mb-[10px] hover:bg-black/10 hover:dark:bg-white/10 transition-all duration-200 ${
+                                    msg.isMine
+                                        ? " bg-blue-100/20 dark:bg-purple-100/20"
+                                        : "bg-blue-500 dark:bg-indigo-500"
+                                }`}
+                            >
+                                {msg.message.attachments.map((attachment) => {
+                                    if (
+                                        attachment.mimetype?.startsWith(
+                                            "image/"
+                                        )
+                                    ) {
+                                        return (
+                                            <Image
+                                                key={attachment.id}
+                                                src={attachment.url}
+                                                alt={attachment.fileName || ""}
+                                                width={200}
+                                                height={200}
+                                                className="flex-1 max-h-[300px] object-cover"
+                                            />
+                                        );
+                                    }
+                                    if (
+                                        attachment.mimetype?.startsWith(
+                                            "video/"
+                                        )
+                                    ) {
+                                        return (
+                                            <video
+                                                key={attachment.id}
+                                                src={attachment.url}
+                                                className="max-h-[400px]"
+                                                controls
+                                            />
+                                        );
+                                    }
+
+                                    return (
+                                        <Link
+                                            href={attachment.url || ""}
+                                            key={attachment.id}
+                                            className="flex gap-[10px] items-center"
+                                        >
+                                            <FileIcon className="" />
+                                            <div className="flex flex-col">
+                                                <div>{attachment.fileName}</div>
+                                                <div className="text-xs font-semibold">
+                                                    {attachment.fileSize} KB.
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        )}
 
                     <div>
                         <div className={`${msg.isMine ? "text-white" : ""}`}>
@@ -193,8 +254,7 @@ export function PinnedChatMessageContextMenu({
                             </div>
 
                             <div className="flex items-center gap-[5px]">
-                                {msg.message.createdAt !==
-                                msg.message.updatedAt ? (
+                                {msg.message.editedAt ? (
                                     <div className="text-xs text-white/70 text-right">
                                         edited
                                     </div>

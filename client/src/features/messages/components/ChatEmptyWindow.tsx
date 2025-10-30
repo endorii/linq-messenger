@@ -1,8 +1,8 @@
 import { MessageIcon } from "@/shared/icons";
-import { useCreateMessage } from "../hooks/useMessages";
+import { useCreateMessageWithFiles } from "../hooks/useMessages";
 
 export function ChatEmptyWindow({ chatId }: { chatId: string }) {
-    const useCreateMessageMutation = useCreateMessage();
+    const useCreateMessageMutation = useCreateMessageWithFiles();
     const handleSend = (msg: string) => {
         useCreateMessageMutation.mutateAsync({
             chatId,

@@ -3,7 +3,7 @@ import {
     ForwardMessagePayload,
     ForwardMessagesPayload,
     IMessage,
-    MessagePayload,
+    CreateMessagePayload,
 } from "@/shared/interfaces/IMessage";
 
 export async function fetchMessages(chatId: string): Promise<IMessage[]> {
@@ -18,14 +18,27 @@ export async function fetchUpdateReadMessages(fetchUpdateReadMessagesPayload: {
     return data;
 }
 
-export async function fetchCreateMessage(chatId: string, messagePayload: MessagePayload) {
-    const { data } = await httpService.post(`/chats/${chatId}/messages`, messagePayload);
-    return data;
-}
+export const fetchCreateMessage = async (
+    chatId: string,
+    messagePayload: CreateMessagePayload & { files?: File[] }
+) => {
+    const formData = new FormData();
+    formData.append("content", messagePayload.content || "");
+    if (messagePayload.replyToId) {
+        formData.append("replyToId", messagePayload.replyToId);
+    }
+    if (messagePayload.files) {
+        messagePayload.files.forEach((file) => formData.append("files", file));
+    }
+
+    const response = await httpService.post(`/chats/${chatId}/messages-with-files`, formData);
+
+    return response.data;
+};
 
 export async function fetchUpdateMessage(
     messageId: string,
-    updateMessagePayload: Partial<MessagePayload>
+    updateMessagePayload: Partial<CreateMessagePayload>
 ) {
     const { data } = await httpService.patch(`/messages/${messageId}`, updateMessagePayload);
     return data;

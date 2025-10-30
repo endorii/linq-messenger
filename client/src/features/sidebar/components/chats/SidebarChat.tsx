@@ -176,8 +176,15 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
                                                     ?.username + ":"}
                                         </div>
                                         <div className="truncate">
-                                            {chat.lastMessage?.content ??
-                                                "Chat empty"}
+                                            {chat.lastMessage?.content
+                                                ? chat.lastMessage.content
+                                                : (chat.lastMessage?.attachments
+                                                      ?.length ?? 0) === 1
+                                                ? "File"
+                                                : (chat.lastMessage?.attachments
+                                                      ?.length ?? 0) > 1
+                                                ? "Files"
+                                                : "Chat empty"}
                                         </div>
                                     </div>
                                 </div>

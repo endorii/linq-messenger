@@ -1,4 +1,15 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param, Patch } from "@nestjs/common";
+import {
+    Controller,
+    Post,
+    Body,
+    UseGuards,
+    Req,
+    Get,
+    Param,
+    Patch,
+    UseInterceptors,
+    UploadedFiles,
+} from "@nestjs/common";
 import { ChatsService } from "./chats.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
@@ -6,6 +17,7 @@ import { CreateChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
 import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { UpdateChatDto } from "./dto/update-chat.dto";
+import { FilesInterceptor } from "@nestjs/platform-express";
 
 @Controller("chats")
 @UseGuards(JwtAuthGuard)
@@ -72,12 +84,19 @@ export class ChatsController {
         return this.messagesService.getChatMessages(req.user.id, chatId);
     }
 
-    @Post(":chatId/messages")
-    postMessage(
+    @Post(":chatId/messages-with-files")
+    @UseInterceptors(FilesInterceptor("files"))
+    async postMessageWithFiles(
         @Req() req: AuthenticatedRequest,
         @Param("chatId") chatId: string,
+        @UploadedFiles() files: Express.Multer.File[],
         @Body() createMessageDto: CreateMessageDto
     ) {
-        return this.messagesService.postMessage(req.user.id, chatId, createMessageDto);
+        return this.messagesService.postMessageWithFiles(
+            req.user.id,
+            chatId,
+            createMessageDto,
+            files
+        );
     }
 }

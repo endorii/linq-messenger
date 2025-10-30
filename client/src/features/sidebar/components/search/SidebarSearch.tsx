@@ -65,8 +65,9 @@ export function SidebarSearch({ searchValue }: { searchValue: string }) {
 
                             <div className="flex flex-col justify-center gap-[3px] flex-1 min-w-0">
                                 <div className="font-semibold truncate">
-                                    {user.firstName + " " + user.lastName ||
-                                        user.username}
+                                    {user.firstName +
+                                        " " +
+                                        (user.lastName || "") || user.username}
                                 </div>
                                 <div className="text-sm text-neutral-500 dark:text-neutral-400 truncate">
                                     {user.isOnline

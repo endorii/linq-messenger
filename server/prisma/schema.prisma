@@ -183,7 +183,7 @@ model ChatMember {
 
 model Message {
     id         String      @id @default(cuid())
-    content    String
+    content    String?
     type       MessageType @default(TEXT)
     systemData Json?
     replyToId  String?
