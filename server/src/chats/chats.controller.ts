@@ -9,6 +9,7 @@ import {
     Patch,
     UseInterceptors,
     UploadedFiles,
+    Query,
 } from "@nestjs/common";
 import { ChatsService } from "./chats.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
@@ -18,6 +19,7 @@ import { MessagesService } from "src/messages/messages.service";
 import { CreateMessageDto } from "src/messages/dto/create-message.dto";
 import { UpdateChatDto } from "./dto/update-chat.dto";
 import { FilesInterceptor } from "@nestjs/platform-express";
+import { ChatAttachmentsDto } from "./dto/chat-attachments.dto";
 
 @Controller("chats")
 @UseGuards(JwtAuthGuard)
@@ -67,6 +69,11 @@ export class ChatsController {
         @Body() updateChatDto: UpdateChatDto
     ) {
         return this.chatsService.updateChat(req.user.id, chatId, updateChatDto);
+    }
+
+    @Get(":chatId/attachments")
+    getAttachments(@Param("chatId") chatId: string, @Query() query: ChatAttachmentsDto) {
+        return this.chatsService.getAttachments(chatId, query.type);
     }
 
     @Post(":chatId/leave")

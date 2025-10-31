@@ -45,7 +45,7 @@ export function SidebarFolderTabContent({
                         />
                     ))
                 ) : (
-                    <div className="text-center text-muted-foreground py-4">
+                    <div className="text-center text-neutral-600 py-4">
                         No chats in this folder
                     </div>
                 )}

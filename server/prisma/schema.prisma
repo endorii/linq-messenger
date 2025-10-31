@@ -245,13 +245,14 @@ model DeletedMessage {
 }
 
 model Attachment {
-    id        String  @id @default(cuid())
+    id        String   @id @default(cuid())
     url       String
-    fileName  String?
-    fileSize  Int?
-    mimetype  String?
+    fileName  String
+    fileSize  Int
+    mimetype  String
     messageId String
-    message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
 
     @@index([messageId])
     @@map("attachments")

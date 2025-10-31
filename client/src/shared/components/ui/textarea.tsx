@@ -14,7 +14,7 @@ function Textarea({
                 <textarea
                     data-slot="textarea"
                     className={cn(
-                        `bg-white dark:bg-neutral-900 border placeholder:text-muted-foreground aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex field-sizing-content min-h-16 w-full rounded-xl border-neutral-900/10 dark:border-white/5 px-3 py-2 text-base  outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-none ${className} ${
+                        `bg-white dark:bg-neutral-900 border placeholder:text-neutral-600 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex field-sizing-content min-h-16 w-full rounded-xl border-neutral-900/10 dark:border-white/5 px-3 py-2 text-base  outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-none ${className} ${
                             errorMessage && "border-red-500"
                         }`
                     )}

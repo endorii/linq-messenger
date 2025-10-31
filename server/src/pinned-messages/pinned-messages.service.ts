@@ -18,6 +18,7 @@ export class PinnedMessagesService {
                             include: {
                                 sender: true,
                                 forwardedMessage: { include: { sender: true } },
+                                attachments: true,
                             },
                         },
                         reactions: {

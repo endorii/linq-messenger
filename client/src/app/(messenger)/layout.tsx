@@ -3,9 +3,9 @@
 import { useProfile } from "@/features/auth/hooks/useAuth";
 import { Sidebar } from "@/features/sidebar/components/Sidebar";
 import {
-    ResizablePanelGroup,
-    ResizablePanel,
     ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
 } from "@/shared/components/ui/resizable";
 import { useEscapeKeyNavigate } from "@/shared/hooks";
 import { useRouter } from "next/navigation";

@@ -48,7 +48,7 @@ export function SidebarChatsList({
                             />
                         ))
                     ) : (
-                        <div className="text-center text-muted-foreground py-4">
+                        <div className="text-center text-neutral-600 py-4">
                             No chats yet
                         </div>
                     )}

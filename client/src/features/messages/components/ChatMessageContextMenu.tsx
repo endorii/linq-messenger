@@ -6,21 +6,20 @@ import {
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
 import { IMessage, IUser } from "@/shared/interfaces";
-import { useModalStore, useSelectionStore, useChatInputStore } from "@/store";
+import { useChatInputStore, useModalStore, useSelectionStore } from "@/store";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 
+import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
+import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
 import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
+import { DownloadIcon, FileIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import {
     useCreatePinMessage,
     useDeletePinnedMessage,
 } from "../hooks/usePinnedMessages";
-import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
-import Image from "next/image";
-import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
-import { useTheme } from "next-themes";
-import { DownloadIcon, FileIcon } from "lucide-react";
-import Link from "next/link";
 
 export function ChatMessageContextMenu({
     msg,
@@ -43,8 +42,6 @@ export function ChatMessageContextMenu({
     const createPinMessageMutation = useCreatePinMessage();
     const deletePinnedMessageMutation = useDeletePinnedMessage();
     const toggleReactionMutation = useToggleReaction();
-
-    const { theme } = useTheme();
 
     const handleCopy = async (text: string) => {
         try {
@@ -133,7 +130,7 @@ export function ChatMessageContextMenu({
 
                     {msg.replyTo && (
                         <div
-                            className={`px-[15px] py-[4px] text-white  w-full rounded-xl border-l-4 ${
+                            className={`px-[15px] py-[4px] text-white w-full rounded-xl border-l-4 ${
                                 msg.isMine
                                     ? "bg-blue-100/20 dark:bg-purple-100/20"
                                     : "bg-blue-500 dark:bg-indigo-500 "
@@ -147,12 +144,16 @@ export function ChatMessageContextMenu({
                                 {msg.replyTo.forwardedMessage?.sender.username}
                             </div>
                             <div className="text-sm truncate">
-                                {msg.replyTo?.content}
+                                {msg.replyTo?.content
+                                    ? msg.replyTo?.content
+                                    : msg.replyTo?.attachments.map(
+                                          (attachment) => attachment.mimetype
+                                      )[0]}
                             </div>
                         </div>
                     )}
                     {msg.attachments && msg.attachments.length > 0 && (
-                        <div className="flex flex-wrap">
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 text-white">
                             {msg.attachments.map((attachment) => {
                                 if (attachment.mimetype?.startsWith("image/")) {
                                     return (
@@ -160,11 +161,16 @@ export function ChatMessageContextMenu({
                                             key={attachment.id}
                                             src={
                                                 attachment.url ||
-                                                "placeholder.png"
+                                                "/placeholder.png"
                                             }
                                             alt={attachment.fileName || ""}
                                             width={300}
                                             height={300}
+                                            unoptimized
+                                            onError={(e) => {
+                                                e.currentTarget.src =
+                                                    "placeholder.png";
+                                            }}
                                             className="rounded-t-xl flex-1 w-full max-w-[400px] object-cover"
                                         />
                                     );
@@ -179,20 +185,33 @@ export function ChatMessageContextMenu({
                                         />
                                     );
                                 }
+                                if (attachment.mimetype?.startsWith("audio/")) {
+                                    return (
+                                        <audio
+                                            key={attachment.id}
+                                            src={attachment.url}
+                                            controls
+                                            className="px-[5px] pt-[5px]"
+                                        />
+                                    );
+                                }
 
                                 return (
                                     <Link
                                         href={attachment.url || ""}
                                         key={attachment.id}
-                                        className="flex gap-[10px] items-center"
+                                        className="flex items-center justify-between px-[15px] py-[10px] hover:bg-white/10 group"
                                     >
-                                        <FileIcon className="" />
-                                        <div className="flex flex-col">
-                                            <div>{attachment.fileName}</div>
-                                            <div className="text-xs font-semibold">
-                                                {attachment.fileSize} KB.
+                                        <div className="flex gap-[10px]">
+                                            <FileIcon className="" />
+                                            <div className="flex flex-col">
+                                                <div>{attachment.fileName}</div>
+                                                <div className="text-xs font-semibold">
+                                                    {attachment.fileSize} KB.
+                                                </div>
                                             </div>
                                         </div>
+                                        <DownloadIcon className="w-[20px] opacity-0 group-hover:opacity-100 transition-all duration-200" />
                                     </Link>
                                 );
                             })}

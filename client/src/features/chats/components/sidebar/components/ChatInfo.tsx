@@ -22,6 +22,7 @@ import { OwnerIcon } from "@/shared/icons/OwnerIcon";
 import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
+import { ChatFiles, ChatMedia, ChatMembers, ChatVoices } from "./tabs";
 
 export function ChatInfo({ chat }: { chat: IChat }) {
     const { isPrivate, meMember, otherMember, contact, chatName } =
@@ -71,7 +72,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full overflow-y-auto">
             <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
                     <ButtonIcon onClick={() => setChatSidebarOpened(false)}>
@@ -169,7 +170,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                 )}
             </div>
 
-            <div className="flex-1 flex flex-col px-[10px] py-[5px] overflow-y-auto">
+            <div className="flex-1 flex flex-col px-[10px] py-[5px]">
                 <Tabs
                     defaultValue={canViewMembers ? "members" : "media"}
                     className="flex-1 flex flex-col"
@@ -182,62 +183,30 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                         <TabsTrigger value="files">Files</TabsTrigger>
                         <TabsTrigger value="links">Links</TabsTrigger>
                         <TabsTrigger value="voice">Voice</TabsTrigger>
-                        <TabsTrigger value="music">Music</TabsTrigger>
                     </TabsList>
 
                     {canViewMembers && (
                         <TabsContent value="members" className="h-full">
-                            <div className="flex flex-col gap-[2px] w-full">
-                                {chat.members?.map((member, i) => (
-                                    <div
-                                        key={member.userId || i}
-                                        className="flex gap-[10px] p-[10px] items-center hover:bg-neutral-900/5 dark:hover:bg-white/5 cursor-pointer rounded-xl"
-                                        onClick={() =>
-                                            handleOpenOrCreatePrivateChat(
-                                                member.userId
-                                            )
-                                        }
-                                    >
-                                        <div className="w-[50px] h-[50px] bg-neutral-600 rounded-full overflow-hidden">
-                                            <img
-                                                src={member.user?.avatarUrl}
-                                                alt="a"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <div className="flex gap-[7px] font-semibold items-center">
-                                                <div>
-                                                    {member.user?.username}
-                                                </div>
-                                                {member.role === "OWNER" && (
-                                                    <OwnerIcon className="w-[20px] stroke-2 stroke-blue-500 dark:stroke-violet-500 fill-none" />
-                                                )}
-                                            </div>
-                                            <div className="text-neutral-500 dark:text-neutral-400 text-sm">
-                                                last seen recently
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <ChatMembers
+                                members={chat.members}
+                                handleOpenOrCreatePrivateChat={
+                                    handleOpenOrCreatePrivateChat
+                                }
+                            />
                         </TabsContent>
                     )}
 
                     <TabsContent value="media" className="h-full">
-                        <div className="flex flex-wrap w-full">media</div>
+                        <ChatMedia chatId={chat.id} type="media" />
                     </TabsContent>
                     <TabsContent value="files" className="h-full">
-                        <div className="flex flex-wrap w-full">files</div>
+                        <ChatFiles chatId={chat.id} type="files" />
                     </TabsContent>
                     <TabsContent value="links" className="h-full">
                         <div className="flex flex-wrap w-full">links</div>
                     </TabsContent>
                     <TabsContent value="voice" className="h-full">
-                        <div className="flex flex-wrap w-full">voice</div>
-                    </TabsContent>
-                    <TabsContent value="music" className="h-full">
-                        <div className="flex flex-wrap w-full">music</div>
+                        <ChatVoices chatId={chat.id} type="voice" />
                     </TabsContent>
                 </Tabs>
                 {!isPrivate && (

@@ -39,6 +39,7 @@ export class MessagesService {
                         forwardedMessage: {
                             include: { sender: true },
                         },
+                        attachments: true,
                     },
                 },
                 pinnedMessages: true,

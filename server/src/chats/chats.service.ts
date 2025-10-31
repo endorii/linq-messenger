@@ -440,4 +440,34 @@ export class ChatsService {
         });
         return { message: "Chat deleted" };
     }
+
+    async getAttachments(chatId: string, type?: "media" | "files" | "voice") {
+        const chatAttachments = await this.prisma.attachment.findMany({
+            where: { message: { chatId, isRevoked: false } },
+            include: {
+                message: {
+                    select: {
+                        id: true,
+                        type: true,
+                        senderId: true,
+                        createdAt: true,
+                    },
+                },
+            },
+            orderBy: { message: { createdAt: "desc" } },
+        });
+
+        if (!type) return chatAttachments;
+
+        return chatAttachments.filter(({ mimetype }) => {
+            const isImage = mimetype.startsWith("image/");
+            const isVideo = mimetype.startsWith("video/");
+            const isAudio = mimetype.startsWith("audio/");
+
+            if (type === "media") return isImage || isVideo;
+            if (type === "voice") return isAudio;
+            if (type === "files") return !isImage && !isVideo && !isAudio;
+            return false;
+        });
+    }
 }

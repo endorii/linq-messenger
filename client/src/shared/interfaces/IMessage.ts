@@ -8,6 +8,7 @@ export interface IAttachment {
     fileName?: string;
     fileSize?: number;
     mimetype?: string;
+    createdAt: Date;
 }
 
 export interface IMessageReaction {
@@ -81,16 +82,9 @@ export interface ForwardMessagesPayload {
     messageIds: string[];
 }
 
-export interface Attachment {
-    url: string;
-    fileName: string;
-    fileSize: number;
-    mimetype: string;
-}
-
 export interface CreateMessagePayload {
     content: string;
     type?: MessageType;
     replyToId?: string;
-    attachments?: Attachment[];
+    attachments?: IAttachment[];
 }

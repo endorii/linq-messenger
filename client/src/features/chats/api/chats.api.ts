@@ -53,3 +53,10 @@ export async function fetchDeleteChat(chatId: string): Promise<ServerResponseWit
     const { data } = await httpService.patch(`/chats/${chatId}/delete`);
     return data;
 }
+
+export async function fetchChatAttachmnets(chatId: string, type?: string) {
+    const { data } = await httpService.get(`/chats/${chatId}/attachments`, {
+        params: { type },
+    });
+    return data;
+}

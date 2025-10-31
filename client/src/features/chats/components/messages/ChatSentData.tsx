@@ -12,6 +12,7 @@ import {
     MicrophoneIcon,
     ReplyIcon,
     SendIcon,
+    TrashIcon,
 } from "@/shared/icons";
 import { useChatInputStore } from "@/store";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
@@ -26,6 +27,8 @@ import {
 import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import { useVoiceRecorder } from "@/shared/hooks/useVoiceRecorder";
+import { PauseIcon } from "lucide-react";
 
 interface ChatSentDataProps {
     chatId: string;
@@ -53,6 +56,14 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
         setMessageForReply,
     } = useChatInputStore();
 
+    const {
+        isRecording,
+        audioBlob,
+        startRecording,
+        stopRecording,
+        resetRecording,
+    } = useVoiceRecorder();
+
     useEffect(() => {
         if (chatSentType === "edit" && messageForEdit) {
             setInputValue(messageForEdit.content);
@@ -66,6 +77,16 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
         setInputValue("");
         setSelectedFiles([]);
     }, [chatId]);
+
+    useEffect(() => {
+        if (audioBlob) {
+            const file = new File([audioBlob], "voice-message.webm", {
+                type: "audio/webm",
+            });
+            setSelectedFiles((prev) => [...prev, file]);
+            resetRecording();
+        }
+    }, [audioBlob]);
 
     const handleMediaClick = () => mediaInputRef.current?.click();
     const handleDocumentClick = () => documentInputRef.current?.click();
@@ -123,7 +144,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
             setChatSentType("sent");
             setMessageForEdit(null);
             setMessageForReply(null);
-            toast.success("Повідомлення відправлено");
         } catch (error) {
             console.error(error);
             toast.error("Помилка при відправці повідомлення");
@@ -145,7 +165,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                         const preview = getFilePreview(file);
                         return (
                             <div key={index} className="relative flex-shrink-0">
-                                <div className="w-20 h-20 bg-neutral-200 dark:bg-neutral-800 rounded-lg flex items-center justify-center overflow-hidden">
+                                <div className="w-[100px] h-[100px] bg-neutral-200 dark:bg-neutral-800 rounded-lg flex items-center justify-center overflow-hidden">
                                     {preview ? (
                                         <img
                                             src={preview}
@@ -160,9 +180,9 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                                 </div>
                                 <button
                                     onClick={() => removeFile(index)}
-                                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                                    className="absolute top-[50%] translate-y-[-50%] right-[50%] translate-x-[50%]  text-white w-full h-full flex items-center justify-center rounded-xl opacity-0 hover:opacity-100 hover:bg-neutral-900/50 transition-all"
                                 >
-                                    ×
+                                    <TrashIcon className="w-[30px] fill-none stroke-white stroke-2" />
                                 </button>
                             </div>
                         );
@@ -170,7 +190,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 </div>
             )}
 
-            <div className="w-full flex items-end gap-[10px] justify-between">
+            <div className="relative w-full flex items-end gap-[10px] justify-between">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button className="bg-theme-gradient rounded-xl p-[11px] cursor-pointer">
@@ -204,7 +224,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                     onChange={handleDocumentChange}
                 />
 
-                <div className="w-full relative rounded-xl group bg-neutral-200 dark:bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-blue-600 focus-within:to-sky-600 dark:focus-within:from-violet-600 dark:focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
+                <div className="relative w-full rounded-xl group bg-neutral-200 dark:bg-neutral-800 focus-within:bg-gradient-to-br focus-within:from-blue-600 focus-within:to-sky-600 dark:focus-within:from-violet-600 dark:focus-within:to-indigo-600 p-[2px] transition-all duration-300 flex items-center">
                     <div className="flex flex-col w-full gap-[3px]">
                         {chatSentType === "reply" && messageForReply && (
                             <div className="flex gap-[5px] px-[10px] py-[3px]">
@@ -304,6 +324,11 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                             onBlur={() => setIsFocused(false)}
                         />
                     </div>
+                    {isRecording && (
+                        <div className="absolute right-[45px] px-[10px] py-[3px] rounded-xl text-white bg-theme-gradient font-medium animate-pulse">
+                            Recording...
+                        </div>
+                    )}
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -330,7 +355,7 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 {inputValue.length > 0 || selectedFiles.length > 0 ? (
                     <ButtonActive
                         onClick={() => handleSend(inputValue)}
-                        className="relative! flex items-center justify-center h-full w-full"
+                        className="relative flex items-center justify-center h-full w-full"
                     >
                         {isUploading ? (
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -340,10 +365,17 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                     </ButtonActive>
                 ) : (
                     <ButtonActive
-                        onClick={() => console.log("voice")}
-                        className="relative! flex items-center justify-center h-full w-full"
+                        onClick={() => {
+                            if (!isRecording) startRecording();
+                            else stopRecording();
+                        }}
+                        className={`relative flex items-center justify-center h-full w-full`}
                     >
-                        <MicrophoneIcon className="w-[28px] fill-none stroke-2 stroke-white" />
+                        {isRecording ? (
+                            <PauseIcon className="w-[28px] fill-white stroke-2 stroke-white" />
+                        ) : (
+                            <MicrophoneIcon className="w-[28px] fill-none stroke-2 stroke-white" />
+                        )}
                     </ButtonActive>
                 )}
             </div>

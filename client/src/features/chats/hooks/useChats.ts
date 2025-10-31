@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     fetchChat,
+    fetchChatAttachmnets,
     fetchChats,
     fetchChatsByFolder,
     fetchChatsForForwardMessage,
@@ -14,12 +15,21 @@ import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { usePathname, useRouter } from "next/navigation";
+import { IAttachment } from "@/shared/interfaces";
 
 export function useChats() {
     return useQuery<IChat[], Error>({
         queryKey: ["chats"],
         queryFn: () => fetchChats(),
         retry: 3,
+    });
+}
+
+export function useChatAttachments(chatId: string, type?: string) {
+    return useQuery<IAttachment[], Error>({
+        queryFn: () => fetchChatAttachmnets(chatId, type),
+        queryKey: ["chats", chatId, type],
+        retry: 1,
     });
 }
 
@@ -43,7 +53,7 @@ export function useChat(chatId: string) {
     return useQuery<IChat, Error>({
         queryKey: ["chats", chatId],
         queryFn: () => fetchChat(chatId),
-        retry: false,
+        retry: 1,
     });
 }
 

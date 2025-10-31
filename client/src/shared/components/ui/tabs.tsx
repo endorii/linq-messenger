@@ -25,7 +25,7 @@ function TabsList({
     return (
         <TabsPrimitive.List
             className={cn(
-                " text-muted-white flex overflow-x-auto rounded-lg p-[5px] gap-[5px]",
+                " text-muted-white flex overflow-x-auto rounded-lg gap-[5px]",
                 className
             )}
             {...props}

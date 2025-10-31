@@ -141,13 +141,17 @@ export function PinnedChatMessageContextMenu({
                                 }
                             </div>
                             <div className="text-sm truncate">
-                                {msg.message.replyTo?.content}
+                                {msg.message.replyTo?.content
+                                    ? msg.message.replyTo?.content
+                                    : msg.message.replyTo?.attachments.map(
+                                          (attachment) => attachment.mimetype
+                                      )[0]}
                             </div>
                         </div>
                     )}
                     {msg.message.attachments &&
                         msg.message.attachments.length > 0 && (
-                            <div className="flex flex-wrap">
+                            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 text-white">
                                 {msg.message.attachments.map((attachment) => {
                                     if (
                                         attachment.mimetype?.startsWith(
