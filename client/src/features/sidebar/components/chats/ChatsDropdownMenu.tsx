@@ -50,13 +50,12 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
             <DropdownMenuContent className="w-56 font-semibold">
                 <DropdownMenuItem onClick={handleOpenProfile}>
                     <div className="flex items-center gap-3">
-                        <div className="w-[30px] h-[30px] overflow-hidden rounded-full bg-neutral-600">
-                            <img
-                                src={user.avatarUrl}
-                                alt="avatar"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
+                        <img
+                            src={user.avatarUrl}
+                            alt="avatar"
+                            className="w-[30px] h-[30px] rounded-full bg-neutral-600 object-cover"
+                        />
+
                         <div>{user?.username}</div>
                     </div>
                 </DropdownMenuItem>

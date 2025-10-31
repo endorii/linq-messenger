@@ -110,7 +110,7 @@ export function ChatMessageContextMenu({
             <ContextMenuTrigger
                 asChild
                 onContextMenu={() => setSelectedMessage(msg)}
-                className={`px-[7px] py-[5px] max-w-[500px] rounded-xl wrap-anywhere group relative ${
+                className={`max-w-[500px] rounded-xl wrap-anywhere group relative ${
                     msg.isMine
                         ? "bg-theme-gradient self-end rounded-br-none"
                         : "bg-neutral-200 dark:bg-neutral-800 self-start rounded-bl-none"
@@ -118,7 +118,7 @@ export function ChatMessageContextMenu({
             >
                 <div onDoubleClick={() => toggleSelectedMessage(msg.id)}>
                     {msg.forwardedMessageId && (
-                        <div className="p-[3px]">
+                        <div className="py-[5px] px-[10px]">
                             <div className="flex items-center gap-[5px] text-sm">
                                 <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
                                 <div className="text-white flex gap-[3px]">
@@ -133,9 +133,9 @@ export function ChatMessageContextMenu({
 
                     {msg.replyTo && (
                         <div
-                            className={`px-[15px] py-[4px] text-white  w-full rounded-xl border-l-4 mb-[10px] ${
+                            className={`px-[15px] py-[4px] text-white  w-full rounded-xl border-l-4 ${
                                 msg.isMine
-                                    ? " bg-blue-100/20 dark:bg-purple-100/20"
+                                    ? "bg-blue-100/20 dark:bg-purple-100/20"
                                     : "bg-blue-500 dark:bg-indigo-500 "
                             }`}
                         >
@@ -152,23 +152,20 @@ export function ChatMessageContextMenu({
                         </div>
                     )}
                     {msg.attachments && msg.attachments.length > 0 && (
-                        <div
-                            className={`flex flex-wrap gap-[5px] px-[15px] py-[4px] text-white w-full rounded-xl border-l-4 mb-[10px] hover:bg-black/10 hover:dark:bg-white/10 transition-all duration-200 ${
-                                msg.isMine
-                                    ? " bg-blue-100/20 dark:bg-purple-100/20"
-                                    : "bg-blue-500 dark:bg-indigo-500"
-                            }`}
-                        >
+                        <div className="flex flex-wrap">
                             {msg.attachments.map((attachment) => {
                                 if (attachment.mimetype?.startsWith("image/")) {
                                     return (
                                         <Image
                                             key={attachment.id}
-                                            src={attachment.url}
+                                            src={
+                                                attachment.url ||
+                                                "placeholder.png"
+                                            }
                                             alt={attachment.fileName || ""}
-                                            width={200}
-                                            height={200}
-                                            className="flex-1 max-h-[300px] object-cover"
+                                            width={300}
+                                            height={300}
+                                            className="rounded-t-xl flex-1 w-full max-w-[400px] object-cover"
                                         />
                                     );
                                 }
@@ -202,7 +199,7 @@ export function ChatMessageContextMenu({
                         </div>
                     )}
 
-                    <div>
+                    <div className="px-[7px] py-[5px]">
                         <div className={`${msg.isMine ? "text-white" : null}`}>
                             {msg.content}
                         </div>
@@ -228,19 +225,15 @@ export function ChatMessageContextMenu({
                                                     <div className="flex -space-x-2">
                                                         {group.users.map(
                                                             (user) => (
-                                                                <Image
+                                                                <img
                                                                     key={
                                                                         user.id
                                                                     }
                                                                     src={
-                                                                        user.avatarUrl ||
-                                                                        ""
+                                                                        user.avatarUrl
                                                                     }
                                                                     alt="avatar"
-                                                                    width={22}
-                                                                    height={22}
-                                                                    unoptimized
-                                                                    className="w-[22px] h-[22px] rounded-full border-[1px] border-neutral-300 dark:border-neutral-800"
+                                                                    className="w-[22px] h-[22px] rounded-full object-cover"
                                                                 />
                                                             )
                                                         )}

@@ -2,6 +2,7 @@ import { useProfile } from "@/features/auth/hooks/useAuth";
 import { useContacts } from "@/features/contacts/hooks/useContacts";
 import { ChatEnum } from "@/shared/enums/enums";
 import { IChat } from "@/shared/interfaces";
+import Image from "next/image";
 import { useMemo } from "react";
 
 interface ChatItemProps {
@@ -55,13 +56,11 @@ export const ModalChatItem = ({
             }`}
             onClick={() => onSelect(chat.id)}
         >
-            <div className="w-[45px] h-[45px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
-                <img
-                    src={isPrivate ? otherMember?.user?.avatarUrl : chat.avatar}
-                    alt="avatar"
-                    className="rounded-full w-full h-full object-cover"
-                />
-            </div>
+            <img
+                src={isPrivate ? otherMember?.user?.avatarUrl : chat.avatar}
+                alt="avatar"
+                className="w-[45px] h-[45px] bg-neutral-600 rounded-full object-cover"
+            />
 
             <div className="flex flex-col justify-center flex-1 min-w-0">
                 <div className="flex justify-between gap-[5px]">

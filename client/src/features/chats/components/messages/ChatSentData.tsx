@@ -26,7 +26,6 @@ import {
 import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { usePostFiles } from "@/shared/hooks/useFiles";
 
 interface ChatSentDataProps {
     chatId: string;
@@ -53,8 +52,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
         setMessageForEdit,
         setMessageForReply,
     } = useChatInputStore();
-
-    const postFilesMutation = usePostFiles();
 
     useEffect(() => {
         if (chatSentType === "edit" && messageForEdit) {
@@ -102,7 +99,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
             let message;
 
             if (chatSentType === "edit" && messageForEdit) {
-                // редагуємо існуюче повідомлення
                 message = await updateMessageMutation.mutateAsync({
                     chatId,
                     messageId: messageForEdit.id,
@@ -122,7 +118,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 });
             }
 
-            // Очищаємо стан після повного завершення
             setInputValue("");
             setSelectedFiles([]);
             setChatSentType("sent");
@@ -144,7 +139,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
 
     return (
         <div className="w-full px-[15%] flex flex-col gap-[10px] py-[15px] bg-transparent">
-            {/* Прев'ю вибраних файлів */}
             {selectedFiles.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-2 px-1">
                     {selectedFiles.map((file, index) => {
@@ -176,7 +170,6 @@ export function ChatSentData({ chatId }: ChatSentDataProps) {
                 </div>
             )}
 
-            {/* Основний інпут */}
             <div className="w-full flex items-end gap-[10px] justify-between">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

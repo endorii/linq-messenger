@@ -1,5 +1,7 @@
 "use client";
 import { useProfile } from "@/features/auth/hooks/useAuth";
+import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
+import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
 import {
     Tabs,
     TabsContent,
@@ -18,10 +20,8 @@ import {
 import { AddContactIcon } from "@/shared/icons/AddContactIcon";
 import { OwnerIcon } from "@/shared/icons/OwnerIcon";
 import { IChat } from "@/shared/interfaces";
-import { useModalStore, useSelectionStore, useChatSidebarStore } from "@/store";
+import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
-import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
-import { ButtonActive, ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function ChatInfo({ chat }: { chat: IChat }) {
     const { isPrivate, meMember, otherMember, contact, chatName } =
@@ -71,7 +71,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
     };
 
     return (
-        <div className="flex flex-col h-full bg-">
+        <div className="flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
                     <ButtonIcon onClick={() => setChatSidebarOpened(false)}>
@@ -94,7 +94,7 @@ export function ChatInfo({ chat }: { chat: IChat }) {
                     </ButtonIcon>
                 ) : isPrivate ? (
                     <ButtonIcon onClick={handleAddContact}>
-                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-white fill-none " />
+                        <AddContactIcon className="w-[26px] h-[26px] stroke-2 stroke-neutral-900 dark:stroke-white fill-none " />
                     </ButtonIcon>
                 ) : !isPrivate && isAdmin ? (
                     <ButtonIcon onClick={handleEditChat}>
@@ -104,17 +104,12 @@ export function ChatInfo({ chat }: { chat: IChat }) {
             </div>
 
             <div className="flex flex-col gap-[20px] items-center p-[20px]">
-                <div className="w-[150px] h-[150px] bg-neutral-600 rounded-full overflow-hidden">
-                    <img
-                        src={
-                            isPrivate
-                                ? otherMember?.user?.avatarUrl
-                                : chat.avatar
-                        }
-                        alt="avatar"
-                        className="rounded-full"
-                    />
-                </div>
+                <img
+                    src={isPrivate ? otherMember?.user?.avatarUrl : chat.avatar}
+                    alt="avatar"
+                    className="w-[150px] h-[150px] bg-neutral-600 rounded-full object-cover"
+                />
+
                 <div className="flex flex-col gap-[5px] items-center text-center">
                     <div className="text-xl font-semibold">{chatName}</div>
                     <div className="text-sm text-neutral-500 dark:text-neutral-400">

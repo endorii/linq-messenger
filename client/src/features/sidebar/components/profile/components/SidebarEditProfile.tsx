@@ -1,20 +1,24 @@
 "use client";
 
 import { useProfile } from "@/features/auth/hooks/useAuth";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
-import { Textarea } from "@/shared/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { IUser } from "@/shared/interfaces/IUser";
-import { CheckIcon } from "@/shared/icons";
 import {
     useUniqueUsername,
     useUpdateUser,
 } from "@/features/users/hooks/useUsers";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { Textarea } from "@/shared/components/ui/textarea";
 import { useDebounce } from "@/shared/hooks";
+import { usePostAvatar } from "@/shared/hooks/useFiles";
+import { CheckIcon, SpinnerIcon } from "@/shared/icons";
+import { IUser } from "@/shared/interfaces/IUser";
+import { UploadIcon } from "lucide-react";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
 
 export function SidebarEditProfile() {
     const { data: me } = useProfile();
+    const avatarInputRef = useRef<HTMLInputElement>(null);
 
     const {
         register,
@@ -58,10 +62,44 @@ export function SidebarEditProfile() {
         });
     };
 
+    const handleAvatarClick = () => avatarInputRef.current?.click();
+
+    const postAvatarMutation = usePostAvatar();
+
+    const handleAvatarChange = async (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const file = e.target.files[0];
+
+        postAvatarMutation.mutateAsync(file);
+    };
+
     return (
         <div className="flex flex-col gap-[5px] px-[10px] py-[5px] overflow-y-auto">
-            <div className="flex justify-center">
-                <div className="w-[150px] h-[150px] bg-neutral-700 rounded-full"></div>
+            <div
+                className="flex justify-center relative cursor-pointer"
+                onClick={handleAvatarClick}
+            >
+                <img
+                    src={me?.avatarUrl ?? ""}
+                    alt=""
+                    className="w-[150px] h-[150px] object-cover brightness-50 rounded-full bg-neutral-600"
+                />
+
+                {!postAvatarMutation.isPending ? (
+                    <UploadIcon className="absolute top-[50%] stroke-neutral-100 translate-y-[-50%] left-[50%] translate-x-[-50%] w-[50px] h-[50px] object-cover hover:scale-150 transition-all duration-200" />
+                ) : (
+                    <SpinnerIcon className="absolute top-[50%] fill-neutral-100 translate-y-[-50%] left-[50%] translate-x-[-50%] w-[50px] h-[50px] object-cover animate-spin" />
+                )}
+
+                <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                />
             </div>
 
             <form
@@ -153,12 +191,12 @@ export function SidebarEditProfile() {
                         </p>
                     )}
                     {!checking && username && !usernameAvailable && (
-                        <p className="text-red-500 text-sm">
+                        <p className="text-red-600 text-sm font-medium">
                             Username "{username}" is already taken
                         </p>
                     )}
                     {!checking && username && usernameAvailable && (
-                        <p className="text-green-500 text-sm">
+                        <p className="text-green-600 text-sm font-medium">
                             Username "{username}" is available
                         </p>
                     )}

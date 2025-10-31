@@ -1,20 +1,24 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
+import { ChatEnum } from "@/shared/enums/enums";
+import { usePostChatAvatar } from "@/shared/hooks/useFiles";
 import {
     CheckIcon,
     CloseIcon,
     NotifcationIcon,
+    SpinnerIcon,
     TrashIcon,
 } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
+import { useChatSidebarStore, useModalStore } from "@/store";
+import { UploadIcon } from "lucide-react";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { useUpdateChat } from "../../../hooks/useChats";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import { ChatEnum } from "@/shared/enums/enums";
-import { useModalStore, useChatSidebarStore } from "@/store";
-import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 interface FormData {
     name: string;
@@ -27,6 +31,8 @@ export function EditChat({ chat }: { chat: IChat }) {
     const { setChatSidebarTab } = useChatSidebarStore();
     const { data: me } = useProfile();
     const isPrivateChat = chat.type === ChatEnum.PRIVATE;
+
+    const avatarInputRef = useRef<HTMLInputElement>(null);
 
     const {
         handleSubmit,
@@ -56,12 +62,28 @@ export function EditChat({ chat }: { chat: IChat }) {
         }
     };
 
+    const handleChatAvatarClick = () => avatarInputRef.current?.click();
+
+    const postChatAvatarMutation = usePostChatAvatar();
+
+    const handleChatAvatarChange = async (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const file = e.target.files[0];
+
+        postChatAvatarMutation.mutateAsync({
+            avatar: file,
+            chatId: chat.id,
+        });
+    };
+
     return (
         <div className="relative flex flex-col h-full">
             <div className="flex gap-[20px] justify-between p-[10px]">
                 <div className="flex gap-[20px] items-center">
                     <ButtonIcon onClick={() => setChatSidebarTab("info")}>
-                        <CloseIcon className="w-[24px] fill-none stroke-2 stroke-neutral-800 dark:stroke-white " />
+                        <CloseIcon className="w-[24px] fill-none stroke-2 stroke-neutral-900 dark:stroke-white " />
                     </ButtonIcon>
                     <div className="text-xl font-semibold text-nowrap">
                         Edit
@@ -69,22 +91,36 @@ export function EditChat({ chat }: { chat: IChat }) {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-[20px] items-center p-[20px]">
-                <div className="w-[120px] h-[120px] bg-neutral-600 rounded-full overflow-hidden">
-                    <img
-                        src={
-                            isPrivateChat
-                                ? chat.members.find((m) => m.userId !== me?.id)
-                                      ?.user?.avatarUrl
-                                : chat.avatar
-                        }
-                        alt="avatar2"
-                        className="rounded-full"
-                    />
-                </div>
+            <div
+                className="flex gap-[20px] justify-center relative cursor-pointer"
+                onClick={handleChatAvatarClick}
+            >
+                <img
+                    src={
+                        isPrivateChat
+                            ? chat.members.find((m) => m.userId !== me?.id)
+                                  ?.user?.avatarUrl
+                            : chat.avatar
+                    }
+                    alt="avatar"
+                    className="w-[150px] h-[150px] object-cover brightness-50 rounded-full bg-neutral-600"
+                />
+
+                {!postChatAvatarMutation.isPending ? (
+                    <UploadIcon className="absolute top-[50%] stroke-neutral-100 translate-y-[-50%] left-[50%] translate-x-[-50%] w-[50px] h-[50px] object-cover hover:scale-150 transition-all duration-200" />
+                ) : (
+                    <SpinnerIcon className="absolute top-[50%] fill-neutral-100 translate-y-[-50%] left-[50%] translate-x-[-50%] w-[50px] h-[50px] object-cover animate-spin" />
+                )}
+                <input
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleChatAvatarChange}
+                />
             </div>
 
-            <div className="flex flex-col gap-[20px] px-[30px] py-[10px]">
+            <div className="flex flex-col gap-[20px] px-[30px] py-[15px]">
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="flex flex-col gap-[20px]"

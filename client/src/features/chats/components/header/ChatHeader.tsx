@@ -108,14 +108,9 @@ export function ChatHeader({
     const destructiveAction = DESTRUCTIVE_ACTIONS[chat.type];
 
     return (
-        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-black bg-neutral-100 dark:text-white dark:dark:bg-neutral-950 px-[20px] py-[10px] pr-[50px] cursor-pointer border-b border-neutral-200 dark:border-neutral-800">
+        <div className="absolute top-0 w-full h-[65px] z-10 flex justify-between items-center text-black bg-neutral-100 dark:text-white dark:dark:bg-neutral-950 px-[20px] py-[10px] pr-[50px] border-b border-neutral-200 dark:border-neutral-800">
             {isChatPending ? (
-                <div
-                    className="flex gap-[20px] w-full"
-                    onClick={() => {
-                        setChatSidebarOpened(!chatSidebarOpened);
-                    }}
-                >
+                <div className="flex gap-[20px] w-full">
                     <div className="w-[45px] h-[45px] rounded-full bg-neutral-600"></div>
                     <div>
                         <div className="flex gap-[5px] items-center">
@@ -127,22 +122,21 @@ export function ChatHeader({
             ) : (
                 <div className="w-full flex justify-between items-center gap-[20px]">
                     <div
-                        className="flex gap-[20px] w-full"
+                        className="flex gap-[20px] w-full items-center cursor-pointer"
                         onClick={() => {
                             setChatSidebarOpened(!chatSidebarOpened);
                         }}
                     >
-                        <div className="w-[45px] h-[45px] rounded-full bg-neutral-600">
-                            <img
-                                src={
-                                    isPrivate
-                                        ? otherMember?.user?.avatarUrl
-                                        : chat.avatar
-                                }
-                                alt="avatar"
-                                className="rounded-full"
-                            />
-                        </div>
+                        <img
+                            src={
+                                isPrivate
+                                    ? otherMember?.user?.avatarUrl
+                                    : chat.avatar
+                            }
+                            alt="avatar"
+                            className="rounded-full h-[45px] w-[45px] bg-neutral-600 object-cover"
+                        />
+
                         <div>
                             <div className="flex gap-[5px] items-center">
                                 <div className="font-semibold">{chatName}</div>

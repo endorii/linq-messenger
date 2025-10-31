@@ -63,18 +63,15 @@ export function SidebarProfile() {
     return (
         <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto gap-[20px]">
             <div className="flex flex-col gap-[15px] items-center">
-                <Image
-                    src={me.avatarUrl ?? ""}
-                    alt="profileAvatar"
-                    width={150}
-                    height={150}
-                    unoptimized
+                <img
+                    src={me.avatarUrl}
+                    alt="avatar"
                     className="w-[150px] h-[150px] rounded-full object-cover"
                 />
 
                 <div className="text-center">
                     <div className="text-lg font-semibold">
-                        {`${me.firstName} ${me?.lastName ?? ""} `}
+                        {`${me.firstName} ${me?.lastName ?? ""}`}
                     </div>
                     <div className="text-neutral-500 dark:text-neutral-400">
                         {me.isOnline ? "Online" : "last seen recently"}

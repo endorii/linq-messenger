@@ -82,7 +82,7 @@ export class FilesService {
         return attachments;
     }
 
-    async uploadAvatar(file: Express.Multer.File, userId: string): Promise<{ url: string }> {
+    async uploadAvatar(file: Express.Multer.File, userId: string) {
         if (!file) throw new BadRequestException("No file provided");
 
         const bucket = STORAGE_BUCKETS.AVATARS;
@@ -104,6 +104,31 @@ export class FilesService {
             data: { avatarUrl: data.publicUrl },
         });
 
-        return { url: data.publicUrl };
+        return { message: "Profile avatar successfully uploaded" };
+    }
+
+    async uploadChatAvatar(file: Express.Multer.File, userId: string, chatId: string) {
+        if (!file) throw new BadRequestException("No file provided");
+
+        const bucket = STORAGE_BUCKETS.AVATARS;
+        const ext = file.originalname.split(".").pop() || "";
+        const fileName = `${userId}-${Date.now()}.${ext}`;
+        const filePath = `${userId}/${fileName}`;
+
+        const { error } = await this.supabase.storage.from(bucket).upload(filePath, file.buffer, {
+            contentType: file.mimetype,
+            upsert: true,
+        });
+
+        if (error) throw new BadRequestException(`Upload failed: ${error.message}`);
+
+        const { data } = this.supabase.storage.from(bucket).getPublicUrl(filePath);
+
+        await this.prisma.chat.update({
+            where: { id: chatId },
+            data: { avatar: data.publicUrl },
+        });
+
+        return { message: "Chat avatar successfully uploaded" };
     }
 }

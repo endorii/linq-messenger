@@ -43,12 +43,9 @@ export function PinnedChatMessage({
                 />
                 {isGroup && !isSameSenderAsNext && !msg.isMine && (
                     <div className="absolute bottom-0 left-[-40px]">
-                        <Image
-                            src={avatarUrl || ""}
+                        <img
+                            src={avatarUrl}
                             alt={username || "avatar"}
-                            width={32}
-                            height={32}
-                            unoptimized
                             className="rounded-full object-cover"
                         />
                     </div>

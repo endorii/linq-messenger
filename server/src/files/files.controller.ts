@@ -7,8 +7,10 @@ import {
     BadRequestException,
     UseGuards,
     Req,
+    UploadedFile,
+    Param,
 } from "@nestjs/common";
-import { FilesInterceptor } from "@nestjs/platform-express";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 import { FilesService } from "./files.service";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.interface";
@@ -17,20 +19,6 @@ import { AuthenticatedRequest } from "src/auth/interfaces/authenticated-request.
 @UseGuards(JwtAuthGuard)
 export class FilesController {
     constructor(private readonly filesService: FilesService) {}
-    @Post("upload-avatar")
-    @UseInterceptors(FilesInterceptor("avatar", 1))
-    async uploadAvatar(
-        @UploadedFiles() files: Express.Multer.File[],
-        @Req() req: AuthenticatedRequest
-    ): Promise<{ avatarUrl: string }> {
-        if (!files || files.length === 0) {
-            throw new BadRequestException("No file provided");
-        }
-
-        const avatar = await this.filesService.uploadAvatar(files[0], req.user.id);
-        return { avatarUrl: avatar.url };
-    }
-
     @Post("upload")
     @UseInterceptors(FilesInterceptor("files"))
     async uploadFiles(
@@ -46,5 +34,32 @@ export class FilesController {
         }
 
         return this.filesService.uploadMultipleFiles(files, req.user.id, messageId);
+    }
+
+    @Post("upload-avatar")
+    @UseInterceptors(FileInterceptor("avatar"))
+    async uploadAvatar(
+        @UploadedFile() file: Express.Multer.File,
+        @Req() req: AuthenticatedRequest
+    ) {
+        if (!file) {
+            throw new BadRequestException("No file provided");
+        }
+
+        return await this.filesService.uploadAvatar(file, req.user.id);
+    }
+
+    @Post("upload-chat-avatar/:chatId")
+    @UseInterceptors(FileInterceptor("avatar"))
+    async uploadChatAvatar(
+        @UploadedFile() file: Express.Multer.File,
+        @Param("chatId") chatId: string,
+        @Req() req: AuthenticatedRequest
+    ) {
+        if (!file) {
+            throw new BadRequestException("No file provided");
+        }
+
+        return await this.filesService.uploadChatAvatar(file, req.user.id, chatId);
     }
 }
