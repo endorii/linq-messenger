@@ -1,13 +1,13 @@
 "use client";
 
-import { BackIcon, LinqIcon } from "@/shared/icons";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Label } from "@/shared/components/ui/label";
 import { useRegisterUser } from "@/features/auth/hooks/useAuth";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { BackIcon, LinqIcon } from "@/shared/icons";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface RegisterFormData {
     email: string;
@@ -78,11 +78,11 @@ function SignUp() {
     const prevStep = () => setStep((prev) => prev - 1);
 
     return (
-        <div className="flex items-center justify-center min-h-screen text-white px-[30px]">
+        <div className="flex items-center justify-center min-h-screen text-black dark:text-white px-[30px]">
             <div className="flex flex-col gap-[10px] items-center w-full max-w-[500px] rounded-2xl shadow-lg bg-neutral-200 dark:bg-neutral-900 p-[20px] max-h-[90vh] overflow-y-auto">
                 <div className="flex gap-[10px] items-center justify-center w-full p-[10px]">
                     <LinqIcon className="w-[150px] h-[150px]" />
-                    <h2 className="text-3xl font-bold text-white text-center">
+                    <h2 className="text-3xl font-bold text-center">
                         Create your account
                     </h2>
                 </div>
@@ -90,7 +90,7 @@ function SignUp() {
 
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4 w-full p-[20px] text-white"
+                    className="flex flex-col gap-4 w-full p-[20px]"
                 >
                     {step === 1 && (
                         <>
@@ -135,7 +135,7 @@ function SignUp() {
                             <Button
                                 type="button"
                                 onClick={nextStep}
-                                className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
+                                className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
                             >
                                 Next
                             </Button>
@@ -213,13 +213,13 @@ function SignUp() {
                                 <Button
                                     type="button"
                                     onClick={prevStep}
-                                    className="w-1/7 items-center dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl border border-neutral-300 dark:border-neutral-800 h-[45px]"
+                                    className="w-1/7 items-center dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl border border-neutral-300 dark:border-neutral-800 h-[45px]"
                                 >
                                     <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none" />
                                 </Button>
                                 <Button
                                     type="submit"
-                                    className="w-6/7 dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px]"
+                                    className="w-6/7 dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px]"
                                 >
                                     Sign Up
                                 </Button>

@@ -1,17 +1,17 @@
 "use client";
 
-import { LinqIcon } from "@/shared/icons";
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
     useResendVerification,
     useVerifyUser,
 } from "@/features/auth/hooks/useAuth";
-import { toast } from "sonner";
-import { Input } from "@/shared/components/ui/input";
 import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
+import { LinqIcon } from "@/shared/icons";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface ResendFormData {
     email: string;

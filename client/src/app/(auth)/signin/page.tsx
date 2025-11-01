@@ -1,14 +1,13 @@
 "use client";
 
-import { LinqIcon } from "@/shared/icons";
-import { useState } from "react";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
-import Link from "next/link";
-import { Label } from "@/shared/components/ui/label";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { useLoginUser } from "@/features/auth/hooks/useAuth";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { LinqIcon } from "@/shared/icons";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface LoginFormData {
     username: string;
@@ -49,11 +48,11 @@ function SignIn() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen text-white px-[30px]">
+        <div className="flex items-center justify-center min-h-screen text-black dark:text-white px-[30px]">
             <div className="flex flex-col gap-[10px] items-center w-full max-w-[500px] rounded-2xl shadow-lg bg-neutral-200 dark:bg-neutral-900 p-[20px] max-h-[90vh] overflow-y-auto">
                 <div className="flex gap-[10px] items-center justify-center w-full p-[10px]">
                     <LinqIcon className="w-[150px] h-[150px]" />
-                    <h2 className="text-3xl font-bold text-white text-center">
+                    <h2 className="text-3xl font-bold text-center">
                         Welcome to Linq
                     </h2>
                 </div>
@@ -65,7 +64,7 @@ function SignIn() {
 
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4 w-full p-[20px] text-white"
+                    className="flex flex-col gap-4 w-full p-[20px]"
                 >
                     <div className="flex flex-col gap-[7px] ">
                         <Label>Username *</Label>
@@ -103,7 +102,7 @@ function SignIn() {
 
                     <Button
                         type="submit"
-                        className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition text-white p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
+                        className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
                         disabled={useLoginUserMutation.isPending}
                     >
                         {useLoginUserMutation.isPending
@@ -131,7 +130,7 @@ function SignIn() {
 
                 <div className="text-neutral-500 text-center mt-6">
                     Don't have an account?{" "}
-                    <Link href="/signup" className="text-white hover:underline">
+                    <Link href="/signup" className="hover:underline">
                         Sign Up
                     </Link>
                 </div>
