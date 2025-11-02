@@ -10,14 +10,16 @@ import {
     UnauthorizedException,
     UseGuards,
 } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { RegisterUserDto } from "./dto/register-user.dto";
-import { LoginUserDto } from "./dto/login-user.dto";
-import { Response } from "express";
-import { RefreshTokenRequest } from "./interfaces/refresh-token-request.interface";
 import { ConfigService } from "@nestjs/config";
+import { Response } from "express";
+import { AuthService } from "./auth.service";
+import { LoginUserDto } from "./dto/login-user.dto";
+import { RegisterUserDto } from "./dto/register-user.dto";
+import { GoogleAuthGuard } from "./guards/google-auth.guard";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { AuthenticatedRequest } from "./interfaces/authenticated-request.interface";
+import { GoogleAuthRequest } from "./interfaces/google-auth-request.interface";
+import { RefreshTokenRequest } from "./interfaces/refresh-token-request.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -103,5 +105,40 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     getProfile(@Req() req: AuthenticatedRequest) {
         return this.authService.getProfile(req.user.id);
+    }
+
+    @Get("google")
+    @UseGuards(GoogleAuthGuard)
+    async googleAuth() {
+        // Ініціює Google OAuth flow
+    }
+
+    @Get("google/callback")
+    @UseGuards(GoogleAuthGuard)
+    async googleAuthRedirect(
+        @Req() req: GoogleAuthRequest,
+        @Res({ passthrough: true }) res: Response
+    ) {
+        try {
+            const { accessToken, refreshToken } = await this.authService.googleLogin(req.user);
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: this.configService.get("NODE_ENV") === "production",
+                sameSite: "lax",
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+            });
+
+            // Редірект на фронтенд з токеном
+            const frontendUrl: string =
+                this.configService.get("FRONTEND_URL") || "http://localhost:3000";
+            return res.redirect(`${frontendUrl}/callback?token=${accessToken}`);
+        } catch (error) {
+            console.log(error);
+
+            const frontendUrl: string =
+                this.configService.get("FRONTEND_URL") || "http://localhost:3000";
+            return res.redirect(`${frontendUrl}/signin?error=google_auth_failed`);
+        }
     }
 }
