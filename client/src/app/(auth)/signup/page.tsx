@@ -220,6 +220,7 @@ function SignUp() {
                                 <Button
                                     type="submit"
                                     className="w-6/7 dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px]"
+                                    disabled={useRegisterUserMutation.isPending}
                                 >
                                     Sign Up
                                 </Button>

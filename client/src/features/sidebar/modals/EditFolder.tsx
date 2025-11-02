@@ -107,6 +107,7 @@ export function EditFolder({ isOpen, onClose }: CreateNewChannelProps) {
                     <Button
                         type="submit"
                         className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
+                        disabled={useUpdateFolderMutation.isPending}
                     >
                         Create
                     </Button>

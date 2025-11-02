@@ -1,9 +1,9 @@
+import { IChat } from "@/shared/interfaces/IChat";
+import { IFolder } from "@/shared/interfaces/IFolder";
+import { IMessage } from "@/shared/interfaces/IMessage";
+import { IUser } from "@/shared/interfaces/IUser";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { IFolder } from "@/shared/interfaces/IFolder";
-import { IUser } from "@/shared/interfaces/IUser";
-import { IChat } from "@/shared/interfaces/IChat";
-import { IMessage } from "@/shared/interfaces/IMessage";
 
 interface SelectionState {
     selectedFolder: IFolder | null;

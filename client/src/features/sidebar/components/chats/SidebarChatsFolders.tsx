@@ -3,13 +3,13 @@
 import { TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
 import { IFolder } from "@/shared/interfaces/IFolder";
 
+import { useDeleteFolder } from "@/features/folders/hooks/useFolders";
 import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
-import { useDeleteFolder } from "@/features/folders/hooks/useFolders";
 import { useModalStore, useSelectionStore } from "@/store";
 import { FoldersListSkeleton } from "../../ui/skeletons/FoldersListSkeleton";
 
@@ -47,6 +47,7 @@ export function SidebarChatsFolders({
                             </ContextMenuItem>
                             <ContextMenuItem
                                 variant="destructive"
+                                disabled={useDeleteFolderMutation.isPending}
                                 onClick={() => {
                                     useDeleteFolderMutation.mutateAsync(
                                         folder.id

@@ -21,14 +21,15 @@ export function ChatEmptyWindow({ chatId }: { chatId: string }) {
                 </div>
                 <div className="flex flex-col gap-[10px] mt-[20px]">
                     {messagesForEmptyChat.map((msg, i) => (
-                        <div
+                        <button
                             className="group flex gap-[10px] items-center border-2 border-neutral-900/10 dark:border-white/5 hover:border-blue-500 dark:hover:border-violet-500 p-[10px] rounded-xl transition-all duration-200 cursor-pointer hover:dark:bg-neutral-950"
                             key={i}
                             onClick={() => handleSend(msg)}
+                            disabled={useCreateMessageMutation.isPending}
                         >
                             <MessageIcon className="w-[25px] fill-none stroke-2 stroke-neutral-900/70 group-hover:stroke-neutral-900 dark:stroke-white/60 dark:group-hover:stroke-white" />
                             <div>{`"${msg}"`}</div>
-                        </div>
+                        </button>
                     ))}
                 </div>
             </div>

@@ -6,15 +6,15 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from "@nestjs/common";
-import { RegisterUserDto } from "./dto/register-user.dto";
+import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
 import * as crypto from "crypto";
+import * as dayjs from "dayjs";
 import { EmailService } from "src/email/email.service";
+import { PrismaService } from "src/prisma/prisma.service";
 import { UserService } from "src/user/user.service";
 import { LoginUserDto } from "./dto/login-user.dto";
-import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma/prisma.service";
-import * as dayjs from "dayjs";
+import { RegisterUserDto } from "./dto/register-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -109,6 +109,10 @@ export class AuthService {
             email: existingUser.email,
         });
 
+        await this.prisma.token.deleteMany({
+            where: { userId: existingUser.id },
+        });
+
         const { refreshToken } = await this.getRefreshToken(existingUser.id);
 
         return {
@@ -128,13 +132,13 @@ export class AuthService {
         }
 
         if (tokenInDb.expiresIn.getTime() < Date.now()) {
-            await this.prisma.token.deleteMany({ where: { id: tokenInDb.id } });
+            await this.prisma.token.delete({ where: { id: tokenInDb.id } });
             throw new BadRequestException("Refresh token expired");
         }
 
-        const newToken = await this.getRefreshToken(tokenInDb.userId);
+        await this.prisma.token.delete({ where: { id: tokenInDb.id } });
 
-        await this.prisma.token.deleteMany({ where: { id: tokenInDb.id } });
+        const newToken = await this.getRefreshToken(tokenInDb.userId);
 
         const accessToken = this.jwtService.sign({
             id: tokenInDb.user.id,

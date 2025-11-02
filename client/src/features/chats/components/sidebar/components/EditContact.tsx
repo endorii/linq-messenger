@@ -1,26 +1,25 @@
 "use client";
 
 import {
-    useUpdateContact,
     useDeleteContact,
+    useUpdateContact,
 } from "@/features/contacts/hooks/useContacts";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 import { Input } from "@/shared/components/ui/input";
 import { usePrivateChat } from "@/shared/hooks";
 import { CheckIcon, CloseIcon, TrashIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore } from "@/store";
 import { Label } from "@radix-ui/react-dropdown-menu";
-
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { NotificationSwitch } from "../ui/NotificationSwitch";
-import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function EditContact({ chat }: { chat: IChat }) {
     const useUpdateContactMutation = useUpdateContact();
     const useDeleteContactMutation = useDeleteContact();
 
     const { setChatSidebarTab } = useChatSidebarStore();
-
     const { isPrivate, otherMember, contact, meMember } = usePrivateChat(chat);
 
     if (!contact) {
@@ -31,6 +30,7 @@ export function EditContact({ chat }: { chat: IChat }) {
     const {
         handleSubmit,
         register,
+        watch,
         formState: { errors, isDirty },
     } = useForm<{ customContactName: string }>({
         defaultValues: {
@@ -38,9 +38,19 @@ export function EditContact({ chat }: { chat: IChat }) {
         },
     });
 
+    const watchedName = watch("customContactName");
+
+    const hasChanges = useMemo(() => {
+        const current = (contact.nickname || "").trim();
+        const next = (watchedName || "").trim();
+        return current !== next;
+    }, [watchedName, contact.nickname]);
+
     const onSubmit = (data: { customContactName: string }) => {
         if (!contact) return;
         const newNickname = data.customContactName.trim();
+
+        if (newNickname === (contact.nickname || "").trim()) return;
 
         useUpdateContactMutation.mutateAsync({
             chatId: chat.id,
@@ -80,7 +90,7 @@ export function EditContact({ chat }: { chat: IChat }) {
                                 ? otherMember?.user?.avatarUrl
                                 : chat.avatar
                         }
-                        alt="avatar2"
+                        alt="avatar"
                         className="rounded-full"
                     />
                 </div>
@@ -101,12 +111,14 @@ export function EditContact({ chat }: { chat: IChat }) {
                             errorMessage={errors.customContactName?.message}
                         />
                     </div>
-                    {isDirty && (
+
+                    {hasChanges && (
                         <button
                             type="submit"
                             className="absolute top-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
+                            disabled={useUpdateContactMutation.isPending}
                         >
-                            <CheckIcon className="w-[30px] stroke-neutral-900 dark:stroke-white stroke-2 fill-none" />
+                            <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
                         </button>
                     )}
                 </form>
@@ -120,6 +132,7 @@ export function EditContact({ chat }: { chat: IChat }) {
                 <button
                     className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center"
                     onClick={handleDeleteContact}
+                    disabled={useDeleteContactMutation.isPending}
                 >
                     <TrashIcon className="w-[30px] fill-none stroke-2 stroke-red-600" />
                     <div className="text-red-600 bg-transparent font-medium">

@@ -232,6 +232,7 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                             <Button
                                 type="submit"
                                 className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
+                                disabled={useCreateChatMutation.isPending}
                             >
                                 Create {entityLabel}
                             </Button>

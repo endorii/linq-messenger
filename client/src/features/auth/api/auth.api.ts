@@ -1,12 +1,12 @@
+import { httpService } from "@/shared/api/httpService";
 import { IUser } from "@/shared/interfaces/IUser";
+import axios, { AxiosError } from "axios";
 import {
     LoginResponse,
     LoginUserDto,
     RegisterUserDto,
     ServerResponseWithMessage,
 } from "../interfaces/auth.interfaces";
-import { httpService } from "@/shared/api/httpService";
-import axios, { AxiosError } from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
@@ -23,8 +23,6 @@ export async function loginUser(
     const { data } = await axios.post(`${API_URL}/auth/signin`, userData, {
         withCredentials: true,
     });
-
-    localStorage.setItem("accessToken", data.accessToken);
     return data;
 }
 

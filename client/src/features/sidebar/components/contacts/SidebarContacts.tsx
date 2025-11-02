@@ -35,7 +35,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
     return (
         <div className="flex flex-col px-[10px] py-[5px] overflow-y-auto">
             {filteredContacts.map((contact) => (
-                <div
+                <button
                     onClick={() => {
                         useGetOrCreatePrivateChatMutation.mutateAsync(
                             contact.contact?.id
@@ -43,7 +43,8 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                         setSidebarTab("chats");
                     }}
                     key={contact.id}
-                    className="flex gap-[13px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl cursor-pointer"
+                    className="flex gap-[13px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl"
+                    disabled={useGetOrCreatePrivateChatMutation.isPending}
                 >
                     <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
                         {contact.contact?.avatarUrl && (
@@ -74,7 +75,7 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                                 : "last seen recently"}
                         </div>
                     </div>
-                </div>
+                </button>
             ))}
         </div>
     );
