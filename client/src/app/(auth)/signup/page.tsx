@@ -238,12 +238,12 @@ function SignUp() {
                 </div>
 
                 <div className="flex flex-col justify-center gap-4 p-[20px] w-full">
-                    <button className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer">
+                    <Link
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}
+                        className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
+                    >
                         Continue with Google
-                    </button>
-                    <button className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer">
-                        Continue with Facebook
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="text-neutral-600 text-center mt-6">

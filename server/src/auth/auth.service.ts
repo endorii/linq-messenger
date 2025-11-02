@@ -15,7 +15,6 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { UserService } from "src/user/user.service";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { RegisterUserDto } from "./dto/register-user.dto";
-import { GoogleUser } from "./interfaces/google-user.interface";
 
 @Injectable()
 export class AuthService {
@@ -25,74 +24,6 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly prisma: PrismaService
     ) {}
-
-    async googleLogin(googleUser: GoogleUser) {
-        try {
-            let user = await this.prisma.user.findUnique({
-                where: { email: googleUser.email },
-            });
-
-            if (!user) {
-                // Створюємо нового користувача
-                const username = this.generateUniqueUsername(
-                    googleUser.firstName,
-                    googleUser.email
-                );
-
-                user = await this.prisma.user.create({
-                    data: {
-                        email: googleUser.email,
-                        username,
-                        password: "",
-                        firstName: googleUser.firstName,
-                        lastName: googleUser.lastName,
-                        avatarUrl: googleUser.avatarUrl,
-                        googleId: googleUser.googleId,
-                        isVerified: true,
-                    },
-                });
-            } else if (!user.googleId) {
-                user = await this.prisma.user.update({
-                    where: { id: user.id },
-                    data: {
-                        googleId: googleUser.googleId,
-                        isVerified: true,
-                    },
-                });
-            }
-
-            // Генеруємо токени
-            const accessToken = this.jwtService.sign({
-                id: user.id,
-                username: user.username,
-                email: user.email,
-            });
-
-            // Видаляємо старі refresh токени
-            await this.prisma.token.deleteMany({
-                where: { userId: user.id },
-            });
-
-            const { refreshToken } = await this.getRefreshToken(user.id);
-
-            return {
-                accessToken,
-                refreshToken,
-            };
-        } catch (error) {
-            console.error("Google login error:", error);
-            throw new BadRequestException("Failed to authenticate with Google");
-        }
-    }
-
-    // Допоміжний метод для генерації унікального username
-    private generateUniqueUsername(firstName: string, email: string): string {
-        const baseUsername = firstName.toLowerCase().replace(/[^a-z0-9]/g, "");
-        const emailPrefix = email.split("@")[0].toLowerCase();
-        const timestamp = Date.now().toString().slice(-6);
-
-        return `${baseUsername || emailPrefix}_${timestamp}`;
-    }
 
     async registerUser(userData: RegisterUserDto) {
         try {
