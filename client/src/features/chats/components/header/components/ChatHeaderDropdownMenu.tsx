@@ -36,7 +36,6 @@ export function ChatHeaderDropdownMenu({
     const { setActiveModal } = useModalStore();
 
     const handleMuteChat = () => setActiveModal("muteChat");
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

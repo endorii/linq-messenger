@@ -1,12 +1,12 @@
 "use client";
 
 import { useChat } from "@/features/chats/hooks/useChats";
-import { useSelectionStore, useModalStore, useNavigationStore } from "@/store";
+import { useNavigationStore } from "@/store";
+import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ChatMessagesWrapper } from "./ChatMessagesWrapper";
 import { ChatPinnedMessagesWrapper } from "./ChatPinnedMessagesWrapper";
-import { useTheme } from "next-themes";
 
 export function ChatLayoutWrapper({
     children,
@@ -21,7 +21,6 @@ export function ChatLayoutWrapper({
 
     const { theme } = useTheme();
 
-    const { setSelectedChat } = useSelectionStore();
     const { chatView } = useNavigationStore();
 
     const { setChatView } = useNavigationStore();
@@ -35,11 +34,7 @@ export function ChatLayoutWrapper({
             router.push("/");
             return;
         }
-
-        if (chat) {
-            setSelectedChat(chat);
-        }
-    }, [chat, router, setSelectedChat, isChatPending]);
+    }, [chat, router, isChatPending]);
 
     return (
         <div className="flex w-full h-[100vh] relative">

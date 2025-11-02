@@ -13,11 +13,11 @@ import {
     DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import {
-    BurgerMenuIcon,
     AccountIcon,
-    OptionsIcon,
+    BurgerMenuIcon,
     LogoutIcon,
     SettingsIcon,
+    ThemeIcon,
 } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces";
 import { useNavigationStore } from "@/store";
@@ -81,8 +81,8 @@ export function ChatsDropdownMenu({ user }: { user: IUser }) {
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger className="group">
                         <div className="flex items-center gap-[10px]">
-                            <OptionsIcon className="w-[16px] fill-neutral-900 dark:fill-white" />
-                            <div>More</div>
+                            <ThemeIcon className="w-[16px] fill-neutral-900 dark:fill-white" />
+                            <div>Theme</div>
                         </div>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>

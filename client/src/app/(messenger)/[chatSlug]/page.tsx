@@ -35,11 +35,13 @@ function ChatSlug() {
         toggleSelectedMessage,
         clearSelectedMessages,
         setSelectedMessage,
+        setSelectedChat,
     } = useSelectionStore();
 
     if (!chat || !me) return null;
 
     useEffect(() => {
+        setSelectedChat(chat);
         clearSelectedMessages();
         setSelectedMessage(null);
     }, [chatId, clearSelectedMessages]);

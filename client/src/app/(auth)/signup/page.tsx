@@ -135,7 +135,7 @@ function SignUp() {
                             <Button
                                 type="button"
                                 onClick={nextStep}
-                                className="w-full dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
+                                className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
                             >
                                 Next
                             </Button>
@@ -213,13 +213,13 @@ function SignUp() {
                                 <Button
                                     type="button"
                                     onClick={prevStep}
-                                    className="w-1/7 items-center dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl border border-neutral-300 dark:border-neutral-800 h-[45px]"
+                                    className="w-1/7 text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
                                 >
-                                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none" />
+                                    <BackIcon className="w-[24px] stroke-neutral-900 dark:stroke-white stroke-[2.5] fill-none group-hover:stroke-white" />
                                 </Button>
                                 <Button
                                     type="submit"
-                                    className="w-6/7 dark:bg-neutral-950 hover:bg-neutral-900 transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px]"
+                                    className="w-6/7 text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer"
                                     disabled={useRegisterUserMutation.isPending}
                                 >
                                     Sign Up
@@ -232,23 +232,26 @@ function SignUp() {
                 <div className="relative flex items-center w-full p-[10px]">
                     <hr className="border-t border-neutral-300 dark:border-neutral-800 w-full" />
 
-                    <div className="absolute top-0 left-[50%] translate-x-[-50%] text-center bg-neutral-200 dark:bg-neutral-900 px-[10px] text-neutral-500 dark:text-neutral-400">
+                    <div className="absolute top-0 left-[50%] translate-x-[-50%] text-center bg-neutral-200 dark:bg-neutral-900 px-[10px] text-neutral-600 dark:text-neutral-400">
                         OR
                     </div>
                 </div>
 
                 <div className="flex flex-col justify-center gap-4 p-[20px] w-full">
-                    <button className="p-3 rounded-xl bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-600 transition text-white border border-white/5">
+                    <button className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer">
                         Continue with Google
                     </button>
-                    <button className="p-3 rounded-xl bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-600 transition text-white border border-white/5">
+                    <button className="w-full text-black dark:text-white hover:text-white bg-white dark:bg-neutral-950 hover:bg-neutral-900 dark:hover:bg-white dark:hover:text-black transition p-3 rounded-xl font-semibold border border-neutral-300 dark:border-neutral-800 h-[45px] cursor-pointer">
                         Continue with Facebook
                     </button>
                 </div>
 
-                <div className="text-neutral-500 text-center mt-6">
+                <div className="text-neutral-600 text-center mt-6">
                     Already have an account?{" "}
-                    <Link href="/signin" className="text-white hover:underline">
+                    <Link
+                        href="/signin"
+                        className="text-black dark:text-white hover:underline"
+                    >
                         Sign In
                     </Link>
                 </div>

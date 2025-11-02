@@ -43,24 +43,20 @@ export function SidebarContacts({ searchValue }: { searchValue: string }) {
                         setSidebarTab("chats");
                     }}
                     key={contact.id}
-                    className="flex gap-[13px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl"
+                    className="flex items-center gap-[13px] text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 p-[10px] rounded-xl"
                     disabled={useGetOrCreatePrivateChatMutation.isPending}
                 >
-                    <div className="w-[55px] h-[55px] bg-neutral-600 rounded-full flex-shrink-0 overflow-hidden">
-                        {contact.contact?.avatarUrl && (
-                            <img
-                                src={contact.contact.avatarUrl}
-                                alt="avatar"
-                                className="w-full h-full object-cover rounded-full"
-                            />
-                        )}
-                    </div>
+                    {contact.contact?.avatarUrl && (
+                        <img
+                            src={contact.contact.avatarUrl}
+                            alt="avatar"
+                            className="w-[55px] h-[55px]  object-cover bg-neutral-600 rounded-full"
+                        />
+                    )}
 
-                    <div className="flex flex-col justify-center gap-[3px] flex-1 min-w-0">
-                        <div className="flex justify-between gap-[2px]">
-                            <div className="font-semibold truncate">
-                                {contact.nickname || contact.contact?.username}
-                            </div>
+                    <div className="flex flex-col gap-[3px] text-left min-w-0 ">
+                        <div className="font-semibold truncate">
+                            {contact.nickname || contact.contact?.username}
                         </div>
 
                         <div

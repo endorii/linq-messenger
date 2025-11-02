@@ -225,9 +225,9 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                             <Button
                                 type="button"
                                 onClick={prevStep}
-                                className="flex items-center justify-center border-white/5 cursor-pointer"
+                                className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 flex items-center justify-center border-white/5 cursor-pointer"
                             >
-                                <div>Go back</div>
+                                Go back
                             </Button>
                             <Button
                                 type="submit"

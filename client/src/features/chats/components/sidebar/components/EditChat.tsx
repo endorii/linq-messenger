@@ -7,12 +7,13 @@ import { Label } from "@/shared/components/ui/label";
 import { ChatEnum } from "@/shared/enums/enums";
 import { usePostChatAvatar } from "@/shared/hooks/useFiles";
 import {
+    AccountIcon,
     CheckIcon,
     CloseIcon,
-    NotifcationIcon,
     SpinnerIcon,
     TrashIcon,
 } from "@/shared/icons";
+import { OwnerIcon } from "@/shared/icons/OwnerIcon";
 import { IChat } from "@/shared/interfaces/IChat";
 import { useChatSidebarStore, useModalStore } from "@/store";
 import { UploadIcon } from "lucide-react";
@@ -164,11 +165,11 @@ export function EditChat({ chat }: { chat: IChat }) {
                 <div className="flex flex-col gap-[10px]">
                     <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
+                            <AccountIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
                             <div className="flex flex-col">
                                 <div>Members</div>
                                 <div className="text-sm text-neutral-500">
-                                    3
+                                    {chat.members.length}
                                 </div>
                             </div>
                         </div>
@@ -176,23 +177,17 @@ export function EditChat({ chat }: { chat: IChat }) {
 
                     <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
                         <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
+                            <OwnerIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
                             <div className="flex flex-col">
                                 <div>Administrators</div>
                                 <div className="text-sm text-neutral-500">
-                                    1
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="p-[10px] hover:bg-neutral-900/5 dark:hover:bg-white/5 rounded-xl cursor-pointer flex gap-[30px] items-center justify-between">
-                        <div className="flex gap-[30px] items-center">
-                            <NotifcationIcon className="w-[30px] stroke-2 stroke-neutral-900 dark:stroke-white/70 fill-none" />
-                            <div className="flex flex-col">
-                                <div>Invite links</div>
-                                <div className="text-sm text-neutral-500">
-                                    1
+                                    {
+                                        chat.members.map(
+                                            (member) =>
+                                                member.role === "ADMIN" ||
+                                                member.role === "OWNER"
+                                        ).length
+                                    }
                                 </div>
                             </div>
                         </div>

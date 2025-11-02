@@ -58,7 +58,7 @@ export function AddContact({ isOpen, onClose }: AddContactProps) {
     const { selectedChat } = useSelectionStore();
 
     const onSubmit = async (data: FormData) => {
-        if (!selectedChat) return;
+        // if (!selectedChat) return;
         await createContactMutation.mutateAsync({
             chatId: selectedChat?.id,
             contactPayload: {

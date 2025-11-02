@@ -296,7 +296,7 @@ model PrivacySettings {
     addMe                 PrivacyLevel @default(EVERYBODY)
     usernameVisibility    PrivacyLevel @default(EVERYBODY)
 
-    user User @relation(fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum PrivacyLevel {

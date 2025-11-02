@@ -18,7 +18,6 @@ import {
     LinkIcon,
 } from "@/shared/icons";
 import { AddContactIcon } from "@/shared/icons/AddContactIcon";
-import { OwnerIcon } from "@/shared/icons/OwnerIcon";
 import { IChat } from "@/shared/interfaces";
 import { useChatSidebarStore, useModalStore, useSelectionStore } from "@/store";
 import { NotificationSwitch } from "../ui/NotificationSwitch";

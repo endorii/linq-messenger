@@ -1,13 +1,13 @@
+import { ContactPayload, IContact } from "@/shared/interfaces/IContact";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 import {
     fetchAddContact,
     fetchContacts,
     fetchDeleteContact,
     fetchUpdateContact,
 } from "../api/contacts.api";
-import { toast } from "sonner";
-import { ContactPayload, IContact } from "@/shared/interfaces/IContact";
-import { AxiosError } from "axios";
 
 export function useContacts() {
     return useQuery<IContact[], Error>({
@@ -24,13 +24,17 @@ export function useCreateContact() {
             chatId,
             contactPayload,
         }: {
-            chatId: string;
+            chatId?: string;
             contactPayload: ContactPayload;
         }) => fetchAddContact(contactPayload),
         onSuccess: (data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
+            queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId || ""] });
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
+        },
+        onError: (error: AxiosError<any>) => {
+            const message = error.response?.data.message || error.message;
+            toast.error(message || "An unknown error occurred");
         },
     });
 }
@@ -66,7 +70,7 @@ export function useDeleteContact() {
             toast.success(data.message);
         },
         onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
