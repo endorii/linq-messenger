@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic"; // ⚡️ Забороняє prerender для цієї сторінки
+
 import {
     useResendVerification,
     useVerifyUser,
@@ -50,16 +52,7 @@ const VerifyPage = () => {
             return;
         }
 
-        const verifyEmail = async () => {
-            try {
-                await verifyMutation.mutateAsync(token);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        verifyEmail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        verifyMutation.mutateAsync(token);
     }, [token, router]);
 
     return (
