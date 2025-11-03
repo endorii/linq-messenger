@@ -7,7 +7,7 @@
 
 ## ✨ Key Features
 
-✅ **JWT Authentication** (login / registration / refresh)  
+✅ **JWT Authentication** (login / registration / refresh) + OAuth 2.0 (Google)
 💬 **Private and group chats**  
 📧 Email verification via **NodeMailer** during registration
 🧠 **Zustand** — simple and fast global state  
@@ -24,7 +24,7 @@
 | Category | Technologies |
 |:---------|:------------|
 | **Frontend** | Next.js • React Query • Zustand • TailwindCSS • shadcn/ui • Axios |
-| **Backend** | NestJS • Prisma • Multer • JWT • Bcrypt • NodeMailer |
+| **Backend** | NestJS • Prisma • Multer • JWT + OAuth 2.0 • Bcrypt • NodeMailer |
 | **Database** | PostgreSQL |
 | **Storage** | Supabase Storage |
 | **(Planned)** | WebSockets (`@nestjs/websockets`, `socket.io`) |
@@ -42,7 +42,7 @@
 
 ### **Backend (NestJS)**
 - 🧱 Modular architecture: `auth`, `user`, `chats`, `messages`, `files`...  
-- 🔐 **JWT authentication** (access + refresh tokens)  
+- 🔐 **JWT authentication** (access + refresh tokens)  + **OAuth 2.0** (Google)
 - 📦 **Prisma ORM**  
 - 📤 **Multer + Supabase Storage** for file uploads  
 - 🧩 Ready for **WebSockets integration**
