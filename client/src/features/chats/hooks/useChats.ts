@@ -22,7 +22,7 @@ export function useChats() {
     return useQuery<IChat[], Error>({
         queryKey: ["chats"],
         queryFn: () => fetchChats(),
-        retry: 3,
+        retry: false,
     });
 }
 
@@ -38,7 +38,7 @@ export function useChatsForForwardMessage() {
     return useQuery<IChat[], Error>({
         queryKey: ["chats", "for-forward"],
         queryFn: () => fetchChatsForForwardMessage(),
-        retry: 3,
+        retry: false,
     });
 }
 

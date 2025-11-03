@@ -47,21 +47,22 @@ function ChatSlug() {
     }, [chat, setSelectedChat, clearSelectedMessages, setSelectedMessage]);
 
     useEffect(() => {
-        if (!messages || !me) return;
+        if (!chatId || !me) return;
 
-        const unreadMessages = messages.filter(
-            (msg) => !msg.messagesRead.some((read) => read.userId === me.id)
-        );
+        const unreadMessages =
+            messages?.filter(
+                (msg) => !msg.messagesRead.some((read) => read.userId === me.id)
+            ) ?? [];
 
-        if (unreadMessages.length === 0) return;
-
-        updateReadMessagesMutation.mutateAsync({
-            chatId,
-            updateReadMessagesPayload: {
-                messageIds: unreadMessages.map((m) => m.id),
-            },
-        });
-    }, [messages, chatId, updateReadMessagesMutation, me]);
+        if (unreadMessages.length > 0) {
+            updateReadMessagesMutation.mutate({
+                chatId,
+                updateReadMessagesPayload: {
+                    messageIds: unreadMessages.map((m) => m.id),
+                },
+            });
+        }
+    }, [chatId]);
 
     if (!chat || !me) return null;
 
