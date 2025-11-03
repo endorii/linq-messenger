@@ -2,10 +2,7 @@
 
 import { ModalChatItem } from "@/features/chats/components/ModalChatItem";
 import { useChatsForForwardMessage } from "@/features/chats/hooks/useChats";
-import {
-    useForwardMessage,
-    useForwardMessages,
-} from "@/features/messages/hooks/useMessages";
+import { useForwardMessages } from "@/features/messages/hooks/useMessages";
 import { Button } from "@/shared/components/ui/button";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
 import { useEscapeKeyClose } from "@/shared/hooks";

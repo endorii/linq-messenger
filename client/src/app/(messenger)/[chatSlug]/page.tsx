@@ -38,25 +38,30 @@ function ChatSlug() {
 
     const { isPrivate, meMember } = usePrivateChat(chat ?? null);
 
-    // Синхронізація вибраного чату
     useEffect(() => {
         if (chat) {
-            setSelectedChat(chat); // передаємо тільки якщо chat існує
+            setSelectedChat(chat);
         }
         clearSelectedMessages();
         setSelectedMessage(null);
     }, [chat, setSelectedChat, clearSelectedMessages, setSelectedMessage]);
 
-    // Відзначення прочитаних повідомлень
     useEffect(() => {
-        if (!messages) return;
+        if (!messages || !me) return;
+
+        const unreadMessages = messages.filter(
+            (msg) => !msg.messagesRead.some((read) => read.userId === me.id)
+        );
+
+        if (unreadMessages.length === 0) return;
+
         updateReadMessagesMutation.mutateAsync({
             chatId,
             updateReadMessagesPayload: {
-                messageIds: messages.map((m) => m.id),
+                messageIds: unreadMessages.map((m) => m.id),
             },
         });
-    }, [messages, chatId, updateReadMessagesMutation]);
+    }, [messages, chatId, updateReadMessagesMutation, me]);
 
     if (!chat || !me) return null;
 

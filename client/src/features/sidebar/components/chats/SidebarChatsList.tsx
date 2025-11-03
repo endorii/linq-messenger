@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
 import { useChats } from "@/features/chats/hooks/useChats";
+import { TabsContent } from "@/shared/components/ui/tabs";
 import { IFolder } from "@/shared/interfaces";
+import { useMemo } from "react";
+import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 import { SidebarChat } from "./SidebarChat";
 import { SidebarFolderTabContent } from "./SidebarFolderTabContent";
-import { TabsContent } from "@/shared/components/ui/tabs";
-import { ChatListSkeleton } from "../../ui/skeletons/ChatsListSkeleton";
 
 interface SidebarChatsListProps {
     folders: IFolder[];
@@ -21,8 +21,7 @@ export function SidebarChatsList({
 
     const sortedChats = useMemo(() => {
         if (!chats) return [];
-
-        return chats.sort((a, b) => {
+        return [...chats].sort((a, b) => {
             const dateA = a.lastMessage
                 ? new Date(a.lastMessage.createdAt).getTime()
                 : 0;
