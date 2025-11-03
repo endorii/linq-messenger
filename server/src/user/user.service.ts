@@ -4,9 +4,9 @@ import {
     Injectable,
     NotFoundException,
 } from "@nestjs/common";
+import * as bcrypt from "bcryptjs";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
-import * as bcrypt from "bcryptjs";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
@@ -81,10 +81,12 @@ export class UserService {
         const user = await this.findById(userId);
         if (!user) throw new NotFoundException("User not found");
 
-        if (updateUserDto.phone && updateUserDto.phone !== user.phone) {
-            const userPhone = await this.findByPhone(updateUserDto.phone);
+        const normalizedPhone = updateUserDto.phone?.trim() || null;
+
+        if (normalizedPhone && normalizedPhone !== user.phone) {
+            const userPhone = await this.findByPhone(normalizedPhone);
             if (userPhone)
-                throw new ConflictException(`Phone "${updateUserDto.phone}" is already taken`);
+                throw new ConflictException(`Phone "${normalizedPhone}" is already taken`);
         }
 
         if (updateUserDto.email && updateUserDto.email !== user.email) {
@@ -101,12 +103,19 @@ export class UserService {
                 );
         }
 
-        const updatedUser = await this.prisma.user.update({
+        const dataToUpdate = {
+            ...updateUserDto,
+            phone: normalizedPhone,
+        };
+
+        await this.prisma.user.update({
             where: { id: userId },
-            data: { ...updateUserDto },
+            data: dataToUpdate,
         });
 
-        return { message: "User data updated successfully", data: updatedUser };
+        return {
+            message: "User data updated successfully",
+        };
     }
 
     async updateVerificationData(id: string, verificationToken: string, tokenExpiry: Date) {

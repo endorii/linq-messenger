@@ -8,7 +8,6 @@ import {
     PhoneIcon,
 } from "@/shared/icons";
 import { useNavigationStore } from "@/store";
-import Image from "next/image";
 
 export function SidebarProfile() {
     const { data: me, isPending: isMeLoading } = useProfile();
@@ -66,7 +65,7 @@ export function SidebarProfile() {
                 <img
                     src={me.avatarUrl}
                     alt="avatar"
-                    className="w-[150px] h-[150px] rounded-full object-cover"
+                    className="w-[150px] h-[150px] rounded-full object-cover bg-neutral-600"
                 />
 
                 <div className="text-center">

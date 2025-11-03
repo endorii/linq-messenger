@@ -13,7 +13,7 @@ import { usePostAvatar } from "@/shared/hooks/useFiles";
 import { CheckIcon, SpinnerIcon } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces/IUser";
 import { UploadIcon } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 export function SidebarEditProfile() {
@@ -23,19 +23,32 @@ export function SidebarEditProfile() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isDirty },
         watch,
+        reset,
     } = useForm<Partial<IUser>>({
         defaultValues: {
-            firstName: me?.firstName || "",
-            lastName: me?.lastName || "",
-            biography: me?.biography || "",
-            phone: me?.phone || "",
-            username: me?.username || "",
+            firstName: "",
+            lastName: "",
+            biography: "",
+            phone: "",
+            username: "",
         },
     });
 
-    const watchFields = watch();
+    // Оновлюємо форму коли завантажуються дані користувача
+    useEffect(() => {
+        if (me) {
+            reset({
+                firstName: me.firstName || "",
+                lastName: me.lastName || "",
+                biography: me.biography || "",
+                phone: me.phone || "",
+                username: me.username || "",
+            });
+        }
+    }, [me, reset]);
+
     const username = watch("username") || "";
     const debouncedUsername = useDebounce(username, 500);
 
@@ -47,10 +60,6 @@ export function SidebarEditProfile() {
 
     const usernameAvailable = usernameCheck?.available ?? true;
     const updateUserMutation = useUpdateUser();
-
-    const isFormChanged = Object.keys(watchFields).some(
-        (key) => watchFields[key as keyof IUser] !== me?.[key as keyof IUser]
-    );
 
     const onSubmit = (data: Partial<IUser>) => {
         updateUserMutation.mutateAsync({
@@ -218,13 +227,13 @@ export function SidebarEditProfile() {
                             </div>
                         </div>
                     </div>
-                    ;
                 </div>
 
-                {isFormChanged && (
+                {isDirty && (
                     <button
                         className="absolute bottom-4 right-4 bg-theme-gradient rounded-xl p-[8px] cursor-pointer"
                         type="submit"
+                        disabled={!usernameAvailable || checking}
                     >
                         <CheckIcon className="w-[30px] stroke-white stroke-2 fill-none" />
                     </button>
