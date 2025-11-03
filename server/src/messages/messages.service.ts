@@ -1,13 +1,13 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { UpdateMessageDto } from "./dto/update-message.dto";
+import * as dayjs from "dayjs";
 import { Attachment, ChatType } from "generated/prisma";
 import { ChatMembersService } from "src/chat-members/chat-members.service";
+import { FilesService } from "src/files/files.service";
+import { PrismaService } from "src/prisma/prisma.service";
 import { CreateForwardMessageDto } from "./dto/create-forward-message.dto";
 import { CreateForwardMessagesDto } from "./dto/create-forward-messages.dto";
-import * as dayjs from "dayjs";
-import { FilesService } from "src/files/files.service";
+import { CreateMessageDto } from "./dto/create-message.dto";
+import { UpdateMessageDto } from "./dto/update-message.dto";
 
 @Injectable()
 export class MessagesService {
@@ -145,7 +145,6 @@ export class MessagesService {
         createMessageDto: CreateMessageDto,
         files?: Express.Multer.File[]
     ) {
-        // Перевірка доступу, як у твоєму current postMessage
         const chat = await this.prisma.chat.findUnique({
             where: { id: chatId },
             include: { members: { where: { leftAt: null } } },
@@ -154,12 +153,16 @@ export class MessagesService {
         if (!chat.members.some((m) => m.userId === userId))
             throw new ForbiddenException("Not a member");
 
-        // Створюємо повідомлення
         const message = await this.prisma.message.create({
             data: {
                 ...createMessageDto,
                 chatId,
                 senderId: userId,
+                messagesRead: {
+                    create: {
+                        userId,
+                    },
+                },
             },
             include: { sender: true },
         });
