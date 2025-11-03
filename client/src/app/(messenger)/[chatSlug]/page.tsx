@@ -62,7 +62,7 @@ function ChatSlug() {
                 },
             });
         }
-    }, [chatId]);
+    }, [chatId, me, messages]);
 
     if (!chat || !me) return null;
 
