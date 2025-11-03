@@ -39,10 +39,8 @@ function SignIn() {
             });
             setFormErrorMessage("");
             reset({ password: "" });
-        } catch (error: any) {
-            setFormErrorMessage(
-                error?.message || "An error occurred during login"
-            );
+        } catch (error) {
+            setFormErrorMessage("An error occurred during login");
             console.log(error);
         }
     };
@@ -129,7 +127,7 @@ function SignIn() {
                 </div>
 
                 <div className="text-neutral-600 text-center mt-6">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <Link
                         href="/signup"
                         className="text-black dark:text-white hover:underline"

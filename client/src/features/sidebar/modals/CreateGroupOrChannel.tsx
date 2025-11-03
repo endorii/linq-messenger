@@ -71,10 +71,10 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                 memberIds: selectedContacts,
             });
             handleClose();
-        } catch (error: any) {
+        } catch (error) {
+            console.log(error);
             setModalMessage(
-                error.response.data.message ||
-                    `Error during creating ${String(type).toLowerCase()}`
+                `Error during creating ${String(type).toLowerCase()}`
             );
         }
     };

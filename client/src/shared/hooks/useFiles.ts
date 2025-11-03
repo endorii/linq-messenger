@@ -1,7 +1,8 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { fetchUploadAvatar, fetchUploadChatAvatar, fetchUploadChatFiles } from "../api/files.api";
+import { ServerResponseError } from "../interfaces/ServerResponseError";
 
 export function usePostFiles() {
     const queryClient = useQueryClient();
@@ -18,8 +19,8 @@ export function usePostFiles() {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -34,8 +35,8 @@ export function usePostAvatar() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.error(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -51,8 +52,8 @@ export function usePostChatAvatar() {
             queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             toast.error(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

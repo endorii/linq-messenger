@@ -59,11 +59,9 @@ function SignUp() {
             });
             setFormErrorMessage("");
             reset();
-        } catch (error: any) {
+        } catch (error) {
             setStep(1);
-            setFormErrorMessage(
-                error?.message || "An error occurred during registration"
-            );
+            setFormErrorMessage("An error occurred during registration");
             console.log(error);
         }
     };

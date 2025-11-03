@@ -1,7 +1,9 @@
+import { IUser } from "@/shared/interfaces/IUser";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { LoginUserDto, RegisterUserDto } from "../interfaces/auth.interfaces";
 import {
     fetchProfile,
     loginUser,
@@ -10,8 +12,7 @@ import {
     resendVerifyUser,
     verifyUser,
 } from "../api/auth.api";
-import { AxiosError } from "axios";
-import { IUser } from "@/shared/interfaces/IUser";
+import { LoginUserDto, RegisterUserDto } from "../interfaces/auth.interfaces";
 
 export function useRegisterUser() {
     const router = useRouter();
@@ -21,8 +22,8 @@ export function useRegisterUser() {
             toast.success(data.message);
             router.push("/signin");
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -40,8 +41,8 @@ export function useLoginUser() {
             toast.success(data.message);
             router.push("/");
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -56,8 +57,8 @@ export function useVerifyUser() {
             toast.success(data.message);
             return data.message;
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -69,8 +70,8 @@ export function useResendVerification() {
         onSuccess: (data) => {
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -91,8 +92,8 @@ export function useLogoutUser() {
 
             router.push("/signin");
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

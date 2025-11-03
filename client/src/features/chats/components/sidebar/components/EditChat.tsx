@@ -58,7 +58,7 @@ export function EditChat({ chat }: { chat: IChat }) {
             });
 
             reset(data);
-        } catch (error: any) {
+        } catch (error) {
             console.log(error);
         }
     };

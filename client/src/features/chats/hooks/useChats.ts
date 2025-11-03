@@ -1,4 +1,10 @@
+import { IAttachment } from "@/shared/interfaces";
+import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
     fetchChat,
     fetchChatAttachmnets,
@@ -11,11 +17,6 @@ import {
     fetchLeaveChat,
     fetchUpdateChat,
 } from "../api/chats.api";
-import { ChatPayload, IChat } from "@/shared/interfaces/IChat";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
-import { usePathname, useRouter } from "next/navigation";
-import { IAttachment } from "@/shared/interfaces";
 
 export function useChats() {
     return useQuery<IChat[], Error>({
@@ -67,8 +68,8 @@ export function useCreatePrivateChat() {
             // toast.success(data.message);
             router.push(`/${data.data?.id}`);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -82,8 +83,8 @@ export function useCreateChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -103,8 +104,8 @@ export function useUpdateChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -125,8 +126,8 @@ export function useLeaveChat() {
                 router.push("/");
             }
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -147,8 +148,8 @@ export function useDeleteChat() {
                 router.push("/");
             }
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

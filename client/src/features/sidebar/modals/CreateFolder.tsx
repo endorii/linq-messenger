@@ -46,10 +46,9 @@ export function CreateFolder({ isOpen, onClose }: CreateNewChannelProps) {
                 name: data.folderName,
             });
             handleClose();
-        } catch (error: any) {
-            setModalMessage(
-                error.response.data.message || "Error during creating folder"
-            );
+        } catch (error) {
+            console.log(error);
+            setModalMessage("Error during creating folder");
         }
     };
 

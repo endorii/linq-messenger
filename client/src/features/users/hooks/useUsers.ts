@@ -1,6 +1,6 @@
 import { fetchUniqueUsername, fetchUpdateUser } from "@/features/users/api/users.api";
 import { IUser } from "@/shared/interfaces";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -22,8 +22,8 @@ export function useUpdateUser() {
             queryClient.invalidateQueries({ queryKey: ["me"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

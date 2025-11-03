@@ -1,7 +1,7 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { IChatMember } from "@/shared/interfaces/IChatMember";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { IChatMember } from "@/shared/interfaces/IChatMember";
 import {
     fetchAddMembersToChat,
     fetchToggleMarkChat,
@@ -22,8 +22,8 @@ export function useToggleMarkChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -43,8 +43,8 @@ export function useToggleMuteChat() {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -59,8 +59,8 @@ export function useAddMembersToChat() {
             queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

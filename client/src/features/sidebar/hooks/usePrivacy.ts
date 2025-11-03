@@ -1,8 +1,8 @@
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { IPrivacySettings } from "@/shared/interfaces/IPrivacySettings";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { fetchUpdatePrivacy, fetchUserPrivacy } from "../api/privacy.api";
-import { IPrivacySettings } from "@/shared/interfaces/IPrivacySettings";
 
 export function useUserPrivacy() {
     return useQuery<IPrivacySettings, Error>({
@@ -22,8 +22,8 @@ export function useUpdatePrivacy() {
             // toast.success(data.message);
         },
 
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

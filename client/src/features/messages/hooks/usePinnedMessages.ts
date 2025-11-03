@@ -1,3 +1,4 @@
+import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -7,7 +8,6 @@ import {
     fetchPinMessages,
     fetchUnpinAllMessages,
 } from "../api/pinned-messages.api";
-import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 
 export function usePinMessages(chatId: string) {
     return useQuery<IPinnedMessage[], Error>({
@@ -28,8 +28,8 @@ export function useCreatePinMessage() {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -46,8 +46,8 @@ export function useDeletePinnedMessage() {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats", variables.chatId] });
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -63,8 +63,8 @@ export function useUnpinAllMessages() {
             queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
             queryClient.invalidateQueries({ queryKey: ["chats", chatId] });
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

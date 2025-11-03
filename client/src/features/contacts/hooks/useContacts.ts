@@ -1,4 +1,5 @@
 import { ContactPayload, IContact } from "@/shared/interfaces/IContact";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
@@ -32,7 +33,7 @@ export function useCreateContact() {
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
+        onError: (error: AxiosError<ServerResponseError>) => {
             const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
@@ -69,7 +70,7 @@ export function useDeleteContact() {
             queryClient.invalidateQueries({ queryKey: ["contacts"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
+        onError: (error: AxiosError<ServerResponseError>) => {
             const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },

@@ -1,5 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FolderPayload, IFolder } from "@/shared/interfaces/IFolder";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 import {
     fetchAddChatFolder,
     fetchAddChatToFolder,
@@ -8,8 +10,6 @@ import {
     fetchUpdateChatFolder,
     removeChatFromFolder,
 } from "../api/folders.api";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
 
 export function useFolders() {
     return useQuery<IFolder[], Error>({
@@ -27,8 +27,8 @@ export function useCreateFolder() {
             queryClient.invalidateQueries({ queryKey: ["folders"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -51,8 +51,8 @@ export function useUpdateFolder() {
             toast.success(data.message);
         },
 
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -66,8 +66,8 @@ export function useDeleteFolder() {
             queryClient.invalidateQueries({ queryKey: ["folders"] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -83,8 +83,8 @@ export function useAddChatToFolder() {
             queryClient.invalidateQueries({ queryKey: ["chats", "folder", variables.folderId] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });
@@ -100,8 +100,8 @@ export function useRemoveChatFromFolder() {
             queryClient.invalidateQueries({ queryKey: ["chats", "folder", variables.folderId] });
             toast.success(data.message);
         },
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

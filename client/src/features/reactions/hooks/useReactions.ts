@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
 import { ReactionPayload } from "@/shared/interfaces/IMessage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 import { fetchToggleReaction } from "../api/reactions.api";
 
 export function useToggleReaction() {
@@ -19,8 +19,8 @@ export function useToggleReaction() {
             queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
         },
 
-        onError: (error: AxiosError<any>) => {
-            const message = (error.response?.data as any)?.message || error.message;
+        onError: (error: AxiosError<ServerResponseError>) => {
+            const message = error.response?.data.message || error.message;
             toast.error(message || "An unknown error occurred");
         },
     });

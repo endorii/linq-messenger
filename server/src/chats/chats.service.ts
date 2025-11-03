@@ -1,9 +1,9 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ChatType, MemberRole, MessageType } from "generated/prisma";
+import { ChatMembersService } from "src/chat-members/chat-members.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateChatDto, CreatePrivateChatDto } from "./dto/create-chat.dto";
-import { ChatType, MemberRole, MessageType } from "generated/prisma";
 import { UpdateChatDto } from "./dto/update-chat.dto";
-import { ChatMembersService } from "src/chat-members/chat-members.service";
 import { IEnrichedChat } from "./interfaces/interfaces";
 
 @Injectable()
