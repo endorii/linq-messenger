@@ -1,6 +1,8 @@
 "use client";
 
-export const dynamic = "force-dynamic"; // ⚡️ Забороняє prerender для цієї сторінки
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 import {
     useResendVerification,
