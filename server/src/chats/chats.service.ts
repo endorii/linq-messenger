@@ -84,6 +84,9 @@ export class ChatsService {
                         isRevoked: false,
                         createdAt: { gt: lastReadAt },
                         deletedMessages: { none: { userId } },
+                        messagesRead: {
+                            none: { userId },
+                        },
                     },
                 });
 
@@ -261,6 +264,9 @@ export class ChatsService {
                         isRevoked: false,
                         createdAt: { gt: lastReadAt },
                         deletedMessages: { none: { userId } },
+                        messagesRead: {
+                            none: { userId },
+                        },
                     },
                 });
 

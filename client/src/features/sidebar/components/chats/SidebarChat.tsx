@@ -38,7 +38,6 @@ interface SidebarChatProps {
 }
 
 export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
-    if (!chat) return null;
     const params = useParams();
     const chatId = params?.chatSlug;
 
@@ -104,6 +103,7 @@ export function SidebarChat({ chat, folders, folderId }: SidebarChatProps) {
     const foldersWithNoChat = folders?.filter(
         (f) => !chat.folders?.some((cf) => cf.folderId === f.id)
     );
+    if (!chat) return null;
 
     return (
         <ContextMenu onOpenChange={(open) => open && handleContextMenu()}>
