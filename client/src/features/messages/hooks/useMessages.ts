@@ -4,6 +4,7 @@ import {
     ForwardMessagesPayload,
     IMessage,
 } from "@/shared/interfaces/IMessage";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

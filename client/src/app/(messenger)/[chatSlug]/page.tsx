@@ -26,9 +26,7 @@ function ChatSlug() {
     const { data: chat, isPending: isChatPending } = useChat(chatId);
     const { data: messages, isPending: isMessagesPending } =
         useMessages(chatId);
-
     const { data: me, isPending: isMePending } = useProfile();
-
     const updateReadMessagesMutation = useUpdateReadMessages();
     const {
         selectedMessages,
@@ -38,14 +36,18 @@ function ChatSlug() {
         setSelectedChat,
     } = useSelectionStore();
 
-    if (!chat || !me) return null;
+    const { isPrivate, meMember } = usePrivateChat(chat ?? null);
 
+    // Синхронізація вибраного чату
     useEffect(() => {
-        setSelectedChat(chat);
+        if (chat) {
+            setSelectedChat(chat); // передаємо тільки якщо chat існує
+        }
         clearSelectedMessages();
         setSelectedMessage(null);
-    }, [chatId, clearSelectedMessages]);
+    }, [chat, setSelectedChat, clearSelectedMessages, setSelectedMessage]);
 
+    // Відзначення прочитаних повідомлень
     useEffect(() => {
         if (!messages) return;
         updateReadMessagesMutation.mutateAsync({
@@ -54,13 +56,13 @@ function ChatSlug() {
                 messageIds: messages.map((m) => m.id),
             },
         });
-    }, [messages]);
+    }, [messages, chatId, updateReadMessagesMutation]);
 
-    const { isPrivate, meMember } = usePrivateChat(chat);
+    if (!chat || !me) return null;
+
     const isGroup = chat?.type === ChatEnum.GROUP;
     const isChannel = chat?.type === ChatEnum.CHANNEL;
     const isAdmin = chat.adminId === meMember?.userId;
-
     const isLoading = isMessagesPending || isChatPending || isMePending;
 
     if (isLoading) return <ChatMessagesSkeleton />;

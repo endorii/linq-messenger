@@ -21,11 +21,6 @@ export async function fetchUniqueUsername(username: string) {
 }
 
 export async function fetchUpdateUser(updateUserData: Partial<IUser>) {
-    try {
-        const { data } = await httpService.patch<IUser>("/users", updateUserData);
-        return data;
-    } catch (error) {
-        const axiosError = error as AxiosError<ServerResponseError>;
-        throw axiosError;
-    }
+    const { data } = await httpService.patch("/users", updateUserData);
+    return data;
 }

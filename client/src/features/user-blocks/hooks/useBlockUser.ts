@@ -1,4 +1,5 @@
 import { BlockUserPayload } from "@/shared/interfaces/IBlockedUser";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

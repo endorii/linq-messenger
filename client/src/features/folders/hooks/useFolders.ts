@@ -1,4 +1,5 @@
 import { FolderPayload, IFolder } from "@/shared/interfaces/IFolder";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

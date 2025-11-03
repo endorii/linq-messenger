@@ -1,5 +1,6 @@
 import { fetchUniqueUsername, fetchUpdateUser } from "@/features/users/api/users.api";
 import { IUser } from "@/shared/interfaces";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

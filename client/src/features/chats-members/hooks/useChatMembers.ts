@@ -1,4 +1,5 @@
 import { IChatMember } from "@/shared/interfaces/IChatMember";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

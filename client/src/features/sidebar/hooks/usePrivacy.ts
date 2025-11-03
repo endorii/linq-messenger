@@ -1,4 +1,5 @@
 import { IPrivacySettings } from "@/shared/interfaces/IPrivacySettings";
+import { ServerResponseError } from "@/shared/interfaces/ServerResponseError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
