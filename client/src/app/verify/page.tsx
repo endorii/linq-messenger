@@ -50,7 +50,16 @@ const VerifyPage = () => {
             return;
         }
 
-        verifyMutation.mutateAsync(token);
+        const verifyEmail = async () => {
+            try {
+                await verifyMutation.mutateAsync(token);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        verifyEmail();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token, router]);
 
     return (
