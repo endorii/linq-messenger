@@ -1,22 +1,22 @@
 "use client";
 
+import { useProfile } from "@/features/auth/hooks/useAuth";
+import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
+import { Button } from "@/shared/components/ui/button";
+import { ButtonIcon } from "@/shared/components/ui/buttons";
 import { ChatEnum } from "@/shared/enums/enums";
+import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
 import { MuteIcon, PhoneIcon, PinIcon, SearchIcon } from "@/shared/icons";
 import { IChat } from "@/shared/interfaces/IChat";
-import { useProfile } from "@/features/auth/hooks/useAuth";
-import { useEffect } from "react";
-import { useToggleMuteChat } from "../../../chats-members/hooks/useChatMembers";
-import { Button } from "@/shared/components/ui/button";
-import { useToggleBlockUser } from "@/features/user-blocks/hooks/useBlockUser";
 import {
     useChatSidebarStore,
     useModalStore,
     useNavigationStore,
     useSelectionStore,
 } from "@/store";
-import { usePrivateChat } from "@/shared/hooks/usePrivateChat";
+import { useEffect } from "react";
+import { useToggleMuteChat } from "../../../chats-members/hooks/useChatMembers";
 import { ChatHeaderDropdownMenu } from "./components/ChatHeaderDropdownMenu";
-import { ButtonIcon } from "@/shared/components/ui/buttons";
 
 export function ChatHeader({
     chat,
@@ -172,14 +172,18 @@ export function ChatHeader({
                                     {`Last pinned message`}
                                 </div>
                                 <div className="text-sm text-black dark:text-white">
-                                    {chat.pinnedMessages[
-                                        chat.pinnedMessages.length - 1
-                                    ]?.message?.content.slice(0, 20) +
-                                        (chat.pinnedMessages[
-                                            chat.pinnedMessages.length - 1
-                                        ]?.message?.content.length! > 20
-                                            ? "..."
-                                            : "")}
+                                    {(() => {
+                                        const lastPinned =
+                                            chat.pinnedMessages.at(-1)?.message
+                                                ?.content;
+                                        if (!lastPinned) return null;
+                                        return (
+                                            lastPinned.slice(0, 20) +
+                                            (lastPinned.length > 20
+                                                ? "..."
+                                                : "")
+                                        );
+                                    })()}
                                 </div>
                             </div>
                             <div className="relative flex group">
