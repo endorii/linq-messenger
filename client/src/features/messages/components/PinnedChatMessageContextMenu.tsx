@@ -1,5 +1,7 @@
 "use client";
 
+import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
+import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
 import {
     ContextMenu,
     ContextMenuContent,
@@ -7,26 +9,24 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from "@/shared/components/ui/context-menu";
+import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
 import { IUser } from "@/shared/interfaces";
+import { IPinnedMessage } from "@/shared/interfaces/IMessage";
 import {
-    useModalStore,
-    useSelectionStore,
     useChatInputStore,
+    useModalStore,
     useNavigationStore,
+    useSelectionStore,
 } from "@/store";
 import dayjs from "dayjs";
+import { DownloadIcon, FileIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { toast } from "sonner";
 import {
     useCreatePinMessage,
     useDeletePinnedMessage,
 } from "../hooks/usePinnedMessages";
-import { CheckBothIcon, CheckIcon, PinIcon, ReplyIcon } from "@/shared/icons";
-import { IPinnedMessage } from "@/shared/interfaces/IMessage";
-import { useToggleReaction } from "@/features/reactions/hooks/useReactions";
-import { groupReactionsByEmoji } from "@/features/reactions/utils/groupReactionsByEmoji";
-import Image from "next/image";
-import Link from "next/link";
-import { FileIcon } from "lucide-react";
 
 export function PinnedChatMessageContextMenu({
     msg,
@@ -106,20 +106,109 @@ export function PinnedChatMessageContextMenu({
             >
                 <div>
                     {msg.message.forwardedMessageId && (
-                        <div className="py-[5px] px-[10px]">
-                            <div className="flex items-center gap-[5px] text-sm">
-                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
-                                <div className="text-white flex gap-[3px]">
-                                    <div>forwarded from</div>
-                                    <span className="font-semibold">
-                                        {
-                                            msg.message.forwardedMessage?.sender
-                                                .username
-                                        }
-                                    </span>
+                        <>
+                            <div className="py-[5px] px-[10px]">
+                                <div className="flex items-center gap-[5px] text-sm">
+                                    <ReplyIcon className="w-[16px] fill-none stroke-black dark:stroke-white stroke-3 rotate-270" />
+                                    <div className="text-black dark:text-white flex gap-[3px]">
+                                        <div>forwarded from</div>
+                                        <span className="font-semibold">
+                                            {
+                                                msg.message.forwardedMessage
+                                                    ?.sender.username
+                                            }
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 text-white">
+                                {msg.message.forwardedMessage?.attachments.map(
+                                    (attachment) => {
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "image/"
+                                            )
+                                        ) {
+                                            return (
+                                                <Image
+                                                    key={attachment.id}
+                                                    src={
+                                                        attachment.url ||
+                                                        "/placeholder.png"
+                                                    }
+                                                    alt={
+                                                        attachment.fileName ||
+                                                        ""
+                                                    }
+                                                    width={300}
+                                                    height={300}
+                                                    unoptimized
+                                                    onError={(e) => {
+                                                        e.currentTarget.src =
+                                                            "placeholder.png";
+                                                    }}
+                                                    className="flex-1 w-full max-w-[400px] object-cover"
+                                                />
+                                            );
+                                        }
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "video/"
+                                            )
+                                        ) {
+                                            return (
+                                                <video
+                                                    key={attachment.id}
+                                                    src={attachment.url}
+                                                    className="max-h-[400px]"
+                                                    controls
+                                                />
+                                            );
+                                        }
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "audio/"
+                                            )
+                                        ) {
+                                            return (
+                                                <audio
+                                                    key={attachment.id}
+                                                    src={attachment.url}
+                                                    controls
+                                                    className="px-[5px] pt-[5px]"
+                                                />
+                                            );
+                                        }
+
+                                        return (
+                                            <Link
+                                                href={attachment.url || ""}
+                                                key={attachment.id}
+                                                className="flex items-center justify-between px-[15px] py-[10px] hover:bg-white/10 group"
+                                            >
+                                                <div className="flex gap-[10px]">
+                                                    <FileIcon className="" />
+                                                    <div className="flex flex-col">
+                                                        <div>
+                                                            {
+                                                                attachment.fileName
+                                                            }
+                                                        </div>
+                                                        <div className="text-xs font-semibold">
+                                                            {
+                                                                attachment.fileSize
+                                                            }{" "}
+                                                            KB.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <DownloadIcon className="w-[20px] opacity-0 group-hover:opacity-100 transition-all duration-200" />
+                                            </Link>
+                                        );
+                                    }
+                                )}
+                            </div>
+                        </>
                     )}
 
                     {msg.message.replyTo && (
@@ -140,6 +229,8 @@ export function PinnedChatMessageContextMenu({
                                         .username
                                 }
                             </div>
+                            {msg.message.replyTo.forwardedMessage
+                                ?.attachments && <div>Files</div>}
                             <div className="text-sm truncate">
                                 {msg.message.replyTo?.content
                                     ? msg.message.replyTo?.content

@@ -8,6 +8,7 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { ModalWrapper } from "@/shared/components/wrappers/ModalWrapper";
 import { ChatEnum } from "@/shared/enums/enums";
 import { useEscapeKeyClose } from "@/shared/hooks";
+import { usePostChatAvatar } from "@/shared/hooks/useFiles";
 import { CameraIcon } from "@/shared/icons/CameraIcon";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -39,18 +40,19 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
     });
 
     const { data: contacts } = useContacts();
-
     const [modalMessage, setModalMessage] = useState("");
     const [step, setStep] = useState(1);
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
 
-    const useCreateChatMutation = useCreateChat();
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+    const createChatMutation = useCreateChat();
+    const postChatAvatar = usePostChatAvatar();
 
     const nextStep = async () => {
         const valid = await trigger(["name"]);
-        if (valid) {
-            setStep((prev) => prev + 1);
-        }
+        if (valid) setStep((prev) => prev + 1);
     };
 
     const prevStep = () => setStep((prev) => prev - 1);
@@ -59,17 +61,27 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
         reset();
         setModalMessage("");
         setStep(1);
+        setAvatarPreview(null);
+        setAvatarFile(null);
         onClose();
     };
 
     const onSubmit = async (data: FormData) => {
         try {
-            await useCreateChatMutation.mutateAsync({
+            const chat = await createChatMutation.mutateAsync({
                 name: data.name,
                 type,
                 description: data.description || "",
                 memberIds: selectedContacts,
             });
+
+            if (avatarFile && chat.data?.id) {
+                await postChatAvatar.mutateAsync({
+                    chatId: chat.data.id,
+                    avatar: avatarFile,
+                });
+            }
+
             handleClose();
         } catch (error) {
             console.log(error);
@@ -80,7 +92,6 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
     };
 
     useEscapeKeyClose({ isOpen, onClose });
-
     if (!isOpen) return null;
 
     const entityLabel = type === ChatEnum.CHANNEL ? "Channel" : "Group";
@@ -96,9 +107,19 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                         <div className="flex items-center gap-[15px]">
                             <label
                                 htmlFor="picture"
-                                className="relative bg-neutral-200 dark:bg-neutral-900 p-[20px] rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
+                                className="relative bg-neutral-200 dark:bg-neutral-900 rounded-full cursor-pointer border border-white/5 flex items-center justify-center"
                             >
-                                <CameraIcon className="w-[40px] h-[40px] fill-none stroke-[1.5] stroke-neutral-800 dark:stroke-neutral-300" />
+                                <div className="w-[100px] h-[100px] rounded-full overflow-hidden flex items-center justify-center">
+                                    {avatarPreview ? (
+                                        <img
+                                            src={avatarPreview}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <CameraIcon className="w-[60px] h-[60px] fill-none stroke-[1.5] stroke-neutral-800 dark:stroke-neutral-300" />
+                                    )}
+                                </div>
+
                                 <input
                                     id="picture"
                                     type="file"
@@ -106,6 +127,11 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                     className="hidden"
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        setAvatarFile(file);
+                                        setAvatarPreview(
+                                            URL.createObjectURL(file)
+                                        );
                                     }}
                                 />
                             </label>
@@ -115,10 +141,6 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                 placeholder={`${entityLabel} name`}
                                 {...register("name", {
                                     required: `Enter ${entityLabel.toLowerCase()} name`,
-                                    minLength: {
-                                        value: 1,
-                                        message: "Minimum 1 symbol",
-                                    },
                                 })}
                                 errorMessage={errors.name?.message}
                                 className="h-[45px]"
@@ -153,7 +175,7 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                 {step === 2 && (
                     <>
                         <div className="flex flex-col items-center gap-[15px]">
-                            {contacts && contacts.length > 0
+                            {contacts?.length
                                 ? contacts.map((contact) => (
                                       <div
                                           key={contact.id}
@@ -190,16 +212,12 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                           </div>
 
                                           <div className="flex flex-col justify-between flex-1 min-w-0">
-                                              <div className="flex justify-between gap-[2px]">
-                                                  <div className="font-semibold truncate">
-                                                      {contact.nickname ||
-                                                          contact.contact
-                                                              ?.username}
-                                                  </div>
+                                              <div className="font-semibold truncate">
+                                                  {contact.nickname ||
+                                                      contact.contact?.username}
                                               </div>
-
                                               <div
-                                                  className={` font-base truncate ${
+                                                  className={`truncate ${
                                                       contact.contact?.isOnline
                                                           ? "text-green-500"
                                                           : "text-neutral-500 dark:text-neutral-400"
@@ -225,14 +243,17 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                             <Button
                                 type="button"
                                 onClick={prevStep}
-                                className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5 flex items-center justify-center border-white/5 cursor-pointer"
+                                className="text-black dark:text-white hover:bg-neutral-900/5 dark:hover:bg-white/5"
                             >
-                                Go back
+                                Go Back
                             </Button>
                             <Button
                                 type="submit"
                                 className="cursor-pointer bg-theme-gradient border-none transition-all duration-200"
-                                disabled={useCreateChatMutation.isPending}
+                                disabled={
+                                    createChatMutation.isPending ||
+                                    postChatAvatar.isPending
+                                }
                             >
                                 Create {entityLabel}
                             </Button>

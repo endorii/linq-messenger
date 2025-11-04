@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from "@nestjs/common";
-import { CreatePinnedMessageDto } from "./dto/create-pinned-message.dto";
 import { PrismaService } from "src/prisma/prisma.service";
+import { CreatePinnedMessageDto } from "./dto/create-pinned-message.dto";
 
 @Injectable()
 export class PinnedMessagesService {
@@ -13,11 +13,11 @@ export class PinnedMessagesService {
                     include: {
                         pinnedMessages: true,
                         sender: true,
-                        forwardedMessage: { include: { sender: true } },
+                        forwardedMessage: { include: { sender: true, attachments: true } },
                         replyTo: {
                             include: {
                                 sender: true,
-                                forwardedMessage: { include: { sender: true } },
+                                forwardedMessage: { include: { sender: true, attachments: true } },
                                 attachments: true,
                             },
                         },

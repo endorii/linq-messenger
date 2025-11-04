@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { IUser } from "@/shared/interfaces";
-import { PinnedChatMessageContextMenu } from "./PinnedChatMessageContextMenu";
 import { IPinnedMessage } from "@/shared/interfaces/IMessage";
+import { PinnedChatMessageContextMenu } from "./PinnedChatMessageContextMenu";
 
 export function PinnedChatMessage({
     msg,
@@ -44,9 +43,9 @@ export function PinnedChatMessage({
                 {isGroup && !isSameSenderAsNext && !msg.isMine && (
                     <div className="absolute bottom-0 left-[-40px]">
                         <img
-                            src={avatarUrl}
+                            src={avatarUrl || ""}
                             alt={username || "avatar"}
-                            className="rounded-full object-cover"
+                            className="rounded-full object-cover w-[35px] h-[35px]"
                         />
                     </div>
                 )}

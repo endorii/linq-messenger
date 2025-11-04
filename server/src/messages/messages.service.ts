@@ -37,13 +37,13 @@ export class MessagesService {
                     include: {
                         sender: true,
                         forwardedMessage: {
-                            include: { sender: true },
+                            include: { sender: true, attachments: true },
                         },
                         attachments: true,
                     },
                 },
                 pinnedMessages: true,
-                forwardedMessage: { include: { sender: true } },
+                forwardedMessage: { include: { sender: true, attachments: true } },
                 messagesRead: true,
                 reactions: {
                     include: {
@@ -84,6 +84,9 @@ export class MessagesService {
     async forwardMessage(userId: string, createForwardMessageDto: CreateForwardMessageDto) {
         const original = await this.prisma.message.findUnique({
             where: { id: createForwardMessageDto.messageId },
+            include: {
+                attachments: true,
+            },
         });
 
         if (!original) throw new NotFoundException("Original message not found");
@@ -112,6 +115,9 @@ export class MessagesService {
                 id: {
                     in: createForwardMessagesDto.messageIds,
                 },
+            },
+            include: {
+                attachments: true,
             },
         });
 

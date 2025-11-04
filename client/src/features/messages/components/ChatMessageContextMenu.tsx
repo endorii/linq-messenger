@@ -115,17 +115,121 @@ export function ChatMessageContextMenu({
             >
                 <div onDoubleClick={() => toggleSelectedMessage(msg.id)}>
                     {msg.forwardedMessageId && (
-                        <div className="py-[5px] px-[10px]">
-                            <div className="flex items-center gap-[5px] text-sm">
-                                <ReplyIcon className="w-[16px] fill-none stroke-white stroke-3 rotate-270" />
-                                <div className="text-white flex gap-[3px]">
-                                    <div>forwarded from</div>
-                                    <span className="font-semibold">
-                                        {msg.forwardedMessage?.sender.username}
-                                    </span>
+                        <>
+                            <div className="py-[5px] px-[10px]">
+                                <div className="flex items-center gap-[5px] text-sm">
+                                    <ReplyIcon
+                                        className={`w-[16px] fill-none ${
+                                            msg.isMine
+                                                ? "stroke-white"
+                                                : "stroke-black"
+                                        } dark:stroke-white stroke-3 rotate-270`}
+                                    />
+                                    <div
+                                        className={`${
+                                            msg.isMine
+                                                ? "text-white"
+                                                : "text-black"
+                                        } dark:text-white flex gap-[3px]`}
+                                    >
+                                        <div>forwarded from</div>
+                                        <span className="font-semibold">
+                                            {
+                                                msg.forwardedMessage?.sender
+                                                    .username
+                                            }
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 text-white">
+                                {msg.forwardedMessage?.attachments.map(
+                                    (attachment) => {
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "image/"
+                                            )
+                                        ) {
+                                            return (
+                                                <Image
+                                                    key={attachment.id}
+                                                    src={
+                                                        attachment.url ||
+                                                        "/placeholder.png"
+                                                    }
+                                                    alt={
+                                                        attachment.fileName ||
+                                                        ""
+                                                    }
+                                                    width={300}
+                                                    height={300}
+                                                    unoptimized
+                                                    onError={(e) => {
+                                                        e.currentTarget.src =
+                                                            "placeholder.png";
+                                                    }}
+                                                    className="flex-1 w-full max-w-[400px] object-cover"
+                                                />
+                                            );
+                                        }
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "video/"
+                                            )
+                                        ) {
+                                            return (
+                                                <video
+                                                    key={attachment.id}
+                                                    src={attachment.url}
+                                                    className="max-h-[400px]"
+                                                    controls
+                                                />
+                                            );
+                                        }
+                                        if (
+                                            attachment.mimetype?.startsWith(
+                                                "audio/"
+                                            )
+                                        ) {
+                                            return (
+                                                <audio
+                                                    key={attachment.id}
+                                                    src={attachment.url}
+                                                    controls
+                                                    className="px-[5px] pt-[5px]"
+                                                />
+                                            );
+                                        }
+
+                                        return (
+                                            <Link
+                                                href={attachment.url || ""}
+                                                key={attachment.id}
+                                                className="flex items-center justify-between px-[15px] py-[10px] hover:bg-white/10 group"
+                                            >
+                                                <div className="flex gap-[10px]">
+                                                    <FileIcon className="" />
+                                                    <div className="flex flex-col">
+                                                        <div>
+                                                            {
+                                                                attachment.fileName
+                                                            }
+                                                        </div>
+                                                        <div className="text-xs font-semibold">
+                                                            {
+                                                                attachment.fileSize
+                                                            }{" "}
+                                                            KB.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <DownloadIcon className="w-[20px] opacity-0 group-hover:opacity-100 transition-all duration-200" />
+                                            </Link>
+                                        );
+                                    }
+                                )}
+                            </div>
+                        </>
                     )}
 
                     {msg.replyTo && (
@@ -143,6 +247,9 @@ export function ChatMessageContextMenu({
                                 )}
                                 {msg.replyTo.forwardedMessage?.sender.username}
                             </div>
+                            {msg.replyTo.forwardedMessage?.attachments && (
+                                <div>Files</div>
+                            )}
                             <div className="text-sm truncate">
                                 {msg.replyTo?.content
                                     ? msg.replyTo?.content
@@ -152,6 +259,7 @@ export function ChatMessageContextMenu({
                             </div>
                         </div>
                     )}
+
                     {msg.attachments && msg.attachments.length > 0 && (
                         <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 text-white">
                             {msg.attachments.map((attachment) => {

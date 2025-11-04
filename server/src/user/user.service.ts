@@ -1,9 +1,4 @@
-import {
-    BadRequestException,
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import * as bcrypt from "bcryptjs";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -46,35 +41,30 @@ export class UserService {
     }
 
     async createUser(userData: CreateUserDto) {
-        try {
-            const existingUsername = await this.findByUsername(userData.username);
-            if (existingUsername) {
-                throw new ConflictException(`Username "${userData.username}" already taken`);
-            }
-
-            const existingEmail = await this.findByEmail(userData.email);
-            if (existingEmail) {
-                throw new ConflictException("This email already exists");
-            }
-
-            const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-            return this.prisma.user.create({
-                data: {
-                    email: userData.email,
-                    username: userData.username,
-                    avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${userData.firstName || userData.username}&backgroundType=gradientLinear&backgroundColor=3B82F6,60A5FA,93C5FD,8B5CF6,A78BFA,C4B5FD&fontSize=50&scale=75`,
-                    phone: userData.phone?.trim() === "" ? null : userData.phone?.trim(),
-                    firstName: userData.firstName,
-                    lastName: userData.lastName?.trim() === "" ? null : userData.lastName?.trim(),
-                    password: hashedPassword,
-                    isVerified: false,
-                },
-            });
-        } catch (error) {
-            console.error(error);
-            throw new BadRequestException("Error with creating new user");
+        const existingUsername = await this.findByUsername(userData.username);
+        if (existingUsername) {
+            throw new ConflictException(`Username "${userData.username}" already taken`);
         }
+
+        const existingEmail = await this.findByEmail(userData.email);
+        if (existingEmail) {
+            throw new ConflictException("This email already exists");
+        }
+
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+        return this.prisma.user.create({
+            data: {
+                email: userData.email,
+                username: userData.username,
+                avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${userData.firstName || userData.username}&backgroundType=gradientLinear&backgroundColor=3B82F6,60A5FA,93C5FD,8B5CF6,A78BFA,C4B5FD&fontSize=50&scale=75`,
+                phone: userData.phone?.trim() === "" ? null : userData.phone?.trim(),
+                firstName: userData.firstName,
+                lastName: userData.lastName?.trim() === "" ? null : userData.lastName?.trim(),
+                password: hashedPassword,
+                isVerified: false,
+            },
+        });
     }
 
     async editUserInfo(userId: string, updateUserDto: UpdateUserDto) {

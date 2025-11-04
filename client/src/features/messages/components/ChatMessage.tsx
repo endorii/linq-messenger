@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { ChatMessageContextMenu } from "./ChatMessageContextMenu";
+import { useCreatePrivateChat } from "@/features/chats/hooks/useChats";
 import { IMessage, IUser } from "@/shared/interfaces";
+import { ChatMessageContextMenu } from "./ChatMessageContextMenu";
 
 export function ChatMessage({
     msg,
@@ -23,6 +23,8 @@ export function ChatMessage({
     avatarUrl: string;
     username: string | undefined;
 }) {
+    const useGetOrCreatePrivateChatMutation = useCreatePrivateChat();
+
     return (
         <div
             className={`flex items-center gap-[20px] w-full ${
@@ -41,13 +43,20 @@ export function ChatMessage({
                     me={me}
                 />
                 {isGroup && !isSameSenderAsNext && !msg.isMine && (
-                    <div className="absolute bottom-0 left-[-40px]">
+                    <button
+                        className="absolute bottom-0 left-[-40px]"
+                        onClick={() =>
+                            useGetOrCreatePrivateChatMutation.mutateAsync(
+                                msg.sender.id
+                            )
+                        }
+                    >
                         <img
                             src={avatarUrl || ""}
                             alt={username || "avatar"}
-                            className="rounded-full object-cover"
+                            className="rounded-full object-cover w-[35px] h-[35px]"
                         />
-                    </div>
+                    </button>
                 )}
             </div>
         </div>
