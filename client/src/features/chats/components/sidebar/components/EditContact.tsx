@@ -22,11 +22,6 @@ export function EditContact({ chat }: { chat: IChat }) {
     const { setChatSidebarTab } = useChatSidebarStore();
     const { isPrivate, otherMember, contact, meMember } = usePrivateChat(chat);
 
-    if (!contact) {
-        setChatSidebarTab("info");
-        return null;
-    }
-
     const {
         handleSubmit,
         register,
@@ -34,17 +29,17 @@ export function EditContact({ chat }: { chat: IChat }) {
         formState: { errors, isDirty },
     } = useForm<{ customContactName: string }>({
         defaultValues: {
-            customContactName: contact.nickname || "",
+            customContactName: contact?.nickname || "",
         },
     });
 
     const watchedName = watch("customContactName");
 
     const hasChanges = useMemo(() => {
-        const current = (contact.nickname || "").trim();
+        const current = (contact?.nickname || "").trim();
         const next = (watchedName || "").trim();
         return current !== next;
-    }, [watchedName, contact.nickname]);
+    }, [watchedName, contact?.nickname]);
 
     const onSubmit = (data: { customContactName: string }) => {
         if (!contact) return;
@@ -62,12 +57,18 @@ export function EditContact({ chat }: { chat: IChat }) {
     };
 
     const handleDeleteContact = () => {
+        if (!contact) return;
         useDeleteContactMutation.mutateAsync({
             chatId: chat.id,
             contactId: contact.contactId,
         });
         setChatSidebarTab("info");
     };
+
+    if (!contact) {
+        setChatSidebarTab("info");
+        return null;
+    }
 
     return (
         <div className="relative flex flex-col h-full">
@@ -91,7 +92,7 @@ export function EditContact({ chat }: { chat: IChat }) {
                                 : chat.avatar
                         }
                         alt="avatar"
-                        className="rounded-full"
+                        className="w-full rounded-full"
                     />
                 </div>
                 <div className="flex flex-col gap-[5px] items-center text-center">

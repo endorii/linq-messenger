@@ -78,7 +78,7 @@ export function AddMembersToChat({ isOpen, onClose }: CreateProps) {
                                     <img
                                         src={contact.contact?.avatarUrl}
                                         alt="avatar"
-                                        className="rounded-full"
+                                        className="w-full rounded-full object-cover"
                                     />
                                 </div>
 

@@ -190,7 +190,7 @@ export function ChatHeader({
                                 <ButtonIcon
                                     onClick={() => handleSetChatView("pinned")}
                                 >
-                                    <PinIcon className="w-[22px] stroke-neutral-800 fill-neutral-800 dark:stroke-neutral-300 stroke-[1] dark:fill-neutral-300" />
+                                    <PinIcon className="w-[22px] stroke-neutral-800 fill-neutral-800 dark:stroke-neutral-300 stroke dark:fill-neutral-300" />
                                 </ButtonIcon>
                                 {chat.pinnedMessages.length > 1 && (
                                     <div className="text-white absolute top-[0px] right-[-2px] bg-theme-gradient rounded-full text-center text-xs w-[18px] h-[18px] pt-px">

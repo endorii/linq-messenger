@@ -41,11 +41,11 @@ export function PinnedChatMessage({
                     me={me}
                 />
                 {isGroup && !isSameSenderAsNext && !msg.isMine && (
-                    <div className="absolute bottom-0 left-[-40px]">
+                    <div className="w-[35px] h-[35px] absolute bottom-0 left-[-40px]">
                         <img
                             src={avatarUrl || ""}
                             alt={username || "avatar"}
-                            className="rounded-full object-cover w-[35px] h-[35px]"
+                            className="w-full rounded-full object-cover"
                         />
                     </div>
                 )}

@@ -44,7 +44,7 @@ export function ChatMessage({
                 />
                 {isGroup && !isSameSenderAsNext && !msg.isMine && (
                     <button
-                        className="absolute bottom-0 left-[-40px]"
+                        className="absolute bottom-0 left-[-40px] w-[35px] h-[35px]"
                         onClick={() =>
                             useGetOrCreatePrivateChatMutation.mutateAsync(
                                 msg.sender.id
@@ -54,7 +54,7 @@ export function ChatMessage({
                         <img
                             src={avatarUrl || ""}
                             alt={username || "avatar"}
-                            className="rounded-full object-cover w-[35px] h-[35px]"
+                            className="w-full rounded-full object-cover "
                         />
                     </button>
                 )}

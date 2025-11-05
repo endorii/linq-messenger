@@ -207,7 +207,7 @@ export function CreateGroupOrChannel({ isOpen, onClose, type }: CreateProps) {
                                                       contact.contact?.avatarUrl
                                                   }
                                                   alt="avatar"
-                                                  className="rounded-full"
+                                                  className="w-full rounded-full object-cover"
                                               />
                                           </div>
 
